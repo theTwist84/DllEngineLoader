@@ -3,6 +3,9 @@
 class IGameEvents
 {
 public:
+	IGameEvents();
+	~IGameEvents();
+
 	/* 000 */	virtual void AchievementEarned(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 AchievementID);
 	/* 001 */	virtual void AshesToAshes(wchar_t *UserID, GUID PlayerSessionID);
 	/* 002 */	virtual void Assist(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade);
@@ -160,29 +163,21 @@ public:
 		INT32 dword5;
 	};
 
-	__int16 word0;
-	__int16 word1;
+	UINT8 unknown0[4] = {};
 	GUID playerSessionID;
-	__unaligned __declspec(align(1)) INT64 qword0;
-	__unaligned __declspec(align(1)) INT64 qword1;
-	__unaligned __declspec(align(1)) INT64 qword2;
-	__unaligned __declspec(align(1)) INT64 qword3;
-	__unaligned __declspec(align(1)) INT64 qword4;
-	__unaligned __declspec(align(1)) INT64 qword5;
-	__unaligned __declspec(align(1)) INT64 qword6;
-	__unaligned __declspec(align(1)) INT64 qword7;
-	INT32 dword0;
-	INT32 dword1;
-	INT32 dword2;
-	_RTL_CRITICAL_SECTION rtlCriticalSection;
-	INT64 qword8;
-	UnknownType unknownStruct;
-	INT64 qword9;
-	INT64 qwordA;
-	INT64 qwordB;
+	UINT8 unknown14[220] = {};
 };
 
-static IGameEvents *g_pGameEvents = 0;
+const size_t asdg = sizeof(IGameEvents);
+
+IGameEvents::IGameEvents()
+{
+	printf("IGameEvents();\n");
+}
+
+IGameEvents::~IGameEvents()
+{
+}
 
 void IGameEvents::AchievementEarned(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 AchievementID)
 {

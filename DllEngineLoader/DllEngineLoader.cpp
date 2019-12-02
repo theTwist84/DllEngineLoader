@@ -1,7 +1,31 @@
 #include "stdafx.h"
 
+void EnsureModuleIsLoaded(LPCSTR pLibPath)
+{
+	printf("EnsureModuleIsLoaded(\"%s\");\n", pLibPath);
+
+	HMODULE hModule = GetModuleHandleA(pLibPath);
+	if (!hModule)
+	{
+		if (hModule = LoadLibraryA(pLibPath), !hModule)
+		{
+			MessageBoxA(NULL, pLibPath, "failed to load library", MB_ICONERROR);
+		}
+		assert(hModule);
+	}
+}
+
 int main(int argc, LPSTR *argv)
 {
+	printf("main(%i, \"%s\"", argc, std::string(argv[0]).substr(std::string(argv[0]).find_last_of("/\\") + 1).c_str());
+	for (size_t i = 1; i < argc; i++)
+	{
+		printf(" \"%s\"", argv[i]);
+	}
+	printf(");\n");
+
+	EnsureModuleIsLoaded("MCC\\Binaries\\Win64\\bink2w64.dll");
+
 	LPCSTR pEngine = "";
 	LPCSTR pGame   = "";
 	LPCSTR pMap    = "";
@@ -25,17 +49,26 @@ int main(int argc, LPSTR *argv)
 		pEngine = "HaloReach";
 		pGame   = "00_basic_editing_054";
 		pMap    = "forge_halo";
+		pFilm   = "asq_cex_tim_43DC28AA";
 		break;
 	}
 
-	g_pGameEvents     = new IGameEvents();
-	g_pGameEngineHost = new IGameEngineHost();
+	static auto gameEngineHost = IGameEngineHost();
+	static auto gameRasterizer = IGameRasterizer(1280, 720, true);
+	static auto gameInterface  = IGameInterface(pEngine);
+	static auto gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
 
-	g_pGameRasterizer = new IGameRasterizer(1280, 720, true);
+	auto updateCallBack = []()
+	{
+		/*printf("Running!\n");*/
 
-	g_pGameInterface  = new IGameInterface(pEngine);
-	g_pGameContext    = new IGameContext(g_pGameInterface->GetDataAccess(), pEngine, pGame, pMap, pFilm);
+		if (GetKeyState(VK_END) & 0x80)
+		{
+			gameInterface.GetEngine()->UpdateEngineState(EngineState::eEndGameWriteStats);
+			g_running = false;
+		}
+	};
 
-	g_pGameInterface->SetLocale("ko-KR", "ja-JP", "en-US");
-	g_pGameInterface->LaunchTitle(g_running, []() { printf("Running!\n"); });
+	gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
+	gameInterface.LaunchTitle(gameEngineHost, gameRasterizer, gameContext, g_running, updateCallBack);
 }

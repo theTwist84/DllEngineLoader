@@ -9,8 +9,22 @@ enum class GameMode : INT32
 	eUnknown4,
 	eSurvival,
 
-	kCount,
+	kCount
 };
+
+LPCSTR GameModeFromID(GameMode id)
+{
+	switch (id)
+	{
+	case GameMode::eCampaign:
+		return "Campaign";
+	case GameMode::eMultiplayer:
+		return "Multiplayer";
+	case GameMode::eSurvival:
+		return "Survival";
+	}
+	return nullptr;
+}
 
 enum class Difficulty : INT32
 {
@@ -19,8 +33,24 @@ enum class Difficulty : INT32
 	eHard,
 	eImpossible,
 
-	kCount,
+	kCount
 };
+
+LPCSTR DifficultyFromID(Difficulty id)
+{
+	switch (id)
+	{
+	case Difficulty::eEasy:
+		return "Easy";
+	case Difficulty::eNormal:
+		return "Normal";
+	case Difficulty::eHard:
+		return "Heroic";
+	case Difficulty::eImpossible:
+		return "Legendary";
+	}
+	return nullptr;
+}
 
 enum class MapID : INT32
 {
@@ -76,12 +106,12 @@ enum class MapID : INT32
 
 	eCEX_FF_Halo,
 
-	kCount,
+	kCount
 };
 
-LPCSTR MapNameFromMapID(MapID mapID)
+LPCSTR MapNameFromID(MapID id)
 {
-	switch (mapID)
+	switch (id)
 	{
 	case MapID::eM05:
 		return "m05";
@@ -171,12 +201,12 @@ LPCSTR MapNameFromMapID(MapID mapID)
 	return nullptr;
 }
 
-INT32 MapNameToMapID(LPCSTR pName)
+INT32 MapNameToID(LPCSTR pName)
 {
 	for (INT32 i = static_cast<INT32>(MapID::eM05); i < static_cast<INT32>(MapID::kCount); i++)
 	{
 		MapID mapID = static_cast<MapID>(i);
-		LPCSTR mapIDStr = MapNameFromMapID(mapID);
+		LPCSTR mapIDStr = MapNameFromID(mapID);
 
 		if (mapIDStr != nullptr && (strcmp(pName, mapIDStr) == 0))
 		{
@@ -194,22 +224,38 @@ public:
 
 	void SetGameMode(GameMode gameMode)
 	{
+		printf("IGameContext::SetGameMode(\"%s\");\n", GameModeFromID(gameMode));
+
 		m_gameMode = gameMode;
+	}
+	void SetDifficulty(Difficulty difficulty)
+	{
+		printf("IGameContext::SetDifficulty(\"%s\");\n", DifficultyFromID(difficulty));
+
+		m_difficulty = difficulty;
 	}
 	void SetGameVariant(IGameVariant *pVariant)
 	{
+		printf("IGameContext::SetGameVariant(\"%S\");\n", pVariant->GetName());
+
 		memcpy(m_gameVariant, pVariant->GetData(), pVariant->GetDataSize());
 	}
 	void SetMapVariant(IMapVariant *pVariant)
 	{
+		printf("IGameContext::SetMapVariant(\"%S\");\n", pVariant->GetName());
+
 		memcpy(m_mapVariant, pVariant->GetData(), pVariant->GetDataSize());
 	}
 	void SetMapID(INT32 mapID)
 	{
+		printf("IGameContext::SetMapID(\"%s\");\n", MapNameFromID(static_cast<MapID>(mapID)));
+
 		m_mapID = static_cast<MapID>(mapID);
 	}
 	void SetSavedFilmPath(LPCSTR pSavedFilmPath)
 	{
+		printf("IGameContext::SetSavedFilmPath(\"%s\");\n", pSavedFilmPath);
+
 		m_pSavedFilmPath = pSavedFilmPath;
 	}
 
@@ -242,10 +288,10 @@ private:
 	wchar_t   *m_customEngineName       = 0;
 };
 
-static IGameContext *g_pGameContext = 0;
-
 IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText = true)
 {
+	printf("IGameContext(0x%p, \"%s\", \"%s\", \"%s\", \"%s\", %s);\n", pDataAccess, pEngine, pGame, pMap, pFilm, setWindowText ? "true" : "false");
+
 	IGameVariant      *pGameVariant      = {};
 	IMapVariant       *pMapVariant       = {};
 	ISaveFilmMetadata *pSaveFilmMetadata = {};
@@ -254,55 +300,39 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 
 	if (pFilm == "")
 	{
-		if (pGameVariant = pDataAccess->GetGameVariant(pEngine, pGame), pGameVariant)
-		{
-			printf("%S - %S\n", pGameVariant->GetName(), pGameVariant->GetDescription());
-		}
+		pGameVariant = pDataAccess->GetGameVariant(pEngine, pGame);
+		assert(pGameVariant);
 
-		if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), pMapVariant)
+		if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), !pMapVariant)
 		{
-			printf("%S - %S\n", pMapVariant->GetName(), pMapVariant->GetDescription());
+			pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToID(pMap));
 		}
-		else
-		{
-			pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToMapID(pMap));
-		}
+		assert(pMapVariant);
 
-		if (pGameVariant && pMapVariant)
-		{
-			LPCSTR pGameVariantName = ""; LPCSTR pMapVariantName = "";
-			if (pGameVariant->GetName()[0])
-			{
-				pGameVariantName = pathf("%S", pGameVariant->GetName());
-			}
-			else
-			{
-				pGameVariantName = pGame;
-			}
+		char gameVariantName[64] = { 0 };
+		sprintf(gameVariantName, "%S", pGameVariant->GetName());
+		if (!gameVariantName[0]) sprintf(gameVariantName, "%s", pGame);
 
-			if (pMapVariant->GetName()[0])
-			{
-				pMapVariantName = pathf("%S", pGameVariant->GetName());
-			}
-			else
-			{
-				pMapVariantName = pMap;
-			}
+		char mapVariantName[64] = { 0 };
+		sprintf(mapVariantName, "%S", pMapVariant->GetName());
+		if (!mapVariantName[0]) sprintf(mapVariantName, "%s", pMap);
 
-			std::time_t ct = std::time(0);
-			sprintf(windowText, "%s on %s, %s", pGameVariantName, pMapVariantName, ctime(&ct));
-		}
+		std::time_t ct = std::time(0);
+		sprintf(windowText, "%s on %s, %s", gameVariantName, mapVariantName, ctime(&ct));
 	}
 	else
 	{
-		if (pSaveFilmMetadata = pDataAccess->GetSaveFilmMetadata(pEngine, pFilm), pSaveFilmMetadata)
-		{
-			printf("%S - %S\n\n", pSaveFilmMetadata->GetName(), pSaveFilmMetadata->GetDescription());
-			sprintf(windowText, "%S", pSaveFilmMetadata->GetDescription());
-		}
+		pSaveFilmMetadata = pDataAccess->GetSaveFilmMetadata(pEngine, pFilm);
+		assert(pSaveFilmMetadata);
+
+		sprintf(windowText, "%S", pSaveFilmMetadata->GetDescription());
 	}
 
-	SetWindowTextA(IGameRasterizer::GetWindowHandle(), windowText);
+	if (windowText[0])
+	{
+		SetConsoleTitleA(windowText);
+		SetWindowTextA(IGameRasterizer::GetWindowHandle(), windowText);
+	}
 
 	if (pFilm && pFilm[0])
 	{

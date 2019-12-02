@@ -59,10 +59,10 @@ ID3D11Device        *IGameRasterizer::s_pDevice        = 0;
 ID3D11DeviceContext *IGameRasterizer::s_pContext       = 0;
 IDXGISwapChain      *IGameRasterizer::s_pSwapChain     = 0;
 
-static IGameRasterizer *g_pGameRasterizer = 0;
-
 IGameRasterizer::IGameRasterizer(int width, int height, bool windowed)
 {
+	printf("IGameRasterizer(%i, %i, %s);\n", width, height, windowed ? "true" : "false");
+
 	s_Width    = width;
 	s_Height   = height;
 	s_Windowed = windowed;
@@ -135,6 +135,8 @@ LRESULT CALLBACK IGameRasterizer::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LP
 
 void IGameRasterizer::InitializeWindow()
 {
+	printf("IGameRasterizer::InitializeWindow();\n");
+
 	SetProcessDPIAware();
 
 	s_hInstance = GetModuleHandleA(NULL);
@@ -200,7 +202,7 @@ void IGameRasterizer::InitializeWindow()
 void IGameRasterizer::DisposeWindow()
 {
 	CloseWindow(s_hWnd);
-	UnregisterClass(L"dll_engine_loader_window_class", s_hInstance);
+	UnregisterClass(L"#dll_engine_loader", s_hInstance);
 }
 
 void IGameRasterizer::Update()
@@ -217,6 +219,8 @@ void IGameRasterizer::Update()
 
 void IGameRasterizer::InitializeDevice(bool createSwapchain)
 {
+	printf("IGameRasterizer::InitializeDevice(%s);\n", createSwapchain ? "true" : "false");
+
 	InitializeWindow();
 
 	assert(s_pDevice    == nullptr);

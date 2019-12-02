@@ -6,7 +6,7 @@ public:
 	IGameInterface(LPCSTR);
 	~IGameInterface();
 
-	static void         LaunchTitle(bool &, void(*)());
+	static void         LaunchTitle(IGameEngineHost &, IGameRasterizer &, IGameContext &, bool &, void(*)());
 	static void         SetLocale(LPCSTR, LPCSTR, LPCSTR);
 
 	static IGameEngine *GetEngine();
@@ -25,16 +25,16 @@ HMODULE      IGameInterface::s_hLibModule           = 0;
 IGameEngine *IGameInterface::s_pEngine              = 0;
 IDataAccess *IGameInterface::s_pDataAccess          = 0;
 
-static IGameInterface *g_pGameInterface = 0;
-
 IGameInterface::IGameInterface(LPCSTR pEngine)
 {
+	printf("IGameInterface(\"%s\");\n", pEngine);
+
 	strcpy(s_modulePath, pathf("%s\\%s.dll", pEngine, pEngine));
 
 	if (!s_hLibModule)
 	{
 		s_hLibModule = LoadLibraryA(s_modulePath);
-		//printf("%p [%s]\n", s_hLibModule, s_modulePath);
+		//printf("0x%p [%s]\n", s_hLibModule, s_modulePath);
 	}
 
 	if (s_hLibModule)
@@ -71,44 +71,39 @@ IDataAccess *IGameInterface::GetDataAccess()
 	return s_pDataAccess;
 }
 
-void IGameInterface::LaunchTitle(bool &rRunning, void(*pCallback)() = nullptr)
+void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)() = nullptr)
 {
-	if (!LoadLibraryA("MCC\\Binaries\\Win64\\bink2w64.dll"))
-	{
-		printf("unable to load bink\n");
-		return;
-	}
+	printf("IGameInterface::LaunchTitle(0x%p, 0x%p, 0x%p, %s, 0x%p);\n", &rGameEngineHost, &rGameRasterizer, &rGameContext, rRunning ? "true" : "false", pCallback);
 
-	auto pEngine = GetEngine();
+	auto pEngine     = GetEngine();
 	auto pDataAccess = GetDataAccess();
 
-	//LPCSTR pLocale = "en-US";
-	//SetLocale(pLocale, pLocale, pLocale);
-	pEngine->InitGraphics(g_pGameRasterizer->GetDevice(), NULL/*g_pGameRasterizer->GetContext()*/, g_pGameRasterizer->GetSwapChain(), 0);
-	HANDLE hMainGameThread = pEngine->InitThread(g_pGameEngineHost, g_pGameContext);
+	HANDLE hGameThread = pEngine->Initialize(&rGameRasterizer, &rGameEngineHost, &rGameContext);
+	assert(hGameThread);
 
-	if (rRunning = hMainGameThread ? true : false)
+	rRunning = true;
+
+	while (rRunning)
 	{
-		while (rRunning)
-		{
-			g_pGameRasterizer->Update();
+		if (pCallback) pCallback();
 
-			if (pCallback)
-			{
-				pCallback();
-			}
-		}
-
-		WaitForSingleObject(hMainGameThread, INFINITE);
+		rGameRasterizer.Update();
 	}
 
-	g_pGameRasterizer->DisposeWindow();
+	WaitForSingleObject(hGameThread, INFINITE);
+
+	rGameRasterizer.DisposeWindow();
 	pDataAccess->Free();
 	pEngine->Free();
+
+
+	Sleep(-1);
 }
 
 void IGameInterface::SetLocale(LPCSTR pAudio = "en-US", LPCSTR pUi = "en-US", LPCSTR pUnknown = "en-US")
 {
+	printf("IGameInterface::SetLocale(\"%s\", \"%s\", \"%s\");\n", pAudio, pUi, pUnknown);
+
 	static int(*pSetLibrarySettings)(wchar_t *) = nullptr;
 	if (!pSetLibrarySettings)
 	{

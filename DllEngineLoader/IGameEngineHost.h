@@ -17,6 +17,9 @@ class IGameEngineHost
 
 
 public:
+	IGameEngineHost();
+	~IGameEngineHost();
+
 	/* 00 */ virtual char               Member00();
 	/* 01 */ virtual void               FrameEnd(IDXGISwapChain *, __int64);
 	/* 02 */ virtual void               Member02(__int64, unsigned int, __int64, float, float, float, float);
@@ -66,11 +69,20 @@ public:
 	/* 46 */ virtual __int64 __fastcall Member46(__int64, __int64);
 
 	// DATA
-	IGameEvents *pGameEvents = g_pGameEvents;
-	__int64 data1[5863] = {};
+	IGameEvents *pGameEvents = 0;
+	UINT8 data1[46904] = {};
 };
 
-static IGameEngineHost *g_pGameEngineHost = 0;
+IGameEngineHost::IGameEngineHost()
+{
+	printf("IGameEngineHost();\n");
+
+	pGameEvents = new IGameEvents();
+}
+
+IGameEngineHost::~IGameEngineHost()
+{
+}
 
 char __fastcall IGameEngineHost::Member00()
 {
