@@ -21,19 +21,6 @@
 #include <d3d11.h>
 #include <d3d11_4.h>
 
-// only used for file paths
-LPCSTR pathf(LPCSTR fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-
-	static char path[MAX_PATH];
-	int result = vsnprintf_s(path, MAX_PATH, _TRUNCATE, fmt, args);
-	va_end(args);
-
-	return path;
-};
-
 LPCSTR GetUserprofileVariable()
 {
 	static char szBuf[MAX_PATH] = {};
@@ -50,7 +37,7 @@ LPCSTR GetCommandLineToArg(int index)
 {
 	static int     nArgs = 0;
 	static LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-	static char    szBuf[1024] = {};
+	static char    szBuf[4096] = {};
 
 	if (!szBuf[0])
 	{
@@ -76,7 +63,10 @@ void EnsureModuleIsLoaded(LPCSTR pLibPath)
 		{
 			MessageBoxA(NULL, pLibPath, "failed to load library", MB_ICONERROR);
 		}
-		assert(hModule);
+		else
+		{
+			FreeLibrary(hModule);
+		}
 	}
 }
 

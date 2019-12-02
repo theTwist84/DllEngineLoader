@@ -31,7 +31,7 @@ IGameInterface::IGameInterface(LPCSTR pEngine)
 	printf("IGameInterface(\"%s\");\n", pEngine);
 #endif
 
-	strcpy(s_modulePath, pathf("%s\\%s.dll", pEngine, pEngine));
+	sprintf(s_modulePath, "%s\\%s.dll", pEngine, pEngine);
 
 	if (!s_hLibModule)
 	{

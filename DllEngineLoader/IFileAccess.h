@@ -4,12 +4,13 @@
 class IFileAccess
 {
 public:
-	IFileAccess(LPCSTR);
+	IFileAccess(LPCSTR, ...);
 	~IFileAccess();
 
 	bool   FileOpen();
 	void   FileClose();
 
+	LPCSTR GetPath();
 	char  *GetBuffer(size_t &);
 
 private:
@@ -21,9 +22,13 @@ private:
 };
 
 
-IFileAccess::IFileAccess(LPCSTR pFilePath)
+IFileAccess::IFileAccess(LPCSTR pFormat, ...)
 {
-	strcpy(s_filePath, pFilePath);
+	va_list args;
+	va_start(args, pFormat);
+
+	int result = vsnprintf_s(s_filePath, MAX_PATH, _TRUNCATE, pFormat, args);
+	va_end(args);
 }
 
 IFileAccess::~IFileAccess()
@@ -68,6 +73,11 @@ void IFileAccess::FileClose()
 		}
 		fclose(s_pFile);
 	}
+}
+
+LPCSTR IFileAccess::GetPath()
+{
+	return s_filePath;
 }
 
 char *IFileAccess::GetBuffer(size_t &rBufferSize)
