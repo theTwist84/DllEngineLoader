@@ -19,11 +19,6 @@ public:
 	virtual int Function9(LPVOID unknown) = 0;
 	virtual void Function10() = 0;
 
-	HANDLE Init(IGameRenderer &rGameRenderer, IGameEngineHost &rGameEngineHost, IGameContext &rGameContext)
-	{
-		InitGraphics(rGameRenderer.GetDevice(), rGameRenderer.GetDeviceContext(), rGameRenderer.GetSwapChain(), 0);
-		return InitThread(&rGameEngineHost, &rGameContext);
-	}
 private:
 	static char s_data[0x460];
 };
@@ -53,6 +48,7 @@ public:
 
 	LPVOID GetData();
 	size_t GetDataSize();
+
 private:
 	char m_data[0x14CD8];
 };
@@ -97,6 +93,7 @@ public:
 
 	LPVOID GetData();
 	size_t GetDataSize();
+
 private:
 	char m_data[0x15230];
 };
@@ -124,6 +121,8 @@ public:
 	virtual wchar_t *GetDescription() = 0;
 
 	LPVOID GetData();
+	size_t GetDataSize();
+
 private:
 	char m_data[0x1F7B0];
 };
@@ -131,6 +130,11 @@ private:
 LPVOID ISaveFilmMetadata::GetData()
 {
 	return &m_data;
+}
+
+size_t ISaveFilmMetadata::GetDataSize()
+{
+	return sizeof(m_data);
 }
 
 class IDataAccess
@@ -257,18 +261,20 @@ public:
 	static c_engine *GetEngine();
 	static IDataAccess *GetDataAccess();
 
+	static void LaunchTitle(class IGameRenderer &rGameRenderer, class IGameEngineHost &rGameEngineHost, class IGameContext &rGameContext, bool &rRunning, void(*cb)());
+
 private:
 	static char s_modulePath[MAX_PATH];
 	static HMODULE s_hLibModule;
 
-	static c_engine *m_pEngine;
-	static IDataAccess *m_pDataAccess;
+	static c_engine *s_pEngine;
+	static IDataAccess *s_pDataAccess;
 };
 
 char c_engine_interface::s_modulePath[MAX_PATH] = {};
 HMODULE c_engine_interface::s_hLibModule = nullptr;
-c_engine *c_engine_interface::m_pEngine = nullptr;
-IDataAccess *c_engine_interface::m_pDataAccess = nullptr;
+c_engine *c_engine_interface::s_pEngine = nullptr;
+IDataAccess *c_engine_interface::s_pDataAccess = nullptr;
 
 c_engine_interface::c_engine_interface(LPCSTR pModulePath)
 {
@@ -282,15 +288,15 @@ c_engine_interface::c_engine_interface(LPCSTR pModulePath)
 
 	if (s_hLibModule)
 	{
-		if (!m_pEngine)
+		if (!s_pEngine)
 		{
 			auto pCreateGameEngine = (int(*)(c_engine **))GetProcAddress(s_hLibModule, "CreateGameEngine");
-			pCreateGameEngine(&m_pEngine);
+			pCreateGameEngine(&s_pEngine);
 		}
-		if (!m_pDataAccess)
+		if (!s_pDataAccess)
 		{
 			auto pCreateDataAccess = (int(*)(IDataAccess **))GetProcAddress(s_hLibModule, "CreateDataAccess");
-			pCreateDataAccess(&m_pDataAccess);
+			pCreateDataAccess(&s_pDataAccess);
 		}
 		// auto pSetLibrarySettings = (int(*)(wchar_t *))GetProcAddress(s_hLibModule, "SetLibrarySettings");
 	}
@@ -307,10 +313,43 @@ c_engine_interface::~c_engine_interface()
 
 c_engine *c_engine_interface::GetEngine()
 {
-	return m_pEngine;
+	return s_pEngine;
 }
 
 IDataAccess *c_engine_interface::GetDataAccess()
 {
-	return m_pDataAccess;
+	return s_pDataAccess;
+}
+
+void c_engine_interface::LaunchTitle(class IGameRenderer &rGameRenderer, class IGameEngineHost &rGameEngineHost, class IGameContext &rGameContext, bool &rRunning, void(*pCallback)() = nullptr)
+{
+	if (!LoadLibraryA("MCC\\Binaries\\Win64\\bink2w64.dll"))
+	{
+		printf("unable to load bink\n");
+		return;
+	}
+
+	auto pEngine = GetEngine();
+	auto pDataAccess = GetDataAccess();
+
+	pEngine->InitGraphics(rGameRenderer.GetDevice(), rGameRenderer.GetDeviceContext(), rGameRenderer.GetSwapChain(), 0);
+	HANDLE hMainGameThread = pEngine->InitThread(&rGameEngineHost, &rGameContext);
+
+	if (rRunning = hMainGameThread ? true : false)
+	{
+		while (rRunning)
+		{
+			rGameRenderer.Update();
+
+			if (pCallback)
+			{
+				pCallback();
+			}
+		}
+
+		WaitForSingleObject(hMainGameThread, INFINITE);
+	}
+
+	pDataAccess->Free();
+	pEngine->Free();
 }

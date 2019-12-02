@@ -26,47 +26,47 @@ public: /* instance functions */
 	/* 1  */ virtual void FrameEnd(IDXGISwapChain *, __int64);
 	/* 2  */ virtual void Member02(__int64, unsigned int, __int64, float, float, float, float);
 	/* 3  */ virtual void EngineStateUpdate(__int32);
-	/* 4  */ virtual __int64 GameExited(unsigned int a1, char *a2, int);
-	/* 5  */ virtual __int64 __fastcall WriteBufferToFile(LPVOID, size_t);
+	/* 4  */ virtual __int64 GameExited(unsigned int, char *, int);
+	/* 5  */ virtual __int64 __fastcall GameStateWriteHandler(LPVOID, size_t);
 	/* 6  */ virtual void Member06(char *buffer);
-	/* 7  */ virtual void Member07(unsigned int);
+	/* 7  */ virtual void GamePauseHandler(unsigned int);
 	/* 8  */ virtual void Member08(const wchar_t *, const wchar_t *);
 	/* 9  */ virtual void Member09(wchar_t[1024], wchar_t[1024]);
 	/* 10 */ virtual IGameEvents *GetGameEvents();
-	/* 11 */ virtual void SaveGameVariant(IGameVariant *);
-	/* 12 */ virtual void SaveMapVariant(IMapVariant *);
+	/* 11 */ virtual void GameVariantWrite(IGameVariant *);
+	/* 12 */ virtual void MapVariantWrite(IMapVariant *);
 	/* 13 */ virtual void Member13(const wchar_t *, const wchar_t *, const void *, unsigned int);
 	/* 14 */ virtual char Member14(int, BYTE *);
 	/* 15 */ virtual char Member15(int, BYTE *);
-	/* 16 */ virtual char GetNextLevelInfo(__int32 *, int *, FILETIME *, __int32 *);
+	/* 16 */ virtual char GetNextLevelInfo(MapID *, int *, FILETIME *, __int32 *);
 	/* 17 */ virtual bool Member17(int);
 	/* 18 */ virtual void Member18(int);
 	/* 19 */ virtual __int64 __fastcall MapLoadPecentStatus(__int64, __int64, float);
 	/* 20 */ virtual void Member20(__int64, __int8);
 	/* 21 */ virtual __int64 __fastcall GetMachineIDentifier(__int64);
-	/* 22 */ virtual __int64 Member22(char *buffer, __int64);
+	/* 22 */ virtual __int64 Member22(char *, __int64);
 	/* 23 */ virtual char Member23(__int64, __int64);
-	/* 24 */ virtual void GetSessionInfo(char *buffer);
-	/* 25 */ virtual void __fastcall MembershipUpdate(char *buffer, uint32_t playercount);
+	/* 24 */ virtual void GetSessionInfo(char *);
+	/* 25 */ virtual void __fastcall MembershipUpdate(char *, uint32_t);
 	/* 26 */ virtual bool __fastcall Member26();
 	/* 27 */ virtual bool __fastcall Member27();
-	/* 28 */ virtual bool __fastcall Member28(char *buffer);
-	/* 29 */ virtual __int64 __fastcall Member29(wchar_t playerNames[4][32], char *buffer);
-	/* 30 */ virtual bool __fastcall __fastcall UpdateInput(__int64, InputBuffer *pInputBuffer);
+	/* 28 */ virtual bool __fastcall Member28(char *);
+	/* 29 */ virtual __int64 __fastcall Member29(wchar_t [4][32], char *);
+	/* 30 */ virtual bool __fastcall __fastcall UpdateInput(__int64, InputBuffer *);
 	/* 31 */ virtual void Member31();
-	/* 32 */ virtual void XInputSetState(__int32 dwUserIndex, XINPUT_VIBRATION *pVibration);
-	/* 33 */ virtual bool __fastcall __fastcall UpdatePlayerNames(__int64 *, wchar_t playerNames[4][32], size_t dataSize);
+	/* 32 */ virtual void XInputSetState(__int32 , XINPUT_VIBRATION *);
+	/* 33 */ virtual bool __fastcall __fastcall UpdatePlayerNames(__int64 *, wchar_t [4][32], size_t );
 	/* 34 */ virtual void __fastcall Member34(const wchar_t *, const wchar_t *);
 	/* 35 */ virtual bool __fastcall Member35(wchar_t *, __int64);
-	/* 36 */ virtual __int64 __fastcall NetworkSendTo(int networkID, char *buffer, uint32_t buffersize, int a5);
-	/* 37 */ virtual __int64 __fastcall NetworkReceiveFrom(char *buffer, uint32_t buffersize, __int64 a4, struct s_transport_address *transport_address);
+	/* 36 */ virtual __int64 __fastcall NetworkSendTo(int , char *, uint32_t, int);
+	/* 37 */ virtual __int64 __fastcall NetworkReceiveFrom(char *, uint32_t, __int64 , struct s_transport_address *);
 	/* 38 */ virtual char *__fastcall Member38(unsigned int);
-	/* 39 */ virtual int __fastcall Member39(BYTE *buffer);
+	/* 39 */ virtual int __fastcall Member39(BYTE *);
 	/* 40 */ virtual bool __fastcall Member40(signed int, __int64, __int64);
 	/* 41 */ virtual void __fastcall FirefightNew(__int64, float);
 	/* 42 */ virtual BOOL __fastcall Member42(__int64, __int64);
-	/* 43 */ virtual bool __fastcall GetPathByType(int pathType, char *buffer, size_t bufferlength);
-	/* 44 */ virtual bool __fastcall GetWidePathByType(int pathType, wchar_t *buffer, size_t bufferlength);
+	/* 43 */ virtual bool __fastcall GetPathByType(int , char *, size_t);
+	/* 44 */ virtual bool __fastcall GetWidePathByType(int , wchar_t *, size_t);
 	/* 45 */ virtual unsigned __int8 *__fastcall Member45(__int64, unsigned __int8 *, __int64);
 	/* 46 */ virtual __int64 __fastcall Member46(__int64, __int64);
 
@@ -74,8 +74,6 @@ public: /* instance functions */
 	IGameEvents *pGameEvents = nullptr;
 	__int64 data1[5863] = {};
 };
-
-static IGameEngineHost s_gameEngineHost = IGameEngineHost();
 
 IGameEngineHost::IGameEngineHost()
 {
@@ -119,9 +117,9 @@ __int64 __fastcall IGameEngineHost::GameExited(unsigned int a1, char *a2, int a3
 	return __int64(0);
 }
 
-__int64 __fastcall IGameEngineHost::WriteBufferToFile(LPVOID pBuffer, size_t bufferSize)
+__int64 __fastcall IGameEngineHost::GameStateWriteHandler(LPVOID pBuffer, size_t bufferSize)
 {
-	//WriteLineVerbose("IGameEngineHost::Member05 WriteBufferToFile %p %016llx", pBuffer, bufferSize);
+	//WriteLineVerbose("GameEngineHost: GameStateWriteHandler %p %016llx", pBuffer, bufferSize);
 	return __int64(0);
 }
 
@@ -130,10 +128,9 @@ void __fastcall IGameEngineHost::Member06(char *buffer)
 	//WriteLineVerbose("IGameEngineHost::Member06");
 }
 
-void __fastcall IGameEngineHost::Member07(unsigned int a1)
+void __fastcall IGameEngineHost::GamePauseHandler(unsigned int a1)
 {
-	//WriteLineVerbose("IGameEngineHost::Member07 PauseMenuOpened");
-
+	//WriteLineVerbose("GameEngineHost: GamePauseHandler");
 }
 
 void __fastcall IGameEngineHost::Member08(const wchar_t *, const wchar_t *)
@@ -151,20 +148,20 @@ IGameEvents *__fastcall IGameEngineHost::GetGameEvents()
 	return pGameEvents;
 }
 
-void __fastcall IGameEngineHost::SaveGameVariant(IGameVariant *pGameVariant)
+void __fastcall IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 {
 	//char *data; size_t dataSize = 0;
 	//if (pGameVariant->CreateFileFromBuffer(&data, &dataSize)) {}
 
-	//WriteLineVerbose("IGameEngineHost::SaveGameVariant");
+	//WriteLineVerbose("GameEngineHost: GameVariantWrite");
 }
 
-void __fastcall IGameEngineHost::SaveMapVariant(IMapVariant *pMapVariant)
+void __fastcall IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 {
 	//char *data; size_t dataSize = 0;
 	//if (pMapVariant->CreateFileFromBuffer(&data, &dataSize)) {}
 
-	//WriteLineVerbose("IGameEngineHost::SaveMapVariant");
+	//WriteLineVerbose(" IGameEngineHost: MapVariantWrite");
 }
 
 void __fastcall IGameEngineHost::Member13(const wchar_t *, const wchar_t *, const void *, unsigned int)
@@ -184,7 +181,7 @@ char __fastcall IGameEngineHost::Member15(int controllerIndex, BYTE *buffer)
 	return 0;
 }
 
-char __fastcall IGameEngineHost::GetNextLevelInfo(__int32 *map_id, int *campaign_insertion_point, FILETIME *filetime, __int32 *)
+char __fastcall IGameEngineHost::GetNextLevelInfo(MapID *pMapID, int *pInsertionPoint, FILETIME *pFileTime, __int32 *)
 {
 	//WriteLineVerbose("IGameEngineHost::Member16 GetNextLevelInfo");
 	return 0;
@@ -292,22 +289,6 @@ __int64 __fastcall IGameEngineHost::Member29(wchar_t playerNames[4][32], char *b
 
 bool __fastcall IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 {
-	//if (GetAsyncKeyState(VK_F1))
-	//{
-	//	GameLauncher::s_pHaloReachEngine->Member02(IGameEngine::Member02EventEnum::Pause);
-	//}
-	//if (GetAsyncKeyState(VK_F2))
-	//{
-	//	GameLauncher::s_pHaloReachEngine->Member02(IGameEngine::Member02EventEnum::Unpause);
-	//}
-
-
-	/*
-		When we load the level, we set the g_waitingForInputUpdate to true allowing us
-		to reset the input system. This function sets the engine to use the keyboard
-		or mouse input.
-	*/
-
 	memset(pInputBuffer, 0, sizeof(*pInputBuffer));
 	pInputBuffer->unknown0 = 1;
 

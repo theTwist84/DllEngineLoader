@@ -2,136 +2,41 @@
 
 int main(int argc, LPSTR *argv)
 {
-	LPCSTR pEngineName = "";
-	LPCSTR pGameName = "";
-	LPCSTR pMapName = "";
-	LPCSTR pSavedFilmName = "";
+	LPCSTR pEngineStr = "";
+	LPCSTR pGame      = "";
+	LPCSTR pMap       = "";
+	LPCSTR pFilm      = "";
 
-	if (argc == 3)
+	switch (argc)
 	{
-		pEngineName = argv[1];
-		pSavedFilmName = argv[2];
-	}
-	else if (argc == 4)
-	{
-		pEngineName = argv[1];
-		pGameName = argv[2];
-		pMapName = argv[3];
+	case 2:
+		pEngineStr = argv[1];
+		break;
+	case 3:
+		pEngineStr = argv[1];
+		pFilm      = argv[2];
+		break;
+	case 4:
+		pEngineStr = argv[1];
+		pGame      = argv[2];
+		pMap       = argv[3];
+		break;
+	default:
+		pEngineStr = "HaloReach";
+		pGame      = "00_basic_editing_054";
+		pMap       = "forge_halo";
+		break;
 	}
 
-	auto pEngineInterface = new c_engine_interface(pathf("%s\\%s.dll", pEngineName, pEngineName));
-	auto pDataAccess = pEngineInterface->GetDataAccess();
-	auto pEngine = pEngineInterface->GetEngine();
-
-	if (!LoadLibraryA("MCC\\Binaries\\Win64\\bink2w64.dll"))
-	{
-		printf("unable to load bink\n");
-	}
 
 	char windowText[1024] = "";
 
-	static IGameContext gameContext = IGameContext();
-	IGameVariant *pGameVariant = {};
-	IMapVariant *pMapVariant = {};
-	ISaveFilmMetadata *pSaveFilmMetadata = {};
-
-	if (pSavedFilmName == "")
-	{
-		if (pGameVariant = pDataAccess->GetGameVariant(pEngineName, pGameName), pGameVariant)
-		{
-			printf("%S - %S\n\n", pGameVariant->GetName(), pGameVariant->GetDescription());
-		}
-
-		if (pMapVariant = pDataAccess->GetMapVariant(pEngineName, pMapName), pMapVariant)
-		{
-			printf("%S - %S\n\n", pMapVariant->GetName(), pMapVariant->GetDescription());
-		}
-		else
-		{
-			pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToMapID(pMapName));
-		}
-
-		if (pGameVariant && pMapVariant)
-		{
-			LPCSTR pGameVariantName = ""; LPCSTR pMapVariantName = "";
-			if (pGameVariant->GetName()[0])
-			{
-				pGameVariantName = pathf("%S", pGameVariant->GetName());
-			}
-			else
-			{
-				pGameVariantName = pGameName;
-			}
-
-			if (pMapVariant->GetName()[0])
-			{
-				pMapVariantName = pathf("%S", pGameVariant->GetName());
-			}
-			else
-			{
-				pMapVariantName = pMapName;
-			}
-
-			std::time_t ct = std::time(0);
-			sprintf(windowText, "%s on %s, %s", pGameVariantName, pMapVariantName, ctime(&ct));
-		}
-	}
-	else
-	{
-		if (pSaveFilmMetadata = pDataAccess->GetSaveFilmMetadata(pEngineName, pSavedFilmName), pSaveFilmMetadata)
-		{
-			gameContext.SetSavedFilmPath(pSavedFilmName);
-			printf("%S - %S\n\n", pSaveFilmMetadata->GetName(), pSaveFilmMetadata->GetDescription());
-			sprintf(windowText, "%S", pSaveFilmMetadata->GetDescription());
-		}
-	}
-
-	if (pGameVariant)
-	{
-		GameMode gameMode = GameMode::eBase;
-		switch (*reinterpret_cast<INT32 *>(pGameVariant->GetData()))
-		{
-		case 1:
-			gameMode = GameMode::eMultiplayer;
-			break;
-		case 2:
-			gameMode = GameMode::eMultiplayer;
-			break;
-		case 3:
-			gameMode = GameMode::eCampaign;
-			break;
-		case 4:
-			gameMode = GameMode::eSurvival;
-			break;
-		}
-		gameContext.SetGameVariant(pGameVariant);
-		gameContext.SetGameMode(gameMode);
-	}
-
-	if (pMapVariant)
-	{
-		gameContext.SetMapVariant(pMapVariant);
-		gameContext.SetMapID(pMapVariant->GetID());
-	}
-
-
-	gameContext.SetupSession();
+	static c_engine_interface s_engineInterface = c_engine_interface(pathf("%s\\%s.dll", pEngineStr, pEngineStr));
+	static IGameRenderer      s_gameRenderer    = IGameRenderer(1280, 720, true);
+	static IGameEngineHost    s_gameEngineHost  = IGameEngineHost();
+	static IGameContext       s_gameContext     = IGameContext(s_engineInterface.GetDataAccess(), pEngineStr, pGame, pMap, pFilm, windowText);
 
 	SetWindowTextA(IGameRenderer::GetWindowHandle(), windowText);
-
-	HANDLE hMainGameThread = NULL;
-	if (hMainGameThread = pEngine->Init(s_gameRenderer, s_gameEngineHost, gameContext), hMainGameThread)
-	{
-		g_running = true;
-
-		while (g_running)
-		{
-			s_gameRenderer.Update();
-		}
-
-		WaitForSingleObject(hMainGameThread, INFINITE);
-	}
-
-	pDataAccess->Free();
-	pEngine->Free();
+	
+	s_engineInterface.LaunchTitle(s_gameRenderer, s_gameEngineHost, s_gameContext, g_running, []() { printf("Running!\n"); });
 }

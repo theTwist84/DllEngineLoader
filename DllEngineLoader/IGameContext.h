@@ -12,6 +12,16 @@ enum class GameMode : INT32
 	kCount,
 };
 
+enum class Difficulty : INT32
+{
+	eEasy,
+	eNormal,
+	eHard,
+	eImpossible,
+
+	kCount,
+};
+
 enum class MapID : INT32
 {
 	eUndefined = -1,
@@ -182,6 +192,10 @@ public:
 	IGameContext();
 	~IGameContext();
 
+	IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, char windowText[1024]);
+
+	IGameContext *Get();
+
 	void SetGameMode(GameMode gameMode)
 	{
 		m_gameMode = gameMode;
@@ -202,54 +216,136 @@ public:
 	{
 		m_pSavedFilmPath = pSavedFilmPath;
 	}
-	void SetupSession(bool isHost = true)
-	{
-		m_sessionIsHost = isHost;
-		m_sessionPeerCount = isHost ? 1 : 2;
-		m_sessionPlayerCount = isHost ? 1 : 2;
-	}
 
 private:
-	GameMode m_gameMode;
-
-	char m_gameVariant[117760];
-	char m_mapVariant[59392];
-
-	MapID m_mapID;
-	INT32 m_difficultyLevel;
-
-	UINT16 m_mapInsertionPoint;
-	UINT8 padding0[10];
-
-	UINT64 m_active_skull_flags;
-	UINT8 padding1[8];
-
-	LPVOID m_pGameStateHeader;
-	size_t m_gameStateHeaderSize;
-
-	LPCSTR m_pSavedFilmPath;
-
-	INT64 m_sessionPartyID;
-	INT64 m_sessionLocalID;
-	bool m_sessionIsHost;
-	UINT8 m_sessionPadding0[7];
-	INT64 m_sessionPeers[17];
-	size_t m_sessionPeerCount;
-	char m_sessionPlayers[16][32];
-	size_t m_sessionPlayerCount;
-	INT64 m_sessionHostID;
-	bool m_unknown0;
-	UINT8 padding2;
-	bool m_useCustomEngineName;
-	UINT8 padding3[5];
-	wchar_t *m_customEngineName;
+	GameMode   m_gameMode               = GameMode::eBase;
+	char       m_gameVariant[117760]    = {};
+	char       m_mapVariant[59392]      = {};
+	MapID      m_mapID                  = MapID::eUndefined;
+	Difficulty m_difficulty             = Difficulty::eNormal;
+	UINT16     m_mapInsertionPoint      = 0;
+	UINT8      padding0[10]             = {};
+	UINT64     m_active_skull_flags     = 0x0;
+	UINT8      padding1[8]              = {};
+	LPVOID     m_pGameStateHeader       = nullptr;
+	size_t     m_gameStateHeaderSize    = 0;
+	LPCSTR     m_pSavedFilmPath         = nullptr;
+	INT64      m_sessionPartyID         = 0;
+	INT64      m_sessionLocalID         = 0;
+	bool       m_sessionIsHost          = true;
+	UINT8      m_sessionPadding0[7]     = {};
+	INT64      m_sessionPeers[17]       = {};
+	size_t     m_sessionPeerCount       = 1;
+	char       m_sessionPlayers[16][32] = {};
+	size_t     m_sessionPlayerCount     = 1;
+	INT64      m_sessionHostID          = 0;
+	bool       m_unknown0               = 0;
+	UINT8      padding2                 = {};
+	bool       m_useCustomEngineName    = 0;
+	UINT8      padding3[5]              = {};
+	wchar_t   *m_customEngineName       = 0;
 };
 
 IGameContext::IGameContext()
 {
-	ZeroMemory(this, sizeof(*this));
 }
 
 IGameContext::~IGameContext()
 {
+}
+
+IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, char windowText[1024])
+{
+	IGameVariant *pGameVariant = {};
+	IMapVariant *pMapVariant = {};
+	ISaveFilmMetadata *pSaveFilmMetadata = {};
+
+	if (pFilm == "")
+	{
+		if (pGameVariant = pDataAccess->GetGameVariant(pEngine, pGame), pGameVariant)
+		{
+			printf("%S - %S\n\n", pGameVariant->GetName(), pGameVariant->GetDescription());
+		}
+
+		if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), pMapVariant)
+		{
+			printf("%S - %S\n\n", pMapVariant->GetName(), pMapVariant->GetDescription());
+		}
+		else
+		{
+			pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToMapID(pMap));
+		}
+
+		if (pGameVariant && pMapVariant)
+		{
+			LPCSTR pGameVariantName = ""; LPCSTR pMapVariantName = "";
+			if (pGameVariant->GetName()[0])
+			{
+				pGameVariantName = pathf("%S", pGameVariant->GetName());
+			}
+			else
+			{
+				pGameVariantName = pGame;
+			}
+
+			if (pMapVariant->GetName()[0])
+			{
+				pMapVariantName = pathf("%S", pGameVariant->GetName());
+			}
+			else
+			{
+				pMapVariantName = pMap;
+			}
+
+			std::time_t ct = std::time(0);
+			sprintf(windowText, "%s on %s, %s", pGameVariantName, pMapVariantName, ctime(&ct));
+		}
+	}
+	else
+	{
+		if (pSaveFilmMetadata = pDataAccess->GetSaveFilmMetadata(pEngine, pFilm), pSaveFilmMetadata)
+		{
+			printf("%S - %S\n\n", pSaveFilmMetadata->GetName(), pSaveFilmMetadata->GetDescription());
+			sprintf(windowText, "%S", pSaveFilmMetadata->GetDescription());
+		}
+	}
+
+	if (pFilm && pFilm[0])
+	{
+		SetSavedFilmPath(pFilm);
+	}
+	else
+	{
+		if (pGameVariant)
+		{
+			GameMode gameMode = GameMode::eBase;
+			switch (*reinterpret_cast<INT32 *>(pGameVariant->GetData()))
+			{
+			case 1:
+				gameMode = GameMode::eMultiplayer;
+				break;
+			case 2:
+				gameMode = GameMode::eMultiplayer;
+				break;
+			case 3:
+				gameMode = GameMode::eCampaign;
+				break;
+			case 4:
+				gameMode = GameMode::eSurvival;
+				break;
+			}
+			SetGameVariant(pGameVariant);
+			SetGameMode(gameMode);
+		}
+
+		if (pMapVariant)
+		{
+			SetMapVariant(pMapVariant);
+			SetMapID(pMapVariant->GetID());
+		}
+	}
+
+	m_sessionIsHost = true;
+	m_sessionPeerCount = 1;
+	m_sessionPlayerCount = 1;
 }

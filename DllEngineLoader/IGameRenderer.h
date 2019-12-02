@@ -41,8 +41,6 @@ public:
 	static void Update();
 };
 
-static IGameRenderer s_gameRenderer = IGameRenderer(1280, 720, true);
-
 HICON IGameRenderer::s_hIcon = NULL;
 HWND IGameRenderer::s_hWnd = NULL;
 HWND IGameRenderer::s_hFocusWnd = NULL;
