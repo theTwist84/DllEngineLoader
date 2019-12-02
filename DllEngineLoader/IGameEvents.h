@@ -164,7 +164,7 @@ public:
 	};
 
 	UINT8 unknown0[4] = {};
-	GUID playerSessionID;
+	GUID playerSessionID = GUID();
 	UINT8 unknown14[220] = {};
 };
 
@@ -172,7 +172,9 @@ const size_t asdg = sizeof(IGameEvents);
 
 IGameEvents::IGameEvents()
 {
+#ifdef _DEBUG
 	printf("IGameEvents();\n");
+#endif
 }
 
 IGameEvents::~IGameEvents()

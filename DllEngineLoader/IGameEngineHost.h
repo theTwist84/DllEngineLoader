@@ -75,7 +75,9 @@ public:
 
 IGameEngineHost::IGameEngineHost()
 {
+#ifdef _DEBUG
 	printf("IGameEngineHost();\n");
+#endif
 
 	pGameEvents = new IGameEvents();
 }

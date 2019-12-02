@@ -38,10 +38,10 @@ public:
 	virtual int    Function9(LPVOID unknown)                                                               = 0;
 	virtual void   Function10()                                                                            = 0;
 
-	HANDLE Initialize(class IGameRasterizer *pGameRasterizer, class IGameEngineHost *pGameEngineHost, class IGameContext *pGameContext)
+	HANDLE Initialize(class IGameRasterizer &rGameRasterizer, class IGameEngineHost &rGameEngineHost, class IGameContext &rGameContext)
 	{
-		InitGraphics(pGameRasterizer->GetDevice(), pGameRasterizer->GetContext(), pGameRasterizer->GetSwapChain(), 0);
-		return InitThread(pGameEngineHost, pGameContext);
+		InitGraphics(rGameRasterizer.GetDevice(), rGameRasterizer.GetContext(), rGameRasterizer.GetSwapChain(), 0);
+		return InitThread(&rGameEngineHost, &rGameContext);
 	}
 private:
 	static  char   s_data[0x460];

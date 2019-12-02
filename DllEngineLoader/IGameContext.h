@@ -224,37 +224,49 @@ public:
 
 	void SetGameMode(GameMode gameMode)
 	{
+#ifdef _DEBUG
 		printf("IGameContext::SetGameMode(\"%s\");\n", GameModeFromID(gameMode));
+#endif
 
 		m_gameMode = gameMode;
 	}
 	void SetDifficulty(Difficulty difficulty)
 	{
+#ifdef _DEBUG
 		printf("IGameContext::SetDifficulty(\"%s\");\n", DifficultyFromID(difficulty));
+#endif
 
 		m_difficulty = difficulty;
 	}
 	void SetGameVariant(IGameVariant *pVariant)
 	{
+#ifdef _DEBUG
 		printf("IGameContext::SetGameVariant(\"%S\");\n", pVariant->GetName());
+#endif
 
 		memcpy(m_gameVariant, pVariant->GetData(), pVariant->GetDataSize());
 	}
 	void SetMapVariant(IMapVariant *pVariant)
 	{
+#ifdef _DEBUG
 		printf("IGameContext::SetMapVariant(\"%S\");\n", pVariant->GetName());
+#endif
 
 		memcpy(m_mapVariant, pVariant->GetData(), pVariant->GetDataSize());
 	}
 	void SetMapID(INT32 mapID)
 	{
+#ifdef _DEBUG
 		printf("IGameContext::SetMapID(\"%s\");\n", MapNameFromID(static_cast<MapID>(mapID)));
+#endif
 
 		m_mapID = static_cast<MapID>(mapID);
 	}
 	void SetSavedFilmPath(LPCSTR pSavedFilmPath)
 	{
+#ifdef _DEBUG
 		printf("IGameContext::SetSavedFilmPath(\"%s\");\n", pSavedFilmPath);
+#endif
 
 		m_pSavedFilmPath = pSavedFilmPath;
 	}
@@ -290,7 +302,9 @@ private:
 
 IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText = true)
 {
+#ifdef _DEBUG
 	printf("IGameContext(0x%p, \"%s\", \"%s\", \"%s\", \"%s\", %s);\n", pDataAccess, pEngine, pGame, pMap, pFilm, setWindowText ? "true" : "false");
+#endif
 
 	IGameVariant      *pGameVariant      = {};
 	IMapVariant       *pMapVariant       = {};

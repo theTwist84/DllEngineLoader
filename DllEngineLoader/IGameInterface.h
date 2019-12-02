@@ -6,7 +6,7 @@ public:
 	IGameInterface(LPCSTR);
 	~IGameInterface();
 
-	static void         LaunchTitle(IGameEngineHost &, IGameRasterizer &, IGameContext &, bool &, void(*)());
+	static void         LaunchTitle(IGameEngineHost &, IGameRasterizer &, IGameContext &, bool &, void(*)(IGameEngine *));
 	static void         SetLocale(LPCSTR, LPCSTR, LPCSTR);
 
 	static IGameEngine *GetEngine();
@@ -27,7 +27,9 @@ IDataAccess *IGameInterface::s_pDataAccess          = 0;
 
 IGameInterface::IGameInterface(LPCSTR pEngine)
 {
+#ifdef _DEBUG
 	printf("IGameInterface(\"%s\");\n", pEngine);
+#endif
 
 	strcpy(s_modulePath, pathf("%s\\%s.dll", pEngine, pEngine));
 
@@ -71,21 +73,23 @@ IDataAccess *IGameInterface::GetDataAccess()
 	return s_pDataAccess;
 }
 
-void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)() = nullptr)
+void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *) = nullptr)
 {
+#ifdef _DEBUG
 	printf("IGameInterface::LaunchTitle(0x%p, 0x%p, 0x%p, %s, 0x%p);\n", &rGameEngineHost, &rGameRasterizer, &rGameContext, rRunning ? "true" : "false", pCallback);
+#endif
 
 	auto pEngine     = GetEngine();
 	auto pDataAccess = GetDataAccess();
 
-	HANDLE hGameThread = pEngine->Initialize(&rGameRasterizer, &rGameEngineHost, &rGameContext);
+	HANDLE hGameThread = pEngine->Initialize(rGameRasterizer, rGameEngineHost, rGameContext);
 	assert(hGameThread);
 
 	rRunning = true;
 
 	while (rRunning)
 	{
-		if (pCallback) pCallback();
+		if (pCallback) pCallback(pEngine);
 
 		rGameRasterizer.Update();
 	}
@@ -95,14 +99,13 @@ void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasteriz
 	rGameRasterizer.DisposeWindow();
 	pDataAccess->Free();
 	pEngine->Free();
-
-
-	Sleep(-1);
 }
 
 void IGameInterface::SetLocale(LPCSTR pAudio = "en-US", LPCSTR pUi = "en-US", LPCSTR pUnknown = "en-US")
 {
+#ifdef _DEBUG
 	printf("IGameInterface::SetLocale(\"%s\", \"%s\", \"%s\");\n", pAudio, pUi, pUnknown);
+#endif
 
 	static int(*pSetLibrarySettings)(wchar_t *) = nullptr;
 	if (!pSetLibrarySettings)

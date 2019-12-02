@@ -61,7 +61,9 @@ IDXGISwapChain      *IGameRasterizer::s_pSwapChain     = 0;
 
 IGameRasterizer::IGameRasterizer(int width, int height, bool windowed)
 {
+#ifdef _DEBUG
 	printf("IGameRasterizer(%i, %i, %s);\n", width, height, windowed ? "true" : "false");
+#endif
 
 	s_Width    = width;
 	s_Height   = height;
@@ -135,7 +137,9 @@ LRESULT CALLBACK IGameRasterizer::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LP
 
 void IGameRasterizer::InitializeWindow()
 {
+#ifdef _DEBUG
 	printf("IGameRasterizer::InitializeWindow();\n");
+#endif
 
 	SetProcessDPIAware();
 
@@ -143,7 +147,7 @@ void IGameRasterizer::InitializeWindow()
 
 	// Register the window class.
 
-	WNDCLASSEX windowClass   = {};
+	WNDCLASSEX windowClass    = {};
 	windowClass.cbSize        = sizeof(WNDCLASSEX);
 	windowClass.style         = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpfnWndProc   = WndProc;
@@ -167,7 +171,7 @@ void IGameRasterizer::InitializeWindow()
 		0, 
 		L"#dll_engine_loader", 
 		L"DllEngineLoader", 
-		WS_OVERLAPPEDWINDOW, 
+		WS_TILEDWINDOW, 
 		CW_USEDEFAULT, 
 		CW_USEDEFAULT, 
 		s_Width, 
@@ -185,15 +189,23 @@ void IGameRasterizer::InitializeWindow()
 	}
 	else
 	{
+		MoveWindow(GetConsoleWindow(), -6, 0, GetSystemMetrics(SM_CXSCREEN) / 2, GetSystemMetrics(SM_CYSCREEN) + 7, TRUE);
+
+		RECT rect;
+		GetClientRect(s_hWnd, &rect);
+		int xPos = (GetSystemMetrics(SM_CXSCREEN) - rect.right) / 2;
+		int yPos = (GetSystemMetrics(SM_CYSCREEN) - rect.bottom - GetSystemMetrics(SM_CYCAPTION)) / 2;
+		SetWindowPos(s_hWnd, 0, xPos, yPos, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+
 		ShowWindow(s_hWnd, SW_SHOW);
 		SetFocus(s_hWnd);
 	}
 
 	static RAWINPUTDEVICE mouseInputDevice = {};
-	mouseInputDevice.usUsagePage = HID_USAGE_PAGE_GENERIC;
-	mouseInputDevice.usUsage     = HID_USAGE_GENERIC_MOUSE;
-	mouseInputDevice.dwFlags     = RIDEV_INPUTSINK;
-	mouseInputDevice.hwndTarget  = s_hWnd;
+	mouseInputDevice.usUsagePage           = HID_USAGE_PAGE_GENERIC;
+	mouseInputDevice.usUsage               = HID_USAGE_GENERIC_MOUSE;
+	mouseInputDevice.dwFlags               = RIDEV_INPUTSINK;
+	mouseInputDevice.hwndTarget            = s_hWnd;
 
 	static RAWINPUTDEVICE rawInputDevices[] = { mouseInputDevice };
 	RegisterRawInputDevices(rawInputDevices, _countof(rawInputDevices), sizeof(rawInputDevices));
@@ -201,6 +213,7 @@ void IGameRasterizer::InitializeWindow()
 
 void IGameRasterizer::DisposeWindow()
 {
+	IGameInput::SetMode(MouseMode::None, s_hWnd);
 	CloseWindow(s_hWnd);
 	UnregisterClass(L"#dll_engine_loader", s_hInstance);
 }
@@ -219,13 +232,15 @@ void IGameRasterizer::Update()
 
 void IGameRasterizer::InitializeDevice(bool createSwapchain)
 {
+#ifdef _DEBUG
 	printf("IGameRasterizer::InitializeDevice(%s);\n", createSwapchain ? "true" : "false");
+#endif
 
 	InitializeWindow();
 
-	assert(s_pDevice    == nullptr);
-	assert(s_pContext   == nullptr);
-	assert(s_pSwapChain == nullptr);
+	assert(!s_pDevice);
+	assert(!s_pContext);
+	assert(!s_pSwapChain);
 
 	static DXGI_SWAP_CHAIN_DESC s_SwapchainDesc = {};
 	static IDXGIFactory1       *s_pFactory      = 0;
@@ -237,7 +252,7 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &s_deviceMode);
 	
 	assert(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&s_pFactory) == S_OK);
-	assert(s_pFactory != nullptr);
+	assert(s_pFactory);
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
@@ -257,8 +272,8 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 		&s_pContext
 	) == S_OK);
 	
-	assert(s_pDevice  != nullptr);
-	assert(s_pContext != nullptr);
+	assert(s_pDevice);
+	assert(s_pContext);
 
 	if (createSwapchain)
 	{
@@ -279,7 +294,6 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 		s_SwapchainDesc.Flags                              = 0;
 
 		s_pFactory->CreateSwapChain(s_pDevice, &s_SwapchainDesc, &s_pSwapChain);
-
-		assert(s_pSwapChain != nullptr);
+		assert(s_pSwapChain);
 	}
 }

@@ -97,14 +97,13 @@ bool IGameInput::SetCursorWindowMessage(LPARAM lParam)
 {
 	if (LOWORD(lParam) == HTCLIENT)
 	{
-		static HCURSOR hHandCursor = LoadCursorW(NULL, IDC_ARROW);
 		switch (s_currentMode)
 		{
 		case MouseMode::Exclusive:
 			SetCursor(NULL);
 			break;
 		default:
-			SetCursor(hHandCursor);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 			break;
 		}
 		return true;

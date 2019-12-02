@@ -2,7 +2,9 @@
 
 void EnsureModuleIsLoaded(LPCSTR pLibPath)
 {
+#ifdef _DEBUG
 	printf("EnsureModuleIsLoaded(\"%s\");\n", pLibPath);
+#endif
 
 	HMODULE hModule = GetModuleHandleA(pLibPath);
 	if (!hModule)
@@ -17,12 +19,17 @@ void EnsureModuleIsLoaded(LPCSTR pLibPath)
 
 int main(int argc, LPSTR *argv)
 {
+#ifndef _DEBUG
+	FreeConsole();
+#endif
+#ifdef _DEBUG
 	printf("main(%i, \"%s\"", argc, std::string(argv[0]).substr(std::string(argv[0]).find_last_of("/\\") + 1).c_str());
 	for (size_t i = 1; i < argc; i++)
 	{
 		printf(" \"%s\"", argv[i]);
 	}
 	printf(");\n");
+#endif
 
 	EnsureModuleIsLoaded("MCC\\Binaries\\Win64\\bink2w64.dll");
 
@@ -49,7 +56,6 @@ int main(int argc, LPSTR *argv)
 		pEngine = "HaloReach";
 		pGame   = "00_basic_editing_054";
 		pMap    = "forge_halo";
-		pFilm   = "asq_cex_tim_43DC28AA";
 		break;
 	}
 
@@ -58,13 +64,13 @@ int main(int argc, LPSTR *argv)
 	static auto gameInterface  = IGameInterface(pEngine);
 	static auto gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
 
-	auto updateCallBack = []()
+	auto updateCallBack = [](IGameEngine *pEngine)
 	{
 		/*printf("Running!\n");*/
 
 		if (GetKeyState(VK_END) & 0x80)
 		{
-			gameInterface.GetEngine()->UpdateEngineState(EngineState::eEndGameWriteStats);
+			pEngine->UpdateEngineState(EngineState::eEndGameWriteStats);
 			g_running = false;
 		}
 	};
