@@ -43,6 +43,8 @@ int main(int argc, LPSTR *argv)
 	static IGameRasterizer gameRasterizer = IGameRasterizer(1280, 720, true);
 	static IGameContext    gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
 
+	IConsoleAccess::IConsoleAccess().SetGameInterface(gameInterface);
+
 	auto updateCallBack = [](IGameEngine *pEngine)
 	{
 		/*printf("Running!\n");*/

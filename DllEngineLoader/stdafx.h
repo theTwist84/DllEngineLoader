@@ -11,6 +11,7 @@
 #include <iostream>
 #include <psapi.h>
 #include <stdio.h>
+#include <string>
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <hidusage.h>
@@ -156,3 +157,5 @@ bool g_running = false;
 #include "IGameContext.h"
 #include "IGameEvents.h"
 #include "IGameEngineHost.h"
+
+#include "IConsoleAccess.h"

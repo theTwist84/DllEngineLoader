@@ -168,6 +168,7 @@
     <ClCompile Include="DllEngineLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IConsoleAccess.h" />
     <ClInclude Include="IDataAccess.h" />
     <ClInclude Include="IGameEngine.h" />
     <ClInclude Include="IFileAccess.h" />

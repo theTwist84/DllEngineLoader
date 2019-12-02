@@ -62,5 +62,8 @@
     <ClInclude Include="IVariantAccessorBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IConsoleAccess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
