@@ -1,5 +1,5 @@
 #pragma once
-#pragma warning(disable:4996) // disable fopen deprecation error
+#pragma warning(disable:4996)
 
 class c_file
 {

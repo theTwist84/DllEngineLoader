@@ -7,16 +7,16 @@
 class c_engine
 {
 public:
-	virtual int InitRenderer(LPVOID, LPVOID, LPVOID, LPVOID) = 0;
-	virtual HANDLE InitThread(LPVOID, LPVOID) = 0;
-	virtual int Update(int, LPVOID) = 0;
+	virtual int InitGraphics(ID3D11Device *pDevice, ID3D11DeviceContext *pDeviceContext, IDXGISwapChain *pSwapchain, IDXGISwapChain *pFallbackSwapchain) = 0;
+	virtual HANDLE InitThread(IGameEngineHost *pGameEngineHost, /*struct GameContext*/char *pGameContext) = 0;
+	virtual int UpdateEngineState(int state, LPVOID unknown) = 0;
 	virtual int Free() = 0;
 	virtual void Function4() = 0;
 	virtual void Function5() = 0;
 	virtual void Function6() = 0;
 	virtual void Function7() = 0;
 	virtual void Function8() = 0;
-	virtual int Function9(LPVOID) = 0;
+	virtual int Function9(LPVOID unknown) = 0;
 	virtual void Function10() = 0;
 
 private:
@@ -32,17 +32,13 @@ class c_engine_data
 {
 public:
 	virtual void Free() = 0;
-
-	virtual char *MapVariantCreateFromFile(char *, size_t) = 0;
-	virtual char *MapVariantCreateFromMapId(int) = 0;
-	virtual char *MapVariantCreateDefault(char *) = 0;
-
-	virtual char *GameVariantCreateFromFile(char *, size_t) = 0;
-	virtual char *GameVariantCreateDefault(int) = 0;
-
-	virtual bool Function6(LPVOID, LPVOID) = 0;
-
-	virtual void SaveFilmMetadataCreateFromFile(char *, size_t) = 0;
+	virtual char *MapVariantCreateFromFile(char *pFileBuffer, size_t) = 0;
+	virtual char *MapVariantCreateFromMapId(int mapId) = 0;
+	virtual char *MapVariantCreateDefault(char *pFileBuffer) = 0;
+	virtual char *GameVariantCreateFromFile(char *pFileBuffer, size_t fileSize) = 0;
+	virtual char *GameVariantCreateDefault(int engineIndex) = 0;
+	virtual bool LoadMapFromVariants(char *pGameVariant, char *pMapVariant) = 0;
+	virtual char *SaveFilmMetadataCreateFromFile(char *pFileBuffer, size_t fileSize) = 0;
 
 private:
 	void *m_HeapAllocation;
@@ -82,6 +78,7 @@ c_engine_interface::c_engine_interface(LPCSTR pModulePath)
 	if (!s_hLibModule)
 	{
 		s_hLibModule = LoadLibraryA(s_modulePath);
+		//printf("%p [%s]\n", s_hLibModule, s_modulePath);
 	}
 
 	if (s_hLibModule)
