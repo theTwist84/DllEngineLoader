@@ -164,13 +164,18 @@
     <ClCompile Include="DllEngineLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="c_engine.h" />
-    <ClInclude Include="c_file.h" />
+    <ClInclude Include="IDataAccess.h" />
+    <ClInclude Include="IGameEngine.h" />
+    <ClInclude Include="IFileAccess.h" />
     <ClInclude Include="IGameContext.h" />
     <ClInclude Include="IGameEngineHost.h" />
     <ClInclude Include="IGameEvents.h" />
-    <ClInclude Include="IGameRenderer.h" />
-    <ClInclude Include="MouseInput.h" />
+    <ClInclude Include="IGameInterface.h" />
+    <ClInclude Include="IGameRasterizer.h" />
+    <ClInclude Include="IGameVariant.h" />
+    <ClInclude Include="IMapVariant.h" />
+    <ClInclude Include="ISaveFilmMetadata.h" />
+    <ClInclude Include="IGameInput.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

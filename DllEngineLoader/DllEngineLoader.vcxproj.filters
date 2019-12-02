@@ -20,28 +20,43 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="c_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="c_engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IGameEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IGameEngineHost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IGameRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MouseInput.h">
+    <ClInclude Include="IGameContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IGameContext.h">
+    <ClInclude Include="IGameEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDataAccess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMapVariant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameVariant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ISaveFilmMetadata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IFileAccess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameRasterizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

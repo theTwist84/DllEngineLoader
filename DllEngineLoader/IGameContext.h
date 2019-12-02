@@ -189,12 +189,8 @@ INT32 MapNameToMapID(LPCSTR pName)
 class IGameContext
 {
 public:
-	IGameContext();
+	IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText);
 	~IGameContext();
-
-	IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, char windowText[1024]);
-
-	IGameContext *Get();
 
 	void SetGameMode(GameMode gameMode)
 	{
@@ -227,9 +223,9 @@ private:
 	UINT8      padding0[10]             = {};
 	UINT64     m_active_skull_flags     = 0x0;
 	UINT8      padding1[8]              = {};
-	LPVOID     m_pGameStateHeader       = nullptr;
+	LPVOID     m_pGameStateHeader       = 0;
 	size_t     m_gameStateHeaderSize    = 0;
-	LPCSTR     m_pSavedFilmPath         = nullptr;
+	LPCSTR     m_pSavedFilmPath         = 0;
 	INT64      m_sessionPartyID         = 0;
 	INT64      m_sessionLocalID         = 0;
 	bool       m_sessionIsHost          = true;
@@ -246,30 +242,26 @@ private:
 	wchar_t   *m_customEngineName       = 0;
 };
 
-IGameContext::IGameContext()
-{
-}
+static IGameContext *g_pGameContext = 0;
 
-IGameContext::~IGameContext()
+IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText = true)
 {
-}
-
-IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, char windowText[1024])
-{
-	IGameVariant *pGameVariant = {};
-	IMapVariant *pMapVariant = {};
+	IGameVariant      *pGameVariant      = {};
+	IMapVariant       *pMapVariant       = {};
 	ISaveFilmMetadata *pSaveFilmMetadata = {};
+
+	char               windowText[1024]  = {};
 
 	if (pFilm == "")
 	{
 		if (pGameVariant = pDataAccess->GetGameVariant(pEngine, pGame), pGameVariant)
 		{
-			printf("%S - %S\n\n", pGameVariant->GetName(), pGameVariant->GetDescription());
+			printf("%S - %S\n", pGameVariant->GetName(), pGameVariant->GetDescription());
 		}
 
 		if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), pMapVariant)
 		{
-			printf("%S - %S\n\n", pMapVariant->GetName(), pMapVariant->GetDescription());
+			printf("%S - %S\n", pMapVariant->GetName(), pMapVariant->GetDescription());
 		}
 		else
 		{
@@ -310,6 +302,8 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 		}
 	}
 
+	SetWindowTextA(IGameRasterizer::GetWindowHandle(), windowText);
+
 	if (pFilm && pFilm[0])
 	{
 		SetSavedFilmPath(pFilm);
@@ -348,4 +342,8 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 	m_sessionIsHost = true;
 	m_sessionPeerCount = 1;
 	m_sessionPlayerCount = 1;
+}
+
+IGameContext::~IGameContext()
+{
 }

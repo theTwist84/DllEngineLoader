@@ -1,87 +1,76 @@
 #pragma once
 
-static IGameEvents s_gameEvents = IGameEvents();
-
 class IGameEngineHost
 {
 #pragma pack(push, 1)
 	struct InputBuffer
 	{
-		int unknown0;
-		char keyboardState[256];
-		float MouseX;
-		float MouseY;
+		int     unknown0;
+		char    keyboardState[256];
+		float   MouseX;
+		float   MouseY;
 		__int64 unknown10C;
-		char mouseButtonBits;
-		char unknown115[19];
+		char    mouseButtonBits;
+		char    unknown115[19];
 	};
 #pragma pack(pop)
 
 
-public: /* instance functions */
-	IGameEngineHost();
-	~IGameEngineHost();
-
-	/* 0  */ virtual char Member00();
-	/* 1  */ virtual void FrameEnd(IDXGISwapChain *, __int64);
-	/* 2  */ virtual void Member02(__int64, unsigned int, __int64, float, float, float, float);
-	/* 3  */ virtual void EngineStateUpdate(__int32);
-	/* 4  */ virtual __int64 GameExited(unsigned int, char *, int);
-	/* 5  */ virtual __int64 __fastcall GameStateWriteHandler(LPVOID, size_t);
-	/* 6  */ virtual void Member06(char *buffer);
-	/* 7  */ virtual void GamePauseHandler(unsigned int);
-	/* 8  */ virtual void Member08(const wchar_t *, const wchar_t *);
-	/* 9  */ virtual void Member09(wchar_t[1024], wchar_t[1024]);
-	/* 10 */ virtual IGameEvents *GetGameEvents();
-	/* 11 */ virtual void GameVariantWrite(IGameVariant *);
-	/* 12 */ virtual void MapVariantWrite(IMapVariant *);
-	/* 13 */ virtual void Member13(const wchar_t *, const wchar_t *, const void *, unsigned int);
-	/* 14 */ virtual char Member14(int, BYTE *);
-	/* 15 */ virtual char Member15(int, BYTE *);
-	/* 16 */ virtual char GetNextLevelInfo(MapID *, int *, FILETIME *, __int32 *);
-	/* 17 */ virtual bool Member17(int);
-	/* 18 */ virtual void Member18(int);
-	/* 19 */ virtual __int64 __fastcall MapLoadPecentStatus(__int64, __int64, float);
-	/* 20 */ virtual void Member20(__int64, __int8);
-	/* 21 */ virtual __int64 __fastcall GetMachineIDentifier(__int64);
-	/* 22 */ virtual __int64 Member22(char *, __int64);
-	/* 23 */ virtual char Member23(__int64, __int64);
-	/* 24 */ virtual void GetSessionInfo(char *);
-	/* 25 */ virtual void __fastcall MembershipUpdate(char *, uint32_t);
-	/* 26 */ virtual bool __fastcall Member26();
-	/* 27 */ virtual bool __fastcall Member27();
-	/* 28 */ virtual bool __fastcall Member28(char *);
-	/* 29 */ virtual __int64 __fastcall Member29(wchar_t [4][32], char *);
-	/* 30 */ virtual bool __fastcall __fastcall UpdateInput(__int64, InputBuffer *);
-	/* 31 */ virtual void Member31();
-	/* 32 */ virtual void XInputSetState(__int32 , XINPUT_VIBRATION *);
-	/* 33 */ virtual bool __fastcall __fastcall UpdatePlayerNames(__int64 *, wchar_t [4][32], size_t );
-	/* 34 */ virtual void __fastcall Member34(const wchar_t *, const wchar_t *);
-	/* 35 */ virtual bool __fastcall Member35(wchar_t *, __int64);
-	/* 36 */ virtual __int64 __fastcall NetworkSendTo(int , char *, uint32_t, int);
-	/* 37 */ virtual __int64 __fastcall NetworkReceiveFrom(char *, uint32_t, __int64 , struct s_transport_address *);
-	/* 38 */ virtual char *__fastcall Member38(unsigned int);
-	/* 39 */ virtual int __fastcall Member39(BYTE *);
-	/* 40 */ virtual bool __fastcall Member40(signed int, __int64, __int64);
-	/* 41 */ virtual void __fastcall FirefightNew(__int64, float);
-	/* 42 */ virtual BOOL __fastcall Member42(__int64, __int64);
-	/* 43 */ virtual bool __fastcall GetPathByType(int , char *, size_t);
-	/* 44 */ virtual bool __fastcall GetWidePathByType(int , wchar_t *, size_t);
-	/* 45 */ virtual unsigned __int8 *__fastcall Member45(__int64, unsigned __int8 *, __int64);
+public:
+	/* 00 */ virtual char               Member00();
+	/* 01 */ virtual void               FrameEnd(IDXGISwapChain *, __int64);
+	/* 02 */ virtual void               Member02(__int64, unsigned int, __int64, float, float, float, float);
+	/* 03 */ virtual void               EngineStateUpdate(__int32);
+	/* 04 */ virtual INT64              GameExited(unsigned int, char *, int);
+	/* 05 */ virtual INT64 __fastcall   GameStateWriteHandler(LPVOID, size_t);
+	/* 06 */ virtual void               Member06(char *buffer);
+	/* 07 */ virtual void               GamePauseHandler(unsigned int);
+	/* 08 */ virtual void               Member08(const wchar_t *, const wchar_t *);
+	/* 09 */ virtual void               Member09(wchar_t[1024], wchar_t[1024]);
+	/* 10 */ virtual IGameEvents       *GetGameEvents();
+	/* 11 */ virtual void               GameVariantWrite(IGameVariant *);
+	/* 12 */ virtual void               MapVariantWrite(IMapVariant *);
+	/* 13 */ virtual void               Member13(const wchar_t *, const wchar_t *, const void *, unsigned int);
+	/* 14 */ virtual char               Member14(int, BYTE *);
+	/* 15 */ virtual char               Member15(int, BYTE *);
+	/* 16 */ virtual char               GetNextLevelInfo(MapID *, int *, FILETIME *, __int32 *);
+	/* 17 */ virtual bool               Member17(int);
+	/* 18 */ virtual void               Member18(int);
+	/* 19 */ virtual INT64 __fastcall   MapLoadPecentStatus(__int64, __int64, float);
+	/* 20 */ virtual void               Member20(__int64, __int8);
+	/* 21 */ virtual INT64 __fastcall   GetMachineIDentifier(__int64);
+	/* 22 */ virtual INT64              Member22(char *, __int64);
+	/* 23 */ virtual char               Member23(__int64, __int64);
+	/* 24 */ virtual void               GetSessionInfo(char *);
+	/* 25 */ virtual void __fastcall    MembershipUpdate(char *, uint32_t);
+	/* 26 */ virtual bool __fastcall    Member26();
+	/* 27 */ virtual bool __fastcall    Member27();
+	/* 28 */ virtual bool __fastcall    Member28(char *);
+	/* 29 */ virtual INT64 __fastcall   Member29(wchar_t [4][32], char *);
+	/* 30 */ virtual bool __fastcall    UpdateInput(__int64, InputBuffer *);
+	/* 31 */ virtual void               Member31();
+	/* 32 */ virtual void               XInputSetState(__int32 , XINPUT_VIBRATION *);
+	/* 33 */ virtual bool __fastcall    UpdatePlayerNames(__int64 *, wchar_t [4][32], size_t );
+	/* 34 */ virtual void __fastcall    Member34(const wchar_t *, const wchar_t *);
+	/* 35 */ virtual bool __fastcall    Member35(wchar_t *, __int64);
+	/* 36 */ virtual INT64 __fastcall   NetworkSendTo(int , char *, uint32_t, int);
+	/* 37 */ virtual INT64 __fastcall   NetworkReceiveFrom(char *, uint32_t, __int64 , struct s_transport_address *);
+	/* 38 */ virtual char *__fastcall   Member38(unsigned int);
+	/* 39 */ virtual int __fastcall     Member39(BYTE *);
+	/* 40 */ virtual bool __fastcall    Member40(signed int, __int64, __int64);
+	/* 41 */ virtual void __fastcall    FirefightNew(__int64, float);
+	/* 42 */ virtual BOOL __fastcall    Member42(__int64, __int64);
+	/* 43 */ virtual bool __fastcall    GetPathByType(int , char *, size_t);
+	/* 44 */ virtual bool __fastcall    GetWidePathByType(int , wchar_t *, size_t);
+	/* 45 */ virtual UINT8 *__fastcall  Member45(__int64, unsigned __int8 *, __int64);
 	/* 46 */ virtual __int64 __fastcall Member46(__int64, __int64);
 
 	// DATA
-	IGameEvents *pGameEvents = nullptr;
+	IGameEvents *pGameEvents = g_pGameEvents;
 	__int64 data1[5863] = {};
 };
 
-IGameEngineHost::IGameEngineHost()
-{
-	pGameEvents = &s_gameEvents;
-}
-IGameEngineHost::~IGameEngineHost()
-{
-}
+static IGameEngineHost *g_pGameEngineHost = 0;
 
 char __fastcall IGameEngineHost::Member00()
 {
@@ -292,14 +281,14 @@ bool __fastcall IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 	memset(pInputBuffer, 0, sizeof(*pInputBuffer));
 	pInputBuffer->unknown0 = 1;
 
-	bool windowFocused = IGameRenderer::IsWindowFocused();
+	bool windowFocused = IGameRasterizer::IsWindowFocused();
 
 	MouseMode mode = MouseMode::None;
 	if (windowFocused)
 	{
 		mode = MouseMode::Exclusive;
 	}
-	MouseInput::SetMode(mode, IGameRenderer::GetWindowHandle());
+	IGameInput::SetMode(mode, IGameRasterizer::GetWindowHandle());
 
 	// get keyboard state
 	BYTE keyboardState[256] = {};
@@ -319,15 +308,15 @@ bool __fastcall IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 		}
 
 		{
-			float mouseInputX = MouseInput::GetMouseX();
-			float mouseInputY = MouseInput::GetMouseY();
+			float mouseInputX = IGameInput::GetMouseX();
+			float mouseInputY = IGameInput::GetMouseY();
 
 			pInputBuffer->MouseX += mouseInputX;
 			pInputBuffer->MouseY += mouseInputY;
 
-			bool leftButtonPressed = MouseInput::GetMouseButton(MouseInputButton::Left);
-			bool rightButtonPressed = MouseInput::GetMouseButton(MouseInputButton::Right);
-			bool middleButtonPressed = MouseInput::GetMouseButton(MouseInputButton::Middle);
+			bool leftButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Left);
+			bool rightButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Right);
+			bool middleButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Middle);
 
 			pInputBuffer->mouseButtonBits |= BYTE(leftButtonPressed) << 0;
 			pInputBuffer->mouseButtonBits |= BYTE(middleButtonPressed) << 1;
@@ -441,24 +430,22 @@ BOOL __fastcall IGameEngineHost::Member42(__int64 a1, __int64 a2)
 
 bool __fastcall IGameEngineHost::GetPathByType(int pathType, char *buffer, size_t bufferlength)
 {
-	int nArgs = 0;
-	LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-	auto pEngineName = szArglist[1];
+	auto pEngine = GetCommandLineToArg(1);
 
 	// this this should be in its function
 	switch (pathType)
 	{
 	case 0:
-		sprintf_s(buffer, bufferlength, "%S\\DebugLogs\\", pEngineName);
+		sprintf_s(buffer, bufferlength, "%s\\DebugLogs\\", pEngine);
 		break;
 	case 1:
-		sprintf_s(buffer, bufferlength, "%S\\Config\\", pEngineName);
+		sprintf_s(buffer, bufferlength, "%s\\Config\\", pEngine);
 		break;
 	case 2:
-		sprintf_s(buffer, bufferlength, "%S\\Temporary\\", pEngineName);
+		sprintf_s(buffer, bufferlength, "%s\\Temporary\\", pEngine);
 		break;
 	case 3:
-		sprintf_s(buffer, bufferlength, "%S\\", pEngineName);
+		sprintf_s(buffer, bufferlength, "%s\\", pEngine);
 		break;
 	}
 
@@ -468,24 +455,22 @@ bool __fastcall IGameEngineHost::GetPathByType(int pathType, char *buffer, size_
 // this is correct implementation inline with MCC
 bool __fastcall IGameEngineHost::GetWidePathByType(int pathType, wchar_t *buffer, size_t bufferlength)
 {
-	int nArgs = 0;
-	LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-	auto pEngineName = szArglist[1];
+	auto pEngine = GetCommandLineToArg(1);
 
 	// this this should be in its function
 	switch (pathType)
 	{
 	case 0:
-		swprintf_s(buffer, bufferlength, L"%s\\DebugLogs\\", pEngineName);
+		swprintf_s(buffer, bufferlength, L"%S\\DebugLogs\\", pEngine);
 		break;
 	case 1:
-		swprintf_s(buffer, bufferlength, L"%s\\Config\\", pEngineName);
+		swprintf_s(buffer, bufferlength, L"%S\\Config\\", pEngine);
 		break;
 	case 2:
-		swprintf_s(buffer, bufferlength, L"%s\\Temporary\\", pEngineName);
+		swprintf_s(buffer, bufferlength, L"%S\\Temporary\\", pEngine);
 		break;
 	case 3:
-		swprintf_s(buffer, bufferlength, L"%s\\", pEngineName);
+		swprintf_s(buffer, bufferlength, L"%S\\", pEngine);
 		break;
 	}
 

@@ -1,43 +1,43 @@
 #pragma once
 #pragma warning(disable:4996)
 
-class c_file
+class IFileAccess
 {
 public:
-	c_file(LPCSTR);
-	~c_file();
+	IFileAccess(LPCSTR);
+	~IFileAccess();
 
-	static bool FileOpen();
-	static void FileClose();
+	static bool   FileOpen();
+	static void   FileClose();
 
-	static char *GetBuffer(size_t &);
+	static char  *GetBuffer(size_t &);
 
 private:
-	static char s_filePath[MAX_PATH];
-	static FILE *s_pFile;
+	static char   s_filePath[MAX_PATH];
+	static FILE  *s_pFile;
 
-	static char *s_pBuffer;
+	static char  *s_pBuffer;
 	static size_t s_size;
 };
 
-char c_file::s_filePath[MAX_PATH] = {};
-FILE *c_file::s_pFile = nullptr;
+char   IFileAccess::s_filePath[MAX_PATH] = {};
+FILE  *IFileAccess::s_pFile              = 0;
 
-char *c_file::s_pBuffer = nullptr;
-size_t c_file::s_size = -1;
+char  *IFileAccess::s_pBuffer            = 0;
+size_t IFileAccess::s_size               = 0;
 
 
-c_file::c_file(LPCSTR pFilePath)
+IFileAccess::IFileAccess(LPCSTR pFilePath)
 {
 	strcpy(s_filePath, pFilePath);
 }
 
-c_file::~c_file()
+IFileAccess::~IFileAccess()
 {
 	strcpy(s_filePath, "");
 }
 
-bool c_file::FileOpen()
+bool IFileAccess::FileOpen()
 {
 	if (s_pFile = fopen(s_filePath, "rb"))
 	{
@@ -63,7 +63,7 @@ bool c_file::FileOpen()
 	return false;
 }
 
-void c_file::FileClose()
+void IFileAccess::FileClose()
 {
 	if (s_pFile)
 	{
@@ -76,7 +76,7 @@ void c_file::FileClose()
 	}
 }
 
-char *c_file::GetBuffer(size_t &rBufferSize)
+char *IFileAccess::GetBuffer(size_t &rBufferSize)
 {
 	rBufferSize = s_size;
 	return s_pBuffer;
