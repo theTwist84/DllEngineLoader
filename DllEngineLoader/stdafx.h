@@ -35,7 +35,7 @@ LPCSTR GetUserprofileVariable()
 	return szBuf;
 };
 
-LPCSTR GetCommandLineToArg(int index)
+LPCSTR GetCommandLineArg(int index)
 {
 	static int     nArgs = 0;
 	static LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
@@ -49,7 +49,7 @@ LPCSTR GetCommandLineToArg(int index)
 	return szBuf;
 }
 
-std::string GetPath(LPCSTR pStr)
+std::string GetFilePath(LPCSTR pStr)
 {
 	return std::string(pStr).erase(std::string(pStr).find_last_of("/\\") + 1, std::string::npos);
 }
@@ -79,7 +79,7 @@ void EnsureModuleIsLoaded(LPCSTR pLibPath)
 	}
 }
 
-auto WriteStackBackTrace = [=](LPCSTR pCallingFunction, DWORD size = 1024)
+auto WriteStackTrace = [=](LPCSTR pCallingFunction, DWORD size = 1024)
 {
 	auto FileGetImageBase = [](LPSTR filename)
 	{
@@ -99,12 +99,13 @@ auto WriteStackBackTrace = [=](LPCSTR pCallingFunction, DWORD size = 1024)
 						auto pNTHeader = (PIMAGE_NT_HEADERS)((UINT64)dosHeader + (UINT64)dosHeader->e_lfanew);
 						result = pNTHeader->OptionalHeader.ImageBase;
 					}
-					UnmapViewOfFile(lpFileBase);
 				}
-				CloseHandle(hFileMapping);
+				UnmapViewOfFile(lpFileBase);
 			}
-			CloseHandle(hFile);
+			CloseHandle(hFileMapping);
 		}
+		CloseHandle(hFile);
+
 		return result;
 	};
 
@@ -134,7 +135,7 @@ auto WriteStackBackTrace = [=](LPCSTR pCallingFunction, DWORD size = 1024)
 							{
 								auto moduleName = std::string(szModName).substr(std::string(szModName).find_last_of("/\\") + 1);
 								auto baseOffset = FileGetImageBase(szModName) + moduleOffset;
-								printf("\t% 16s+0x%08llX, 0x%016llX\n", moduleName.c_str(), moduleOffset, baseOffset);
+								printf("\t%s+0x%016llX, 0x%016llX\n", moduleName.c_str(), moduleOffset, baseOffset);
 							}
 						}
 					}

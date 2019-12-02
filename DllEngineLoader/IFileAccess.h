@@ -22,7 +22,7 @@ public:
 
 	void   FileWrite(char *, size_t);
 
-	LPCSTR GetPath();
+	LPCSTR GetFilePath();
 
 private:
 	char   s_filePath[MAX_PATH] = {};
@@ -121,7 +121,7 @@ void IFileAccess::FileWrite(char *buffer, size_t size)
 	}
 }
 
-LPCSTR IFileAccess::GetPath()
+LPCSTR IFileAccess::GetFilePath()
 {
 	return s_filePath;
 }

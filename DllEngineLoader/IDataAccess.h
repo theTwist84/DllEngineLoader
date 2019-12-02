@@ -8,7 +8,7 @@ public:
 	virtual class IMapVariant       *MapVariantCreateFromMapID(INT32)                   = 0;
 	virtual class IMapVariant       *MapVariantCreateDefault(char *)                    = 0;
 	virtual class IGameVariant      *GameVariantCreateFromFile(char *, size_t)          = 0;
-	virtual class IGameVariant      *GameVariantCreateDefault(int)                      = 0;
+	virtual class IGameVariant      *GameVariantCreateDefault(char *)                   = 0;
 	virtual bool                     LoadMapFromVariants(IGameVariant *, IMapVariant *) = 0;
 	virtual class ISaveFilmMetadata *SaveFilmMetadataCreateFromFile(char *, size_t)     = 0;
 
@@ -60,7 +60,7 @@ public:
 
 	class ISaveFilmMetadata *GetSaveFilmMetadata(LPCSTR pEngine, LPCSTR &rpName)
 	{
-		static LPCSTR                   pPath             = {};
+		static char                     path[MAX_PATH]    = {};
 		IFileAccess                    *pFile             = {};
 		size_t                          file_size         = {};
 		static class ISaveFilmMetadata *pSaveFilmMetadata = {};
@@ -77,7 +77,8 @@ public:
 		{
 			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		rpName = pPath = pFile->GetPath();
+		strcpy(path, pFile->GetFilePath());
+		rpName = path;
 
 		pFile->FileClose();
 		return pSaveFilmMetadata;

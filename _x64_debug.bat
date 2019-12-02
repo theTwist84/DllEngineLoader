@@ -1,6 +1,6 @@
 @echo off
 
-set version=1.1186.0.0
+set version=1.1211.0.0
 
 set is_film=true
 
@@ -18,11 +18,11 @@ echo %working_dir%
 
 if [%is_film%] equ [true] goto film
 
-start "" /D "%working_dir%" /W /B "%platform%\%configuration%\%target%.exe" %engine% %game_var% %map_var%
+start "" /D "%working_dir%" /W /B "%~DP0%platform%\%configuration%\%target%.exe" %engine% %game_var% %map_var%
 goto eof
 
 :film
-start "" /D "%working_dir%" /W /B "%platform%\%configuration%\%target%.exe" %engine% %film_name%
+start "" /D "%working_dir%" /W /B "%~DP0%platform%\%configuration%\%target%.exe" %engine% %film_name%
 
 :eof
 pause

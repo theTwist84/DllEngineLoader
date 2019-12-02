@@ -298,46 +298,21 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 
 	if (pFilm == "")
 	{
-		pGameVariant = pDataAccess->GetGameVariant(pEngine, pGame);
-		assert(pGameVariant);
-
-		if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), !pMapVariant)
 		{
-			pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToID(pMap));
-		}
-		assert(pMapVariant);
+			IFileAccess file = IFileAccess("%s%s.mpvr", GetFilePath(GetCommandLineArg(0)).c_str(), pGame);
+			if (file.FileOpen(FileAccessType::Read))
+			{
+				size_t size = 0;
+				pGameVariant = pDataAccess->GameVariantCreateDefault(file.FileRead(size));
+			}
+			file.FileClose();
 
-		char gameVariantName[64] = { 0 }; sprintf(gameVariantName, "%S", pGameVariant->GetName());
-		if (!gameVariantName[0]) sprintf(gameVariantName, "%s", pGame);
+			if (!pGameVariant)
+			{
+				pGameVariant = pDataAccess->GetGameVariant(pEngine, pGame);
+			}
+			assert(pGameVariant);
 
-		char mapVariantName[64] = { 0 }; sprintf(mapVariantName, "%S", pMapVariant->GetName());
-		if (!mapVariantName[0]) sprintf(mapVariantName, "%s", pMap);
-
-		std::time_t ct = std::time(0);
-		sprintf(windowText, "%s on %s, %s", gameVariantName, mapVariantName, ctime(&ct));
-	}
-	else
-	{
-		pSaveFilmMetadata = pDataAccess->GetSaveFilmMetadata(pEngine, pFilm);
-		assert(pSaveFilmMetadata);
-
-		sprintf(windowText, "%S", pSaveFilmMetadata->GetDescription());
-	}
-
-	if (windowText[0])
-	{
-		SetConsoleTitleA(windowText);
-		SetWindowTextA(IGameRasterizer::GetWindowHandle(), windowText);
-	}
-
-	if (pFilm && pFilm[0])
-	{
-		SetSavedFilmPath(pFilm);
-	}
-	else
-	{
-		if (pGameVariant)
-		{
 			pGameVariant->CopyTo(&m_gameVariant);
 
 			GameMode gameMode = GameMode::eBase;
@@ -359,11 +334,51 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 			SetGameMode(gameMode);
 		}
 
-		if (pMapVariant)
 		{
+			IFileAccess file = IFileAccess("%s%s.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), pMap);
+			if (file.FileOpen(FileAccessType::Read))
+			{
+				size_t size = 0;
+				pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead(size));
+			}
+			file.FileClose();
+
+			if (!pMapVariant)
+			{
+				if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), !pMapVariant)
+				{
+					pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToID(pMap));
+				}
+			}
+			assert(pMapVariant);
+
 			pMapVariant->CopyTo(m_mapVariant);
 			SetMapID(pMapVariant->GetID());
 		}
+
+		char gameVariantName[64] = { 0 }; sprintf(gameVariantName, "%S", pGameVariant->GetName());
+		if (!gameVariantName[0]) sprintf(gameVariantName, "%s", pGame);
+
+		char mapVariantName[64] = { 0 }; sprintf(mapVariantName, "%S", pMapVariant->GetName());
+		if (!mapVariantName[0]) sprintf(mapVariantName, "%s", pMap);
+
+		std::time_t ct = std::time(0);
+		sprintf(windowText, "%s on %s, %s", gameVariantName, mapVariantName, ctime(&ct));
+	}
+	else
+	{
+		pSaveFilmMetadata = pDataAccess->GetSaveFilmMetadata(pEngine, pFilm);
+		assert(pSaveFilmMetadata);
+
+		SetSavedFilmPath(pFilm);
+
+		sprintf(windowText, "%S", pSaveFilmMetadata->GetDescription());
+	}
+
+	if (windowText[0])
+	{
+		SetConsoleTitleA(windowText);
+		SetWindowTextA(IGameRasterizer::GetWindowHandle(), windowText);
 	}
 
 	m_sessionIsHost      = true;

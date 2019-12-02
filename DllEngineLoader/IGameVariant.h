@@ -25,5 +25,6 @@ private:
 
 void IGameVariant::CopyTo(LPVOID outData)
 {
+	memset(outData, 0, sizeof(m_data));
 	memcpy(outData, m_data, sizeof(m_data));
 }

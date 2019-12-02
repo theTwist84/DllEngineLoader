@@ -33,8 +33,9 @@ int main(int argc, LPSTR *argv)
 		break;
 	default:
 		pEngine = "HaloReach";
-		pGame   = "00_basic_editing_054";
-		pMap    = "forge_halo";
+		pGame   = "infection_054";
+		pMap    = "beaver_creek_cl_031";
+		//pFilm   = "asq_cex_tim_43DC28AA";
 		break;
 	}
 

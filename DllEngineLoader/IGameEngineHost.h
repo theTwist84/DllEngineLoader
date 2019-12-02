@@ -163,7 +163,7 @@ void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 	char *buffer; size_t size = 0;
 	if (pGameVariant->CreateFileFromBuffer(&buffer, &size))
 	{
-		auto file = IFileAccess("%s%S.bin", GetPath(GetCommandLineToArg(0)).c_str(), name);
+		auto file = IFileAccess("%s%S.bin", GetFilePath(GetCommandLineArg(0)).c_str(), name);
 		if (file.FileOpen(FileAccessType::Write))
 		{
 			file.FileWrite(buffer, size);
@@ -184,7 +184,7 @@ void IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 	char *buffer; size_t size = 0;
 	if (pMapVariant->CreateFileFromBuffer(&buffer, &size))
 	{
-		auto file = IFileAccess("%s%S.mvar", GetPath(GetCommandLineToArg(0)).c_str(), name);
+		auto file = IFileAccess("%s%S.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), name);
 		if (file.FileOpen(FileAccessType::Write))
 		{
 			file.FileWrite(buffer, size);
