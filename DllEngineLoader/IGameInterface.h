@@ -6,7 +6,7 @@ public:
 	IGameInterface(LPCSTR);
 	~IGameInterface();
 
-	static void         LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *) = nullptr);
+	static void         LaunchTitle(class IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, class IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *) = nullptr);
 	static void         SetLocale(LPCSTR, LPCSTR, LPCSTR);
 
 	static IGameEngine *GetEngine();
@@ -72,10 +72,10 @@ IDataAccess *IGameInterface::GetDataAccess()
 	return s_pDataAccess;
 }
 
-void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *))
+void IGameInterface::LaunchTitle(class IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, class IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *))
 {
 #ifdef _DEBUG
-	printf("IGameInterface::LaunchTitle(0x%08IIX, 0x%08IIX, 0x%08IIX, %s, 0x%08IIX);\n", (UINT64)&rGameEngineHost, (UINT64)&rGameRasterizer, (UINT64)&rGameContext, rRunning ? "true" : "false", (UINT64)pCallback);
+	printf("IGameInterface::LaunchTitle(0x%08llX, 0x%08llX, 0x%08llX, %s, 0x%08llX);\n", (UINT64)&rGameEngineHost, (UINT64)&rGameRasterizer, (UINT64)&rGameContext, rRunning ? "true" : "false", (UINT64)pCallback);
 #endif
 
 	auto pEngine     = GetEngine();

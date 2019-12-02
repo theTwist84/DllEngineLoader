@@ -287,7 +287,7 @@ private:
 IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText = true)
 {
 #ifdef _DEBUG
-	printf("IGameContext(0x%08IIX, \"%s\", \"%s\", \"%s\", \"%s\", %s);\n", (UINT64)pDataAccess, pEngine, pGame, pMap, pFilm, setWindowText ? "true" : "false");
+	printf("IGameContext(0x%0llX, \"%s\", \"%s\", \"%s\", \"%s\", %s);\n", (UINT64)pDataAccess, pEngine, pGame, pMap, pFilm, setWindowText ? "true" : "false");
 #endif
 
 	IGameVariant      *pGameVariant      = {};

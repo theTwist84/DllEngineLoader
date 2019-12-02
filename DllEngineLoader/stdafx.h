@@ -126,7 +126,7 @@ auto WriteStackBackTrace = [=](LPCSTR pCallingFunction, DWORD size = 1024)
 							{
 								auto moduleName = std::string(szModName).substr(std::string(szModName).find_last_of("/\\") + 1);
 								auto baseOffset = FileGetImageBase(szModName) + moduleOffset;
-								printf("\t% 16s+0x%08IIX, 0x%016IIX\n", moduleName.c_str(), moduleOffset, baseOffset);
+								printf("\t% 16s+0x%08llX, 0x%016llX\n", moduleName.c_str(), moduleOffset, baseOffset);
 							}
 						}
 					}

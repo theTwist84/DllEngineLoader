@@ -11,19 +11,13 @@ public:
 	virtual wchar_t *GetName()        = 0;
 	virtual wchar_t *GetDescription() = 0;
 
-	LPVOID           GetData();
-	size_t           GetDataSize();
+	void             CopyTo(LPVOID);
 
 private:
-	char m_data[0x1F7B0];
+	char             m_data[0x1F7B0];
 };
 
-LPVOID ISaveFilmMetadata::GetData()
+void ISaveFilmMetadata::CopyTo(LPVOID outData)
 {
-	return &m_data;
-}
-
-size_t ISaveFilmMetadata::GetDataSize()
-{
-	return sizeof(m_data);
+	memcpy(outData, m_data, sizeof(m_data));
 }

@@ -121,7 +121,7 @@ __int64 __fastcall IGameEngineHost::GameExited(unsigned int a1, char *a2, int a3
 
 __int64 __fastcall IGameEngineHost::GameStateWriteHandler(char *pBuffer, size_t size)
 {
-	printf("GameEngineHost: GameStateWriteHandler 0x%08IIX %016llx\n", (UINT64)pBuffer, size);
+	printf("GameEngineHost: GameStateWriteHandler 0x%08llX %08llx\n", (UINT64)pBuffer, size);
 	return __int64(0);
 }
 
