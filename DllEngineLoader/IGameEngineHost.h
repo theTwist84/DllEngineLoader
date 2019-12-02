@@ -304,35 +304,47 @@ bool __fastcall IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 	memset(pInputBuffer, 0, sizeof(*pInputBuffer));
 	pInputBuffer->unknown0 = 1;
 
+	bool windowFocused = IGameRenderer::IsWindowFocused();
+
+	MouseMode mode = MouseMode::None;
+	if (windowFocused)
+	{
+		mode = MouseMode::Exclusive;
+	}
+	MouseInput::SetMode(mode, IGameRenderer::GetWindowHandle());
+
 	// get keyboard state
 	BYTE keyboardState[256] = {};
 	pInputBuffer->MouseX = 0.0f;
 	pInputBuffer->MouseY = 0.0f;
 	pInputBuffer->mouseButtonBits = 0;
 
-	GetKeyState(-1); // force keys to update
-	if (GetKeyboardState(keyboardState))
+	if (windowFocused)
 	{
-		for (int i = 0; i < 256; i++)
+		GetKeyState(-1); // force keys to update
+		if (GetKeyboardState(keyboardState))
 		{
-			pInputBuffer->keyboardState[i] = (keyboardState[i] & 0b10000000) != 0;
+			for (int i = 0; i < 256; i++)
+			{
+				pInputBuffer->keyboardState[i] = (keyboardState[i] & 0b10000000) != 0;
+			}
 		}
-	}
 
-	{
-		//float mouseInputX = GetMouseX();
-		//float mouseInputY = GetMouseY();
+		{
+			float mouseInputX = MouseInput::GetMouseX();
+			float mouseInputY = MouseInput::GetMouseY();
 
-		//pInputBuffer->MouseX += mouseInputX;
-		//pInputBuffer->MouseY += mouseInputY;
+			pInputBuffer->MouseX += mouseInputX;
+			pInputBuffer->MouseY += mouseInputY;
 
-		bool leftButtonPressed = GetKeyState(VK_LBUTTON) & 0x80;
-		bool rightButtonPressed = GetKeyState(VK_RBUTTON) & 0x80;
-		bool middleButtonPressed = GetKeyState(VK_MBUTTON) & 0x80;
+			bool leftButtonPressed = MouseInput::GetMouseButton(MouseInputButton::Left);
+			bool rightButtonPressed = MouseInput::GetMouseButton(MouseInputButton::Right);
+			bool middleButtonPressed = MouseInput::GetMouseButton(MouseInputButton::Middle);
 
-		pInputBuffer->mouseButtonBits |= BYTE(leftButtonPressed) << 0;
-		pInputBuffer->mouseButtonBits |= BYTE(middleButtonPressed) << 1;
-		pInputBuffer->mouseButtonBits |= BYTE(rightButtonPressed) << 2;
+			pInputBuffer->mouseButtonBits |= BYTE(leftButtonPressed) << 0;
+			pInputBuffer->mouseButtonBits |= BYTE(middleButtonPressed) << 1;
+			pInputBuffer->mouseButtonBits |= BYTE(rightButtonPressed) << 2;
+		}
 	}
 
 	return unsigned __int8(1);
@@ -441,20 +453,24 @@ BOOL __fastcall IGameEngineHost::Member42(__int64 a1, __int64 a2)
 
 bool __fastcall IGameEngineHost::GetPathByType(int pathType, char *buffer, size_t bufferlength)
 {
+	int nArgs = 0;
+	LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+	auto pEngineName = szArglist[1];
+
 	// this this should be in its function
 	switch (pathType)
 	{
 	case 0:
-		sprintf_s(buffer, bufferlength, "DebugLogs\\");
+		sprintf_s(buffer, bufferlength, "%S\\DebugLogs\\", pEngineName);
 		break;
 	case 1:
-		sprintf_s(buffer, bufferlength, "Config\\");
+		sprintf_s(buffer, bufferlength, "%S\\Config\\", pEngineName);
 		break;
 	case 2:
-		sprintf_s(buffer, bufferlength, "Temp\\");
+		sprintf_s(buffer, bufferlength, "%S\\Temporary\\", pEngineName);
 		break;
 	case 3:
-		sprintf_s(buffer, bufferlength, "\\");
+		sprintf_s(buffer, bufferlength, "%S\\", pEngineName);
 		break;
 	}
 
@@ -464,20 +480,24 @@ bool __fastcall IGameEngineHost::GetPathByType(int pathType, char *buffer, size_
 // this is correct implementation inline with MCC
 bool __fastcall IGameEngineHost::GetWidePathByType(int pathType, wchar_t *buffer, size_t bufferlength)
 {
+	int nArgs = 0;
+	LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+	auto pEngineName = szArglist[1];
+
 	// this this should be in its function
 	switch (pathType)
 	{
 	case 0:
-		swprintf_s(buffer, bufferlength, L"DebugLogs\\");
+		swprintf_s(buffer, bufferlength, L"%s\\DebugLogs\\", pEngineName);
 		break;
 	case 1:
-		swprintf_s(buffer, bufferlength, L"Config\\");
+		swprintf_s(buffer, bufferlength, L"%s\\Config\\", pEngineName);
 		break;
 	case 2:
-		swprintf_s(buffer, bufferlength, L"Temp\\");
+		swprintf_s(buffer, bufferlength, L"%s\\Temporary\\", pEngineName);
 		break;
 	case 3:
-		swprintf_s(buffer, bufferlength, L"\\");
+		swprintf_s(buffer, bufferlength, L"%s\\", pEngineName);
 		break;
 	}
 

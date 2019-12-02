@@ -1,13 +1,5 @@
 #pragma once
 
-#include "hidusage.h"
-#include <dinput.h>
-#include <D3Dcompiler.h>
-#include <dxgi.h>
-#include <d3d11.h>
-#include <d3d11_4.h>
-#include <Xinput.h>
-
 class IGameRenderer
 {
 private:
@@ -19,20 +11,34 @@ private:
 	static HANDLE s_hPostMessageThread;
 	static DWORD s_hPostMessageThreadId;
 
+	static ID3D11Device *s_pDevice;
+	static ID3D11DeviceContext *s_pDeviceContext;
+	static IDXGISwapChain *s_pSwapChain;
+
 	static int s_Width;
 	static int s_Height;
 	static bool s_Windowed;
-public:
-	IGameRenderer(int width, int height, bool windowed);
-	~IGameRenderer();
 
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static void CreateEngineWindow();
 	static void CreateRenderContext();
+public:
+	IGameRenderer(int width, int height, bool windowed);
+	~IGameRenderer();
 
-	static ID3D11Device *s_pDevice;
-	static ID3D11DeviceContext *s_pDeviceContext;
-	static IDXGISwapChain *s_pSwapChain;
+	static HWND GetWindowHandle();
+	static bool IsWindowFocused();
+
+	static HICON GetIcon();
+
+	static void SetIcon(HICON hIcon);
+
+	static ID3D11Device *GetDevice();
+	static ID3D11DeviceContext *GetDeviceContext();
+	static IDXGISwapChain *GetSwapChain();
+
+	static void Deinit();
+	static void Update();
 };
 
 HICON IGameRenderer::s_hIcon = NULL;
@@ -43,13 +49,13 @@ HINSTANCE IGameRenderer::s_hInstance = NULL;
 HANDLE IGameRenderer::s_hPostMessageThread = NULL;
 DWORD IGameRenderer::s_hPostMessageThreadId = NULL;
 
-int IGameRenderer::s_Width = 640;
-int IGameRenderer::s_Height = 480;
-bool IGameRenderer::s_Windowed = true;
-
 ID3D11Device *IGameRenderer::s_pDevice = nullptr;
 ID3D11DeviceContext *IGameRenderer::s_pDeviceContext = nullptr;
 IDXGISwapChain *IGameRenderer::s_pSwapChain = nullptr;
+
+int IGameRenderer::s_Width = 1280;
+int IGameRenderer::s_Height = 720;
+bool IGameRenderer::s_Windowed = true;
 
 
 inline IGameRenderer::IGameRenderer(int width, int height, bool windowed)
@@ -64,6 +70,41 @@ inline IGameRenderer::IGameRenderer(int width, int height, bool windowed)
 
 inline IGameRenderer::~IGameRenderer()
 {
+}
+
+inline HWND IGameRenderer::GetWindowHandle()
+{
+	return s_hWnd;
+}
+
+bool IGameRenderer::IsWindowFocused()
+{
+	return s_hWnd == s_hFocusWnd;
+}
+
+HICON IGameRenderer::GetIcon()
+{
+	return s_hIcon;
+}
+
+void IGameRenderer::SetIcon(HICON hIcon)
+{
+	s_hIcon = hIcon;
+}
+
+inline ID3D11Device *IGameRenderer::GetDevice()
+{
+	return s_pDevice;
+}
+
+inline ID3D11DeviceContext *IGameRenderer::GetDeviceContext()
+{
+	return s_pDeviceContext;
+}
+
+inline IDXGISwapChain *IGameRenderer::GetSwapChain()
+{
+	return s_pSwapChain;
 }
 
 LRESULT CALLBACK IGameRenderer::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -88,12 +129,13 @@ LRESULT CALLBACK IGameRenderer::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 		s_hForegroundWnd = GetForegroundWindow();
 		break;
 	case WM_INPUT:
+		MouseInput::InputWindowMessage(lParam);
 		break;
 	case WM_SETCURSOR:
-		//if (MouseInput::SetCursorWindowMessage(lParam))
-		//{
-		//	return TRUE;
-		//}
+		if (MouseInput::SetCursorWindowMessage(lParam))
+		{
+			return TRUE;
+		}
 		break;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -147,6 +189,24 @@ void IGameRenderer::CreateEngineWindow()
 	static RAWINPUTDEVICE rawInputDevices[] = { mouseInputDevice };
 	RegisterRawInputDevices(rawInputDevices, _countof(rawInputDevices), sizeof(rawInputDevices));
 }
+
+void IGameRenderer::Deinit()
+{
+	CloseWindow(s_hWnd);
+	UnregisterClassA("dll_engine_loader_window_class", s_hInstance);
+}
+
+void IGameRenderer::Update()
+{
+	MSG msg = {};
+
+	while (PeekMessage(&msg, s_hWnd, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+
 
 void IGameRenderer::CreateRenderContext()
 {

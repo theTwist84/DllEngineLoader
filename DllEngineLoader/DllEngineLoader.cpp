@@ -1,16 +1,4 @@
-#include <windows.h>
-#include <cassert>
-#include <cstdint>
-#include <cstdio>
-#include <iostream>
-#include <stdio.h>
-
-#include "IGameRenderer.h"
-#include "IGameEvents.h"
-#include "IGameEngineHost.h"
-
-#include "c_file.h"
-#include "c_engine.h"
+#include "stdafx.h"
 
 const char *pathf(LPCSTR fmt, ...)
 {
@@ -38,7 +26,8 @@ void SetupGameContext(char *&rGameContext, c_engine_interface &rEngineInterface,
 	static char s_GameContext[0x2B708];
 	memset(s_GameContext, 0, sizeof(s_GameContext));
 
-	if (pSavedFilmName)
+	char windowText[1024] = "";
+	if (pSavedFilmName != "")
 	{
 		static LPCSTR pSavedFilmPath = pathf("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Movie\\%s.mov", GetUserprofileVariable(), pEngineName, pSavedFilmName);
 		*(LPCSTR *)(s_GameContext + 0x2B438) = pSavedFilmPath;
@@ -55,12 +44,14 @@ void SetupGameContext(char *&rGameContext, c_engine_interface &rEngineInterface,
 			printf("%S - %S\n\n", name, desc);
 
 			file.FileClose();
+
+			sprintf(windowText, "%S", desc);
 		}
 	}
 	else
 	{
 		// set IGameContext::m_mode to multiplayer
-		*(int *)s_GameContext = 3;
+		*(int *)(s_GameContext + 0x0) = 3;
 
 		// set local client as host
 		*(bool *)(s_GameContext + 0x2B450) = true;
@@ -68,6 +59,7 @@ void SetupGameContext(char *&rGameContext, c_engine_interface &rEngineInterface,
 		// set peer and player count to 1
 		*(int64_t *)(s_GameContext + 0x2B4E0) = *(int64_t *)(s_GameContext + 0x2B6E8) = 1;
 
+		char gameVariantName[MAX_PATH] = "";
 		{
 			size_t variantSize = -1;
 			auto file = c_file(pathf("%s\\game_variants\\%s.bin", pEngineName, pGameVarianName));
@@ -87,8 +79,11 @@ void SetupGameContext(char *&rGameContext, c_engine_interface &rEngineInterface,
 				//if (((bool(*)(char *, char **, size_t *))(*(LPVOID **)variant)[8])(variant, &data, &dataSize)) { }
 
 				file.FileClose();
+
+				sprintf(gameVariantName, "%S", name);
 			}
 		}
+		char mapVariantName[MAX_PATH] = "";
 		{
 			size_t variantSize = -1;
 			auto file = c_file(pathf("%s\\map_variants\\%s.mvar", pEngineName, pMapVarianName));
@@ -111,36 +106,51 @@ void SetupGameContext(char *&rGameContext, c_engine_interface &rEngineInterface,
 				//if (((bool(*)(char *, char **, size_t *))(*(LPVOID **)variant)[8])(variant, &data, &dataSize)) { }
 
 				file.FileClose();
+
+				sprintf(mapVariantName, "%S", name);
 			}
 		}
+
+		std::time_t ct = std::time(0);
+		sprintf(windowText, "%s on %s, %s", gameVariantName, mapVariantName, ctime(&ct));
 	}
 
-
+	SetWindowTextA(IGameRenderer::GetWindowHandle(), windowText);
 	rGameContext = s_GameContext;
 }
 
 int main(int argc, LPSTR *argv)
 {
-	LPCSTR pEngineName = "HaloReach";
-	LPCSTR pGameVarianName = "slayer_classic_054";
-	LPCSTR pMapVarianName = "beaver_creek_cl_031";
+	LPCSTR pEngineName = "";
+	LPCSTR pGameVarianName = "";
+	LPCSTR pMapVarianName = "";
 	LPCSTR pSavedFilmName = "";
 
-	if (argc == 2)
+	if (argc == 3)
 	{
-		pSavedFilmName = argv[1];
+		pEngineName = argv[1];
+		pSavedFilmName = argv[2];
+	}
+	else if (argc == 4)
+	{
+		pEngineName = argv[1];
+		pGameVarianName = argv[2];
+		pMapVarianName = argv[3];
 	}
 
-	auto engine_interface = c_engine_interface(pathf("%s\\%s.dll", pEngineName, pEngineName));
-	auto pEngine = engine_interface.GetEngine();
+	auto engineInterface = c_engine_interface(pathf("%s\\%s.dll", pEngineName, pEngineName));
+	auto pEngine = engineInterface.GetEngine();
 
-	LoadLibraryA("MCC\\Binaries\\Win64\\bink2w64.dll");
+	if (!LoadLibraryA("MCC\\Binaries\\Win64\\bink2w64.dll"))
+	{
+		printf("unable to load bink\n");
+	}
 
-	static auto gameRenderer = IGameRenderer(1280, 720, true);
-	pEngine->InitGraphics(gameRenderer.s_pDevice, gameRenderer.s_pDeviceContext, gameRenderer.s_pSwapChain, 0);
+	auto gameRenderer = IGameRenderer(1280, 720, true);
+	pEngine->InitGraphics(gameRenderer.GetDevice(), gameRenderer.GetDeviceContext(), gameRenderer.GetSwapChain(), 0);
 
 	char *pGameContext = {};
-	SetupGameContext(pGameContext, engine_interface, pEngineName, pGameVarianName, pMapVarianName, pSavedFilmName);
+	SetupGameContext(pGameContext, engineInterface, pEngineName, pGameVarianName, pMapVarianName, pSavedFilmName);
 
 	static auto gameEngineHost = IGameEngineHost();
 	auto hMainGameThread = pEngine->InitThread(&gameEngineHost, pGameContext);
@@ -148,7 +158,7 @@ int main(int argc, LPSTR *argv)
 	// main loop
 	while (true)
 	{
-		//Update();
+		gameRenderer.Update();
 	}
 
 	WaitForSingleObject(hMainGameThread, INFINITE);
