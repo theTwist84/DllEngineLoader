@@ -225,7 +225,7 @@ __int64 __fastcall IGameEngineHost::Member22(char *buffer, __int64 a2)
 
 char __fastcall IGameEngineHost::ScoreboardHandler(__int64 a1, __int64 a2)
 {
-	printf("GameEngineHost: ScoreboardHandler\n");
+	// printf("GameEngineHost: ScoreboardHandler\n"); // spams
 	return 1;
 }
 
