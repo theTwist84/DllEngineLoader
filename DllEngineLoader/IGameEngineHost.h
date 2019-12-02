@@ -153,11 +153,17 @@ IGameEvents *__fastcall IGameEngineHost::GetGameEvents()
 
 void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 {
-	printf("IGameEngineHost::GameVariantWrite(\"%S\");\n", pGameVariant->GetName());
+	auto name = pGameVariant->GetName();
+	if (!name[0])
+	{
+		pGameVariant->SetName(L"Temp");
+	}
+	printf("IGameEngineHost::GameVariantWrite(\"%S\");\n", name);
+
 	char *buffer; size_t size = 0;
 	if (pGameVariant->CreateFileFromBuffer(&buffer, &size))
 	{
-		auto file = IFileAccess("%s%S.bin", GetPath(GetCommandLineToArg(0)).c_str(), pGameVariant->GetName());
+		auto file = IFileAccess("%s%S.bin", GetPath(GetCommandLineToArg(0)).c_str(), name);
 		if (file.FileOpen(FileAccessType::Write))
 		{
 			file.FileWrite(buffer, size);
@@ -168,12 +174,17 @@ void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 
 void IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 {
-	printf("IGameEngineHost::MapVariantWrite(\"%S\");\n", pMapVariant->GetName());
+	auto name = pMapVariant->GetName();
+	if (!name[0])
+	{
+		pMapVariant->SetName(L"Temp");
+	}
+	printf("IGameEngineHost::MapVariantWrite(\"%S\");\n", name);
 
 	char *buffer; size_t size = 0;
 	if (pMapVariant->CreateFileFromBuffer(&buffer, &size))
 	{
-		auto file = IFileAccess("%s%S.mvar", GetPath(GetCommandLineToArg(0)).c_str(), pMapVariant->GetName());
+		auto file = IFileAccess("%s%S.mvar", GetPath(GetCommandLineToArg(0)).c_str(), name);
 		if (file.FileOpen(FileAccessType::Write))
 		{
 			file.FileWrite(buffer, size);
