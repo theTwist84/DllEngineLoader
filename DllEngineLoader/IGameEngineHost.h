@@ -1,6 +1,5 @@
 #pragma once
 
-
 static IGameEvents s_gameEvents = IGameEvents();
 
 class IGameEngineHost
@@ -34,8 +33,8 @@ public: /* instance functions */
 	/* 8  */ virtual void Member08(const wchar_t *, const wchar_t *);
 	/* 9  */ virtual void Member09(wchar_t[1024], wchar_t[1024]);
 	/* 10 */ virtual IGameEvents *GetGameEvents();
-	/* 11 */ virtual void UpdateGameVariant(char *);
-	/* 12 */ virtual void UpdateMapVariant(char *);
+	/* 11 */ virtual void SaveGameVariant(IGameVariant *);
+	/* 12 */ virtual void SaveMapVariant(IMapVariant *);
 	/* 13 */ virtual void Member13(const wchar_t *, const wchar_t *, const void *, unsigned int);
 	/* 14 */ virtual char Member14(int, BYTE *);
 	/* 15 */ virtual char Member15(int, BYTE *);
@@ -44,7 +43,7 @@ public: /* instance functions */
 	/* 18 */ virtual void Member18(int);
 	/* 19 */ virtual __int64 __fastcall MapLoadPecentStatus(__int64, __int64, float);
 	/* 20 */ virtual void Member20(__int64, __int8);
-	/* 21 */ virtual __int64 __fastcall GetMachineIdentifier(__int64);
+	/* 21 */ virtual __int64 __fastcall GetMachineIDentifier(__int64);
 	/* 22 */ virtual __int64 Member22(char *buffer, __int64);
 	/* 23 */ virtual char Member23(__int64, __int64);
 	/* 24 */ virtual void GetSessionInfo(char *buffer);
@@ -75,6 +74,8 @@ public: /* instance functions */
 	IGameEvents *pGameEvents = nullptr;
 	__int64 data1[5863] = {};
 };
+
+static IGameEngineHost s_gameEngineHost = IGameEngineHost();
 
 IGameEngineHost::IGameEngineHost()
 {
@@ -113,7 +114,7 @@ void __fastcall IGameEngineHost::EngineStateUpdate(__int32 state)
 
 __int64 __fastcall IGameEngineHost::GameExited(unsigned int a1, char *a2, int a3)
 {
-
+	g_running = false;
 	//WriteLineVerbose("GameExited %u [%s]", a1, a2);
 	return __int64(0);
 }
@@ -150,14 +151,20 @@ IGameEvents *__fastcall IGameEngineHost::GetGameEvents()
 	return pGameEvents;
 }
 
-void __fastcall IGameEngineHost::UpdateGameVariant(char *variant)
+void __fastcall IGameEngineHost::SaveGameVariant(IGameVariant *pGameVariant)
 {
-	//WriteLineVerbose("IGameEngineHost::UpdateGameVariant");
+	//char *data; size_t dataSize = 0;
+	//if (pGameVariant->CreateFileFromBuffer(&data, &dataSize)) {}
+
+	//WriteLineVerbose("IGameEngineHost::SaveGameVariant");
 }
 
-void __fastcall IGameEngineHost::UpdateMapVariant(char *variant)
+void __fastcall IGameEngineHost::SaveMapVariant(IMapVariant *pMapVariant)
 {
-	//WriteLineVerbose("IGameEngineHost::UpdateMapVariant");
+	//char *data; size_t dataSize = 0;
+	//if (pMapVariant->CreateFileFromBuffer(&data, &dataSize)) {}
+
+	//WriteLineVerbose("IGameEngineHost::SaveMapVariant");
 }
 
 void __fastcall IGameEngineHost::Member13(const wchar_t *, const wchar_t *, const void *, unsigned int)
@@ -205,7 +212,7 @@ void __fastcall IGameEngineHost::Member20(__int64 a1, __int8 a2)
 	//WriteLineVerbose("IGameEngineHost::Member20");
 }
 
-__int64 __fastcall IGameEngineHost::GetMachineIdentifier(__int64 a1)
+__int64 __fastcall IGameEngineHost::GetMachineIDentifier(__int64 a1)
 {
 	return __int64(3);
 }
@@ -232,7 +239,7 @@ void __fastcall IGameEngineHost::MembershipUpdate(char *pSessionMembership, uint
 	//WriteLineVerbose("s_session_membership count: %i", pSessionMembership->Count);
 	//for (int i = 0; i < pSessionMembership->Count; i++)
 	//{
-	//	//WriteLineVerbose("MachineIdentifier[%i]: 0x%llx", i, pSessionMembership->Members[i].MachineIdentifier);
+	//	//WriteLineVerbose("MachineIDentifier[%i]: 0x%llx", i, pSessionMembership->Members[i].MachineIDentifier);
 
 	//	pSessionMembership->Members[i].SecureAddress = -1;
 	//}
@@ -241,7 +248,7 @@ void __fastcall IGameEngineHost::MembershipUpdate(char *pSessionMembership, uint
 	//{
 	//	pSessionMembership->Count = 2;
 	//	static int x = 1;
-	//	pSessionMembership->Members[1].MachineIdentifier = x;
+	//	pSessionMembership->Members[1].MachineIDentifier = x;
 	//}
 
 	//auto x = &pSessionMembership->Members[0].SecureAddress;

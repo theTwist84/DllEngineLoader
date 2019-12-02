@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="c_engine.h" />
     <ClInclude Include="c_file.h" />
+    <ClInclude Include="IGameContext.h" />
     <ClInclude Include="IGameEngineHost.h" />
     <ClInclude Include="IGameEvents.h" />
     <ClInclude Include="IGameRenderer.h" />

@@ -9,7 +9,7 @@ private:
 	static HWND s_hForegroundWnd;
 	static HINSTANCE s_hInstance;
 	static HANDLE s_hPostMessageThread;
-	static DWORD s_hPostMessageThreadId;
+	static DWORD s_hPostMessageThreadID;
 
 	static ID3D11Device *s_pDevice;
 	static ID3D11DeviceContext *s_pDeviceContext;
@@ -41,13 +41,15 @@ public:
 	static void Update();
 };
 
+static IGameRenderer s_gameRenderer = IGameRenderer(1280, 720, true);
+
 HICON IGameRenderer::s_hIcon = NULL;
 HWND IGameRenderer::s_hWnd = NULL;
 HWND IGameRenderer::s_hFocusWnd = NULL;
 HWND IGameRenderer::s_hForegroundWnd = NULL;
 HINSTANCE IGameRenderer::s_hInstance = NULL;
 HANDLE IGameRenderer::s_hPostMessageThread = NULL;
-DWORD IGameRenderer::s_hPostMessageThreadId = NULL;
+DWORD IGameRenderer::s_hPostMessageThreadID = NULL;
 
 ID3D11Device *IGameRenderer::s_pDevice = nullptr;
 ID3D11DeviceContext *IGameRenderer::s_pDeviceContext = nullptr;

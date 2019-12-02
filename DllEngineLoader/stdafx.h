@@ -21,13 +21,34 @@
 #include <d3d11_4.h>
 #include <Xinput.h>
 
+const char *pathf(LPCSTR fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+
+	static char path[MAX_PATH];
+	int result = vsnprintf_s(path, MAX_PATH, _TRUNCATE, fmt, args);
+	va_end(args);
+
+	return path;
+};
+
+LPCSTR GetUserprofileVariable()
+{
+	static char szBuf[MAX_PATH] = { 0 };
+	GetEnvironmentVariableA("USERPROFILE", szBuf, MAX_PATH);
+	return szBuf;
+};
+
+bool g_running = false;
+
 #include "MouseInput.h"
 #include "IGameRenderer.h"
 
-extern IGameRenderer GameRenderer;
+#include "c_file.h"
+#include "c_engine.h"
+
+#include "IGameContext.h"
 
 #include "IGameEvents.h"
 #include "IGameEngineHost.h"
-
-#include "c_file.h"
-#include "c_engine.h"

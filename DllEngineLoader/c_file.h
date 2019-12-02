@@ -17,14 +17,14 @@ private:
 	static FILE *s_pFile;
 
 	static char *s_pBuffer;
-	static size_t s_bufferSize;
+	static size_t s_size;
 };
 
 char c_file::s_filePath[MAX_PATH] = {};
 FILE *c_file::s_pFile = nullptr;
 
 char *c_file::s_pBuffer = nullptr;
-size_t c_file::s_bufferSize = -1;
+size_t c_file::s_size = -1;
 
 
 c_file::c_file(LPCSTR pFilePath)
@@ -42,20 +42,20 @@ bool c_file::FileOpen()
 	if (s_pFile = fopen(s_filePath, "rb"))
 	{
 		fseek(s_pFile, 0, SEEK_END);
-		s_bufferSize = ftell(s_pFile);
+		s_size = ftell(s_pFile);
 		fseek(s_pFile, 0L, SEEK_SET);
-		s_pBuffer = new char[s_bufferSize];
-		memset(s_pBuffer, 0x00, s_bufferSize);
+		s_pBuffer = new char[s_size];
+		memset(s_pBuffer, 0x00, s_size);
 
 		fseek(s_pFile, 0L, SEEK_SET);
 		size_t totalBytesRead = 0;
 		do
 		{
-			size_t bytesToRead = s_bufferSize - totalBytesRead;
+			size_t bytesToRead = s_size - totalBytesRead;
 			fseek(s_pFile, static_cast<long>(totalBytesRead), SEEK_SET);
 			size_t bytesRead = fread(s_pBuffer + totalBytesRead, 1, bytesToRead, s_pFile);
 			totalBytesRead += bytesRead;
-		} while (totalBytesRead < s_bufferSize);
+		} while (totalBytesRead < s_size);
 
 		return true;
 	}
@@ -70,7 +70,7 @@ void c_file::FileClose()
 		if (s_pBuffer)
 		{
 			free(s_pBuffer);
-			s_bufferSize = 0;
+			s_size = 0;
 		}
 		fclose(s_pFile);
 	}
@@ -78,6 +78,6 @@ void c_file::FileClose()
 
 char *c_file::GetBuffer(size_t &rBufferSize)
 {
-	rBufferSize = s_bufferSize;
+	rBufferSize = s_size;
 	return s_pBuffer;
 }
