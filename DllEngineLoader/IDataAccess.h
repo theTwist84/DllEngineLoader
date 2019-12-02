@@ -18,17 +18,17 @@ public:
 		static class IGameVariant *pGameVariant = {};
 		size_t                     file_size    = {};
 
-		if (pFile = new IFileAccess("%s\\game_variants\\%s.bin", pEngine, pName), pFile->FileOpen())
+		if (pFile = new IFileAccess("%s\\game_variants\\%s.bin", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pGameVariant = GameVariantCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pGameVariant = GameVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		else if (pFile = new IFileAccess("%s\\hopper_game_variants\\%s.bin", pEngine, pName), pFile->FileOpen())
+		else if (pFile = new IFileAccess("%s\\hopper_game_variants\\%s.bin", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pGameVariant = GameVariantCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pGameVariant = GameVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\GameType\\%s.bin", GetUserprofileVariable(), pEngine, pName), pFile->FileOpen())
+		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\GameType\\%s.bin", GetUserprofileVariable(), pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pGameVariant = GameVariantCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pGameVariant = GameVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
 
 		pFile->FileClose();
@@ -41,17 +41,17 @@ public:
 		size_t                    file_size   = {};
 		static class IMapVariant *pMapVariant = {};
 
-		if (pFile = new IFileAccess("%s\\map_variants\\%s.mvar", pEngine, pName), pFile->FileOpen())
+		if (pFile = new IFileAccess("%s\\map_variants\\%s.mvar", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pMapVariant = MapVariantCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		else if (pFile = new IFileAccess("%s\\hopper_map_variants\\%s.mvar", pEngine, pName), pFile->FileOpen())
+		else if (pFile = new IFileAccess("%s\\hopper_map_variants\\%s.mvar", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pMapVariant = MapVariantCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Map\\%s.bin", GetUserprofileVariable(), pEngine, pName), pFile->FileOpen())
+		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Map\\%s.bin", GetUserprofileVariable(), pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pMapVariant = MapVariantCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
 
 		pFile->FileClose();
@@ -65,17 +65,17 @@ public:
 		size_t                          file_size         = {};
 		static class ISaveFilmMetadata *pSaveFilmMetadata = {};
 
-		if (pFile = new IFileAccess("%s\\Temporary\\autosave\\%s.film", pEngine, rpName), pFile->FileOpen())
+		if (pFile = new IFileAccess("%s\\Temporary\\autosave\\%s.film", pEngine, rpName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\%s\\autosave\\%s.film", GetUserprofileVariable(), pEngine, rpName), pFile->FileOpen())
+		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\%s\\autosave\\%s.film", GetUserprofileVariable(), pEngine, rpName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
-		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Movie\\%s.mov", GetUserprofileVariable(), pEngine, rpName), pFile->FileOpen())
+		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Movie\\%s.mov", GetUserprofileVariable(), pEngine, rpName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->GetBuffer(file_size), file_size);
+			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
 		rpName = pPath = pFile->GetPath();
 

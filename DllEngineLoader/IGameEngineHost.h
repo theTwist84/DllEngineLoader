@@ -154,16 +154,32 @@ IGameEvents *__fastcall IGameEngineHost::GetGameEvents()
 void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 {
 	printf("IGameEngineHost::GameVariantWrite(\"%S\");\n", pGameVariant->GetName());
-	//char *data; size_t dataSize = 0;
-	//if (pGameVariant->CreateFileFromBuffer(&data, &dataSize)) {}
+	char *buffer; size_t size = 0;
+	if (pGameVariant->CreateFileFromBuffer(&buffer, &size))
+	{
+		auto file = IFileAccess("%s%S.bin", GetPath(GetCommandLineToArg(0)).c_str(), pGameVariant->GetName());
+		if (file.FileOpen(FileAccessType::Write))
+		{
+			file.FileWrite(buffer, size);
+		}
+		file.FileClose();
+	}
 }
 
 void IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 {
 	printf("IGameEngineHost::MapVariantWrite(\"%S\");\n", pMapVariant->GetName());
 
-	//char *data; size_t dataSize = 0;
-	//if (pMapVariant->CreateFileFromBuffer(&data, &dataSize)) {}
+	char *buffer; size_t size = 0;
+	if (pMapVariant->CreateFileFromBuffer(&buffer, &size))
+	{
+		auto file = IFileAccess("%s%S.mvar", GetPath(GetCommandLineToArg(0)).c_str(), pMapVariant->GetName());
+		if (file.FileOpen(FileAccessType::Write))
+		{
+			file.FileWrite(buffer, size);
+		}
+		file.FileClose();
+	}
 }
 
 void IGameEngineHost::Member13(wchar_t *a1, wchar_t *a2, LPVOID a3, UINT32 a4)

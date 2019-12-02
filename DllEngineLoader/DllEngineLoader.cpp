@@ -5,7 +5,7 @@ int main(int argc, LPSTR *argv)
 #ifndef _DEBUG
 	//FreeConsole();
 #elif _DEBUG
-	printf("main(%i, \"%s\"", argc, std::string(argv[0]).substr(std::string(argv[0]).find_last_of("/\\") + 1).c_str());
+	printf("main(%i, \"%s\"", argc, GetFileName(argv[0]).c_str());
 	for (size_t i = 1; i < argc; i++) printf(" \"%s\"", argv[i]);
 	printf(");\n");
 #endif

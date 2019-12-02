@@ -12,8 +12,9 @@ public:
 	static void WriteLine(std::string, ...);
 
 private:
-	static HANDLE s_threadHandle;
+	static HANDLE          s_threadHandle;
 	static IGameInterface *s_pGameInterface;
+
 	static void Thread();
 	static void Commands(std::string);
 };
@@ -35,13 +36,12 @@ IConsoleAccess::~IConsoleAccess()
 
 bool IConsoleAccess::SetGameInterface(IGameInterface &rGameInterface)
 {
-	if (&rGameInterface)
+
+	if (&rGameInterface && !s_pGameInterface)
 	{
 		s_pGameInterface = &rGameInterface;
-
 		return true;
 	}
-
 	return false;
 }
 
@@ -61,7 +61,6 @@ void IConsoleAccess::WriteLine(std::string pFormat, ...)
 	vprintf(pFormat.c_str(), args);
 }
 
-// TODO: Support lowercase
 void IConsoleAccess::Thread()
 {
 	auto pGameInterface = s_pGameInterface;
@@ -78,6 +77,7 @@ void IConsoleAccess::Thread()
 	}
 }
 
+// TODO: Support lowercase
 void IConsoleAccess::Commands(std::string Commands)
 {
 	auto pGameInterface = s_pGameInterface;

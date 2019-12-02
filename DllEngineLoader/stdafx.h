@@ -41,15 +41,22 @@ LPCSTR GetCommandLineToArg(int index)
 	static LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
 	static char    szBuf[4096] = {};
 
-	if (!szBuf[0])
+	memset(szBuf, 0, sizeof(szBuf));
+	if (index < nArgs)
 	{
-		memset(szBuf, 0, sizeof(szBuf));
-		if (index > nArgs)
-		{
-			sprintf_s(szBuf, "%S", szArglist[index]);
-		}
+		sprintf_s(szBuf, "%S", szArglist[index]);
 	}
 	return szBuf;
+}
+
+std::string GetPath(LPCSTR pStr)
+{
+	return std::string(pStr).erase(std::string(pStr).find_last_of("/\\") + 1, std::string::npos);
+}
+
+std::string GetFileName(LPCSTR pStr)
+{
+	return std::string(pStr).substr(std::string(pStr).find_last_of("/\\") + 1);
 }
 
 void EnsureModuleIsLoaded(LPCSTR pLibPath)
