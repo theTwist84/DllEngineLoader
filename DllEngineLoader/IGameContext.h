@@ -238,22 +238,6 @@ public:
 
 		m_difficulty = difficulty;
 	}
-	void SetGameVariant(IGameVariant *pVariant)
-	{
-#ifdef _DEBUG
-		printf("IGameContext::SetGameVariant(\"%S\");\n", pVariant->GetName());
-#endif
-
-		memcpy(m_gameVariant, pVariant->GetData(), pVariant->GetDataSize());
-	}
-	void SetMapVariant(IMapVariant *pVariant)
-	{
-#ifdef _DEBUG
-		printf("IGameContext::SetMapVariant(\"%S\");\n", pVariant->GetName());
-#endif
-
-		memcpy(m_mapVariant, pVariant->GetData(), pVariant->GetDataSize());
-	}
 	void SetMapID(INT32 mapID)
 	{
 #ifdef _DEBUG
@@ -303,7 +287,7 @@ private:
 IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText = true)
 {
 #ifdef _DEBUG
-	printf("IGameContext(0x%p, \"%s\", \"%s\", \"%s\", \"%s\", %s);\n", pDataAccess, pEngine, pGame, pMap, pFilm, setWindowText ? "true" : "false");
+	printf("IGameContext(0x%08IIX, \"%s\", \"%s\", \"%s\", \"%s\", %s);\n", reinterpret_cast<UINT64>(pDataAccess), pEngine, pGame, pMap, pFilm, setWindowText ? "true" : "false");
 #endif
 
 	IGameVariant      *pGameVariant      = {};
@@ -323,12 +307,10 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 		}
 		assert(pMapVariant);
 
-		char gameVariantName[64] = { 0 };
-		sprintf(gameVariantName, "%S", pGameVariant->GetName());
+		char gameVariantName[64] = { 0 }; sprintf(gameVariantName, "%S", pGameVariant->GetName());
 		if (!gameVariantName[0]) sprintf(gameVariantName, "%s", pGame);
 
-		char mapVariantName[64] = { 0 };
-		sprintf(mapVariantName, "%S", pMapVariant->GetName());
+		char mapVariantName[64] = { 0 }; sprintf(mapVariantName, "%S", pMapVariant->GetName());
 		if (!mapVariantName[0]) sprintf(mapVariantName, "%s", pMap);
 
 		std::time_t ct = std::time(0);
@@ -356,8 +338,10 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 	{
 		if (pGameVariant)
 		{
+			pGameVariant->CopyTo(&m_gameVariant);
+
 			GameMode gameMode = GameMode::eBase;
-			switch (*reinterpret_cast<INT32 *>(pGameVariant->GetData()))
+			switch (*reinterpret_cast<INT32 *>(&m_gameVariant[0]))
 			{
 			case 1:
 				gameMode = GameMode::eMultiplayer;
@@ -372,19 +356,18 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 				gameMode = GameMode::eSurvival;
 				break;
 			}
-			SetGameVariant(pGameVariant);
 			SetGameMode(gameMode);
 		}
 
 		if (pMapVariant)
 		{
-			SetMapVariant(pMapVariant);
+			pMapVariant->CopyTo(m_mapVariant);
 			SetMapID(pMapVariant->GetID());
 		}
 	}
 
-	m_sessionIsHost = true;
-	m_sessionPeerCount = 1;
+	m_sessionIsHost      = true;
+	m_sessionPeerCount   = 1;
 	m_sessionPlayerCount = 1;
 }
 

@@ -7,19 +7,13 @@ public:
 	virtual bool  Function10() = 0;
 	virtual bool  Function11() = 0;
 
-	LPVOID        GetData();
-	size_t        GetDataSize();
+	void          CopyTo(LPVOID);
 
 private:
-	char m_data[0x14CD8];
+	char          m_data[0x14CD8];
 };
 
-LPVOID IMapVariant::GetData()
+void IMapVariant::CopyTo(LPVOID outData)
 {
-	return &m_data;
-}
-
-size_t IMapVariant::GetDataSize()
-{
-	return sizeof(m_data);
+	memcpy(outData, m_data, sizeof(m_data));
 }

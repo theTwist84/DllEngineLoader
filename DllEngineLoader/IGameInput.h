@@ -59,7 +59,7 @@ bool                  IGameInput::s_button5Pressed        = false;
 void IGameInput::InputWindowMessage(LPARAM lParam)
 {
 	RAWINPUT rawInput = {};
-	UINT dwSize = sizeof(rawInput);
+	UINT       dwSize = sizeof(rawInput);
 	GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, &rawInput, &dwSize, sizeof(RAWINPUTHEADER));
 
 	switch (rawInput.header.dwType)
@@ -71,22 +71,58 @@ void IGameInput::InputWindowMessage(LPARAM lParam)
 		{
 			if (rRawMouse.usFlags == MOUSE_MOVE_RELATIVE)
 			{
-				int xPosRelative        = rRawMouse.lLastX;
-				int yPosRelative        = rRawMouse.lLastY;
+				int xPosRelative = rRawMouse.lLastX;
+				int yPosRelative = rRawMouse.lLastY;
 				s_xPositionAccumulator += xPosRelative;
 				s_yPositionAccumulator += yPosRelative;
 			}
 
 			if (rRawMouse.usButtonFlags & RI_MOUSE_WHEEL)
 			{
-				s_wheelAccumulator += static_cast<int32_t>(static_cast<SHORT>(rRawMouse.usButtonData));
+				SHORT wheelDelta = static_cast<SHORT>(rRawMouse.usButtonData);
+				s_wheelAccumulator += static_cast<int32_t>(wheelDelta);
 			}
 
-			s_leftButtonPressed   = rRawMouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN   ? true : false;
-			s_rightButtonPressed  = rRawMouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN  ? true : false;
-			s_middleButtonPressed = rRawMouse.usButtonFlags & RI_MOUSE_MIDDLE_BUTTON_DOWN ? true : false;
-			s_button4Pressed      = rRawMouse.usButtonFlags & RI_MOUSE_BUTTON_4_DOWN      ? true : false;
-			s_button5Pressed      = rRawMouse.usButtonFlags & RI_MOUSE_BUTTON_5_DOWN      ? true : false;
+			if (rRawMouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
+			{
+				s_leftButtonPressed = true;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_UP)
+			{
+				s_leftButtonPressed = false;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
+			{
+				s_rightButtonPressed = true;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_UP)
+			{
+				s_rightButtonPressed = false;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_MIDDLE_BUTTON_DOWN)
+			{
+				s_middleButtonPressed = true;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_MIDDLE_BUTTON_UP)
+			{
+				s_middleButtonPressed = false;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_BUTTON_4_DOWN)
+			{
+				s_button4Pressed = true;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_BUTTON_4_UP)
+			{
+				s_button4Pressed = false;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_BUTTON_5_DOWN)
+			{
+				s_button5Pressed = true;
+			}
+			if (rRawMouse.usButtonFlags & RI_MOUSE_BUTTON_5_UP)
+			{
+				s_button5Pressed = false;
+			}
 		}
 	}
 	break;

@@ -1,33 +1,12 @@
 #include "stdafx.h"
 
-void EnsureModuleIsLoaded(LPCSTR pLibPath)
-{
-#ifdef _DEBUG
-	printf("EnsureModuleIsLoaded(\"%s\");\n", pLibPath);
-#endif
-
-	HMODULE hModule = GetModuleHandleA(pLibPath);
-	if (!hModule)
-	{
-		if (hModule = LoadLibraryA(pLibPath), !hModule)
-		{
-			MessageBoxA(NULL, pLibPath, "failed to load library", MB_ICONERROR);
-		}
-		assert(hModule);
-	}
-}
-
 int main(int argc, LPSTR *argv)
 {
 #ifndef _DEBUG
-	FreeConsole();
-#endif
-#ifdef _DEBUG
+	//FreeConsole();
+#elif _DEBUG
 	printf("main(%i, \"%s\"", argc, std::string(argv[0]).substr(std::string(argv[0]).find_last_of("/\\") + 1).c_str());
-	for (size_t i = 1; i < argc; i++)
-	{
-		printf(" \"%s\"", argv[i]);
-	}
+	for (size_t i = 1; i < argc; i++) printf(" \"%s\"", argv[i]);
 	printf(");\n");
 #endif
 
@@ -59,19 +38,22 @@ int main(int argc, LPSTR *argv)
 		break;
 	}
 
-	static auto gameEngineHost = IGameEngineHost();
-	static auto gameRasterizer = IGameRasterizer(1280, 720, true);
-	static auto gameInterface  = IGameInterface(pEngine);
-	static auto gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
+	static IGameInterface  gameInterface  = IGameInterface(pEngine);
+	static IGameEngineHost gameEngineHost = IGameEngineHost();
+	static IGameRasterizer gameRasterizer = IGameRasterizer(1280, 720, true);
+	static IGameContext    gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
 
 	auto updateCallBack = [](IGameEngine *pEngine)
 	{
 		/*printf("Running!\n");*/
 
-		if (GetKeyState(VK_END) & 0x80)
+		if (gameRasterizer.IsWindowFocused())
 		{
-			pEngine->UpdateEngineState(EngineState::eEndGameWriteStats);
-			g_running = false;
+			if (GetKeyState(VK_END) & 0x80)
+			{
+				pEngine->UpdateEngineState(EngineState::eEndGameWriteStats);
+				g_running = false;
+			}
 		}
 	};
 

@@ -7,24 +7,18 @@ public:
 	IFileAccess(LPCSTR);
 	~IFileAccess();
 
-	static bool   FileOpen();
-	static void   FileClose();
+	bool   FileOpen();
+	void   FileClose();
 
-	static char  *GetBuffer(size_t &);
+	char  *GetBuffer(size_t &);
 
 private:
-	static char   s_filePath[MAX_PATH];
-	static FILE  *s_pFile;
+	char   s_filePath[MAX_PATH] = {};
+	FILE  *s_pFile              = 0;
 
-	static char  *s_pBuffer;
-	static size_t s_size;
+	char  *s_pBuffer            = 0;
+	size_t s_size               = 0;
 };
-
-char   IFileAccess::s_filePath[MAX_PATH] = {};
-FILE  *IFileAccess::s_pFile              = 0;
-
-char  *IFileAccess::s_pBuffer            = 0;
-size_t IFileAccess::s_size               = 0;
 
 
 IFileAccess::IFileAccess(LPCSTR pFilePath)

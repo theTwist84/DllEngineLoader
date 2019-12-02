@@ -6,14 +6,14 @@ public:
 	IGameInterface(LPCSTR);
 	~IGameInterface();
 
-	static void         LaunchTitle(IGameEngineHost &, IGameRasterizer &, IGameContext &, bool &, void(*)(IGameEngine *) = nullptr);
+	static void         LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *) = nullptr);
 	static void         SetLocale(LPCSTR, LPCSTR, LPCSTR);
 
 	static IGameEngine *GetEngine();
 	static IDataAccess *GetDataAccess();
 
-private:
 	static char         s_modulePath[MAX_PATH];
+private:
 	static HMODULE      s_hLibModule;
 
 	static IGameEngine *s_pEngine;
@@ -36,7 +36,6 @@ IGameInterface::IGameInterface(LPCSTR pEngine)
 	if (!s_hLibModule)
 	{
 		s_hLibModule = LoadLibraryA(s_modulePath);
-		//printf("0x%p [%s]\n", s_hLibModule, s_modulePath);
 	}
 
 	if (s_hLibModule)
@@ -76,13 +75,14 @@ IDataAccess *IGameInterface::GetDataAccess()
 void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *))
 {
 #ifdef _DEBUG
-	printf("IGameInterface::LaunchTitle(0x%p, 0x%p, 0x%p, %s, 0x%p);\n", &rGameEngineHost, &rGameRasterizer, &rGameContext, rRunning ? "true" : "false", pCallback);
+	printf("IGameInterface::LaunchTitle(0x%08IIX, 0x%08IIX, 0x%08IIX, %s, 0x%08IIX);\n", (UINT64)&rGameEngineHost, (UINT64)&rGameRasterizer, (UINT64)&rGameContext, rRunning ? "true" : "false", (UINT64)pCallback);
 #endif
 
 	auto pEngine     = GetEngine();
 	auto pDataAccess = GetDataAccess();
 
-	HANDLE hGameThread = pEngine->Initialize(rGameRasterizer, rGameEngineHost, rGameContext);
+	pEngine->InitGraphics(rGameRasterizer.GetDevice(), rGameRasterizer.GetContext(), rGameRasterizer.GetSwapChain(), 0);
+	HANDLE hGameThread = pEngine->InitThread(&rGameEngineHost, &rGameContext);
 	assert(hGameThread);
 
 	rRunning = true;
@@ -120,5 +120,9 @@ void IGameInterface::SetLocale(LPCSTR pAudio = "en-US", LPCSTR pUi = "en-US", LP
 	_snwprintf(&language[85 * 1], 84, L"%S", pUi);
 	_snwprintf(&language[85 * 2], 84, L"%S", pUnknown);
 
-	pSetLibrarySettings(language);
+	if (pSetLibrarySettings)
+	{
+		pSetLibrarySettings(language);
+	}
+	
 }

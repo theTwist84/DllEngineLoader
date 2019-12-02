@@ -21,7 +21,8 @@
 #include <d3d11.h>
 #include <d3d11_4.h>
 
-const char *pathf(LPCSTR fmt, ...)
+// only used for file paths
+LPCSTR pathf(LPCSTR fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
@@ -36,9 +37,12 @@ const char *pathf(LPCSTR fmt, ...)
 LPCSTR GetUserprofileVariable()
 {
 	static char szBuf[MAX_PATH] = {};
+	if (!szBuf[0])
+	{
+		memset(szBuf, 0, sizeof(szBuf));
+		GetEnvironmentVariableA("USERPROFILE", szBuf, MAX_PATH);
+	}
 
-	memset(szBuf, 0, sizeof(szBuf));
-	GetEnvironmentVariableA("USERPROFILE", szBuf, MAX_PATH);
 	return szBuf;
 };
 
@@ -48,12 +52,32 @@ LPCSTR GetCommandLineToArg(int index)
 	static LPWSTR *szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
 	static char    szBuf[1024] = {};
 
-	memset(szBuf, 0, sizeof(szBuf));
-	if (index > nArgs)
+	if (!szBuf[0])
 	{
-		sprintf_s(szBuf, "%S", szArglist[index]);
+		memset(szBuf, 0, sizeof(szBuf));
+		if (index > nArgs)
+		{
+			sprintf_s(szBuf, "%S", szArglist[index]);
+		}
 	}
 	return szBuf;
+}
+
+void EnsureModuleIsLoaded(LPCSTR pLibPath)
+{
+#ifdef _DEBUG
+	printf("EnsureModuleIsLoaded(\"%s\");\n", pLibPath);
+#endif
+
+	HMODULE hModule = GetModuleHandleA(pLibPath);
+	if (!hModule)
+	{
+		if (hModule = LoadLibraryA(pLibPath), !hModule)
+		{
+			MessageBoxA(NULL, pLibPath, "failed to load library", MB_ICONERROR);
+		}
+		assert(hModule);
+	}
 }
 
 bool g_running = false;
@@ -70,8 +94,7 @@ bool g_running = false;
 #include "IMapVariant.h"
 #include "ISaveFilmMetadata.h"
 
+#include "IGameInterface.h"
 #include "IGameContext.h"
 #include "IGameEvents.h"
 #include "IGameEngineHost.h"
-
-#include "IGameInterface.h"

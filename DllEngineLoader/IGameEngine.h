@@ -1,6 +1,6 @@
 #pragma once
 
-enum class EngineState
+enum class EngineState : INT32
 {
 	ePause,
 	eUnpause,
@@ -8,8 +8,8 @@ enum class EngineState
 	eRevertToLastSave,
 	eRestartLevel,
 	eReloadSettings,
-	eGameLoadStart,
-	eGameLoadEnd,
+	eStartLoading,
+	eEndLoading,
 	eUnknown8,
 	eUnknown9,
 	eSaveGameVariant,
@@ -22,6 +22,48 @@ enum class EngineState
 
 	kCount
 };
+
+LPCSTR EngineStateFromID(EngineState id)
+{
+	switch (id)
+	{
+	case EngineState::ePause:
+		return "Pause";
+	case EngineState::eUnpause:
+		return "Unpause";
+	case EngineState::eEndGameWriteStats:
+		return "EndGameWriteStats";
+	case EngineState::eRevertToLastSave:
+		return "RevertToLastSave";
+	case EngineState::eRestartLevel:
+		return "RestartLevel";
+	case EngineState::eReloadSettings:
+		return "ReloadSettings";
+	case EngineState::eStartLoading:
+		return "StartLoading";
+	case EngineState::eEndLoading:
+		return "EndLoading";
+	case EngineState::eUnknown8:
+		return "Unknown8";
+	case EngineState::eUnknown9:
+		return "Unknown9";
+	case EngineState::eSaveGameVariant:
+		return "SaveGameVariant";
+	case EngineState::eSaveMapVariant:
+		return "SaveMapVariant";
+	case EngineState::eEndRound:
+		return "EndRound";
+	case EngineState::eEndGame:
+		return "EndGame";
+	case EngineState::eReloadRenderer:
+		return "ReloadRenderer";
+	case EngineState::eUnknown15:
+		return "Unknown15";
+	case EngineState::eUnknown16:
+		return "Unknown16";
+	}
+	return nullptr;
+}
 
 class IGameEngine
 {
@@ -38,11 +80,6 @@ public:
 	virtual int    Function9(LPVOID unknown)                                                               = 0;
 	virtual void   Function10()                                                                            = 0;
 
-	HANDLE Initialize(class IGameRasterizer &rGameRasterizer, class IGameEngineHost &rGameEngineHost, class IGameContext &rGameContext)
-	{
-		InitGraphics(rGameRasterizer.GetDevice(), rGameRasterizer.GetContext(), rGameRasterizer.GetSwapChain(), 0);
-		return InitThread(&rGameEngineHost, &rGameContext);
-	}
 private:
 	static  char   s_data[0x460];
 };

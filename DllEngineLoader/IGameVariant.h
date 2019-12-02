@@ -16,20 +16,14 @@ public:
 	virtual bool          Function19(LPVOID, LPVOID) = 0;
 	virtual INT32         Function20()               = 0;
 	virtual bool          Function21(INT32)          = 0;
-
-	LPVOID                GetData();
-	size_t                GetDataSize();
+	
+	void                  CopyTo(LPVOID);
 
 private:
-	char m_data[0x15230];
+	char                  m_data[0x15230];
 };
 
-LPVOID IGameVariant::GetData()
+void IGameVariant::CopyTo(LPVOID outData)
 {
-	return &m_data;
-}
-
-size_t IGameVariant::GetDataSize()
-{
-	return sizeof(m_data);
+	memcpy(outData, m_data, sizeof(m_data));
 }

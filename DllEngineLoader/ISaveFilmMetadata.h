@@ -11,8 +11,8 @@ public:
 	virtual wchar_t *GetName()        = 0;
 	virtual wchar_t *GetDescription() = 0;
 
-	LPVOID GetData();
-	size_t GetDataSize();
+	LPVOID           GetData();
+	size_t           GetDataSize();
 
 private:
 	char m_data[0x1F7B0];

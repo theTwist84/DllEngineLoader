@@ -1,14 +1,5 @@
 #pragma once
 
-#define DIRECTINPUT_VERSION 0x0800
-#include <hidusage.h>
-#include <dinput.h>
-#include <D3Dcompiler.h>
-#include <dxgi.h>
-#include <d3d11.h>
-#include <d3d11_4.h>
-#include <Xinput.h>
-
 class IGameRasterizer
 {
 private:
@@ -30,10 +21,8 @@ private:
 	static void                 InitializeDevice(bool createSwapchain);
 
 public:
-	IGameRasterizer();
-	~IGameRasterizer();
-
 	IGameRasterizer(int width, int height, bool windowed);
+	~IGameRasterizer();
 
 	static HWND                 GetWindowHandle();
 	static bool                 IsWindowFocused();
@@ -250,28 +239,28 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 	D3D_FEATURE_LEVEL FeatureLevel = {};
 
 	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &s_deviceMode);
-	
-	assert(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&s_pFactory) == S_OK);
+
+	auto CreateDXGIFactory1Result = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&s_pFactory);
+	assert(CreateDXGIFactory1Result == S_OK);
 	assert(s_pFactory);
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
 	//createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-
-	assert(D3D11CreateDevice(
-		NULL, 
-		D3D_DRIVER_TYPE_HARDWARE, 
-		NULL, 
-		createDeviceFlags, 
-		pFeatureLevels, 
-		_countof(pFeatureLevels), 
-		D3D11_SDK_VERSION, 
-		&s_pDevice, 
-		&FeatureLevel, 
+	auto D3D11CreateDeviceResult = D3D11CreateDevice(
+		NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL,
+		createDeviceFlags,
+		pFeatureLevels,
+		_countof(pFeatureLevels),
+		D3D11_SDK_VERSION,
+		&s_pDevice,
+		&FeatureLevel,
 		&s_pContext
-	) == S_OK);
-	
+	);
+	assert(D3D11CreateDeviceResult == S_OK);
 	assert(s_pDevice);
 	assert(s_pContext);
 
@@ -293,7 +282,8 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 		s_SwapchainDesc.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
 		s_SwapchainDesc.Flags                              = 0;
 
-		s_pFactory->CreateSwapChain(s_pDevice, &s_SwapchainDesc, &s_pSwapChain);
+		auto CreateSwapChainResult = s_pFactory->CreateSwapChain(s_pDevice, &s_SwapchainDesc, &s_pSwapChain);
+		assert(CreateSwapChainResult == S_OK);
 		assert(s_pSwapChain);
 	}
 }
