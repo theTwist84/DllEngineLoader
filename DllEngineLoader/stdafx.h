@@ -65,6 +65,7 @@ bool g_running = false;
 
 #include "IGameEngine.h"
 #include "IDataAccess.h"
+#include "IVariantAccessorBase.h"
 #include "IGameVariant.h"
 #include "IMapVariant.h"
 #include "ISaveFilmMetadata.h"

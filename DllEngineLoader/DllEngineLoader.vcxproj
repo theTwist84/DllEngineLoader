@@ -176,6 +176,7 @@
     <ClInclude Include="IMapVariant.h" />
     <ClInclude Include="ISaveFilmMetadata.h" />
     <ClInclude Include="IGameInput.h" />
+    <ClInclude Include="IVariantAccessorBase.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

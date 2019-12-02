@@ -6,7 +6,7 @@ public:
 	IGameInterface(LPCSTR);
 	~IGameInterface();
 
-	static void         LaunchTitle(IGameEngineHost &, IGameRasterizer &, IGameContext &, bool &, void(*)(IGameEngine *));
+	static void         LaunchTitle(IGameEngineHost &, IGameRasterizer &, IGameContext &, bool &, void(*)(IGameEngine *) = nullptr);
 	static void         SetLocale(LPCSTR, LPCSTR, LPCSTR);
 
 	static IGameEngine *GetEngine();
@@ -73,7 +73,7 @@ IDataAccess *IGameInterface::GetDataAccess()
 	return s_pDataAccess;
 }
 
-void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *) = nullptr)
+void IGameInterface::LaunchTitle(IGameEngineHost &rGameEngineHost, IGameRasterizer &rGameRasterizer, IGameContext &rGameContext, bool &rRunning, void(*pCallback)(IGameEngine *))
 {
 #ifdef _DEBUG
 	printf("IGameInterface::LaunchTitle(0x%p, 0x%p, 0x%p, %s, 0x%p);\n", &rGameEngineHost, &rGameRasterizer, &rGameContext, rRunning ? "true" : "false", pCallback);
