@@ -52,21 +52,22 @@ public:
 	/* 29 */ virtual INT64        Member29(wchar_t [4][32], char *);
 	/* 30 */ virtual bool         UpdateInput(__int64, InputBuffer *);
 	/* 31 */ virtual void         Member31();
-	/* 32 */ virtual void         XInputSetState(__int32 , XINPUT_VIBRATION *);
-	/* 33 */ virtual bool         SetPlayerNames(__int64 *, wchar_t [4][32], size_t );
-	/* 34 */ virtual void         Member34(const wchar_t *, const wchar_t *);
-	/* 35 */ virtual bool         Member35(wchar_t *, __int64);
-	/* 36 */ virtual INT64        NetworkSendTo(int, char *, int, UINT16);
-	/* 37 */ virtual INT64        NetworkReceiveFrom(char *, int, __int64, UINT16);
-	/* 38 */ virtual char *       Member38(unsigned int);
-	/* 39 */ virtual int          Member39(BYTE *);
-	/* 40 */ virtual bool         Member40(signed int, __int64, __int64);
-	/* 41 */ virtual void         FirefightNew(UINT64, float);
-	/* 42 */ virtual BOOL         Member42(__int64, __int64);
-	/* 43 */ virtual bool         GetPathByType(int , char *, size_t);
-	/* 44 */ virtual bool         GetWidePathByType(int , wchar_t *, size_t);
-	/* 45 */ virtual UINT8       *Member45(__int64, LPVOID *, __int64);
-	/* 46 */ virtual __int64      Member46(UINT64, UINT64);
+	/* 32 */ virtual void         Member32();
+	/* 33 */ virtual void         XInputSetState(__int32, XINPUT_VIBRATION *);
+	/* 34 */ virtual bool         SetPlayerNames(__int64 *, wchar_t[4][32], size_t);
+	/* 35 */ virtual void         Member35(const wchar_t *, const wchar_t *);
+	/* 36 */ virtual bool         Member36(wchar_t *, __int64);
+	/* 37 */ virtual INT64        NetworkSendTo(int, char *, int, UINT16);
+	/* 38 */ virtual INT64        NetworkReceiveFrom(char *, int, __int64, UINT16);
+	/* 39 */ virtual char        *Member39(unsigned int);
+	/* 40 */ virtual int          Member40(BYTE *);
+	/* 41 */ virtual bool         Member41(signed int, __int64, __int64);
+	/* 42 */ virtual void         FirefightNew(UINT64, float);
+	/* 43 */ virtual BOOL         Member43(__int64, __int64);
+	/* 44 */ virtual bool         GetPathByType(int, char *, size_t);
+	/* 45 */ virtual bool         GetWidePathByType(int, wchar_t *, size_t);
+	/* 46 */ virtual UINT8       *Member46(__int64, LPVOID *, __int64);
+	/* 47 */ virtual __int64      Member47(UINT64, UINT64);
 
 	IGameEvents *pGameEvents = 0;
 	UINT8 data1[46904] = {};
@@ -371,6 +372,11 @@ void IGameEngineHost::Member31()
 	throw;
 }
 
+void IGameEngineHost::Member32()
+{
+	printf("IGameEngineHost::Member32\n");
+}
+
 void IGameEngineHost::XInputSetState(__int32 dwUserIndex, XINPUT_VIBRATION *pVibration)
 {
 	//printf("IGameEngineHost::XInputSetState\n"); // spams
@@ -401,14 +407,14 @@ bool IGameEngineHost::SetPlayerNames(__int64 *playerIndices, wchar_t playerNames
 	return false;
 }
 
-void IGameEngineHost::Member34(const wchar_t *a1, const wchar_t *a2)
-{
-	printf("IGameEngineHost::Member34\n");
-}
-
-bool IGameEngineHost::Member35(wchar_t *a1, __int64 a2)
+void IGameEngineHost::Member35(const wchar_t *a1, const wchar_t *a2)
 {
 	printf("IGameEngineHost::Member35\n");
+}
+
+bool IGameEngineHost::Member36(wchar_t *a1, __int64 a2)
+{
+	printf("IGameEngineHost::Member36\n");
 	return 0;
 }
 
@@ -426,21 +432,21 @@ __int64 IGameEngineHost::NetworkReceiveFrom(char *buf, int len, __int64 a4, UINT
 	return SOCKET_ERROR;
 }
 
-char *__fastcall IGameEngineHost::Member38(unsigned int a1)
-{
-	printf("IGameEngineHost::Member38\n");
-	return 0;
-}
-
-int IGameEngineHost::Member39(BYTE *buffer)
+char *__fastcall IGameEngineHost::Member39(unsigned int a1)
 {
 	printf("IGameEngineHost::Member39\n");
 	return 0;
 }
 
-bool IGameEngineHost::Member40(signed int a1, __int64 a2, __int64 a3)
+int IGameEngineHost::Member40(BYTE *buffer)
 {
 	printf("IGameEngineHost::Member40\n");
+	return 0;
+}
+
+bool IGameEngineHost::Member41(signed int a1, __int64 a2, __int64 a3)
+{
+	printf("IGameEngineHost::Member41\n");
 	return 0;
 }
 
@@ -450,9 +456,9 @@ void IGameEngineHost::FirefightNew(UINT64 a1, float a2)
 	printf("IGameEngineHost::FirefightNew(0x%08llX, %f);\n", a1, a2);
 }
 
-BOOL IGameEngineHost::Member42(__int64 a1, __int64 a2)
+BOOL IGameEngineHost::Member43(__int64 a1, __int64 a2)
 {
-	printf("IGameEngineHost::Member42\n");
+	printf("IGameEngineHost::Member43\n");
 	return 0;
 }
 
@@ -493,15 +499,15 @@ bool IGameEngineHost::GetWidePathByType(int pathType, wchar_t *wbuffer, size_t l
 	return 1;
 }
 
-unsigned __int8 *IGameEngineHost::Member45(__int64 a1, LPVOID *a2, __int64 a3)
+unsigned __int8 *IGameEngineHost::Member46(__int64 a1, LPVOID *a2, __int64 a3)
 {
-	//printf("IGameEngineHost::Member45\n"); // spams
+	//printf("IGameEngineHost::Member46\n"); // spams
 	return 0;
 }
 
-__int64 IGameEngineHost::Member46(UINT64 a1, UINT64 a2)
+__int64 IGameEngineHost::Member47(UINT64 a1, UINT64 a2)
 {
-	printf("IGameEngineHost::Member46(0x%08llX, 0x%08llX);\n", a1, a2); 
+	printf("IGameEngineHost::Member47(0x%08llX, 0x%08llX);\n", a1, a2); 
 	// security related
 	return 0;
 }

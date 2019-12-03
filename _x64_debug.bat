@@ -1,6 +1,6 @@
 @echo off
 
-set version=1.1211.0.0
+set version=1.1246.0.0
 
 set is_film=true
 

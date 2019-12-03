@@ -6,6 +6,7 @@ public:
 	virtual INT32 GetID()      = 0;
 	virtual bool  Function10() = 0;
 	virtual bool  Function11() = 0;
+	virtual bool  Function12() = 0;
 
 	void          CopyTo(LPVOID);
 

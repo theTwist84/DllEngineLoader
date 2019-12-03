@@ -99,12 +99,12 @@ auto WriteStackTrace = [=](LPCSTR pCallingFunction, DWORD size = 1024)
 						auto pNTHeader = (PIMAGE_NT_HEADERS)((UINT64)dosHeader + (UINT64)dosHeader->e_lfanew);
 						result = pNTHeader->OptionalHeader.ImageBase;
 					}
+					UnmapViewOfFile(lpFileBase);
 				}
-				UnmapViewOfFile(lpFileBase);
+				CloseHandle(hFileMapping);
 			}
-			CloseHandle(hFileMapping);
+			CloseHandle(hFile);
 		}
-		CloseHandle(hFile);
 
 		return result;
 	};
