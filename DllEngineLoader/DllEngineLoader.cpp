@@ -52,7 +52,7 @@ int main(int argc, LPSTR *argv)
 		/*printf("Running!\n");*/
 
 		static auto external_launch_state_previous = -1;
-		auto &external_launch_state = IModuleInterface::GetReference<int>(0x180D494F4, IGameInterface::s_modulePath);
+		auto &external_launch_state = IModuleInterface::GetReference<int>(IGameInterface::s_modulePath, 0x180D494F4);
 		if (external_launch_state != external_launch_state_previous)
 		{
 			const char *external_launch_state_names[] =
@@ -86,8 +86,8 @@ int main(int argc, LPSTR *argv)
 		}
 	};
 
-	UINT8 patch[] = { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 };
-	IModuleInterface::Write(0x18037A252, patch, IGameInterface::s_modulePath);
+	UINT8 classic_reach_pause_menu_patch[] = { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 };
+	IModuleInterface::Write(IGameInterface::s_modulePath, 0x18037A252, classic_reach_pause_menu_patch);
 
 	gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
 	gameInterface.LaunchTitle(gameEngineHost, gameRasterizer, gameContext, g_running, updateCallBack);

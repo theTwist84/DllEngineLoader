@@ -2,50 +2,70 @@
 
 class IModuleInterface
 {
+	struct s_module
+	{
+		char   m_path[MAX_PATH];
+		size_t m_addr;
+		size_t m_base;
+		size_t m_size;
+	};
+
 public:
 	IModuleInterface();
 	~IModuleInterface();
 
 	static bool IsValidModule(int index);
-	static bool IsInModule(size_t addr, int index, bool isFile = false);
+	static bool IsInModule(int index, size_t addr, bool isFile = false);
 
 	static int GetCount();
+	static int GetIndex(LPCSTR pModule);
 
 	static LPCSTR GetPath(int index);
+	static LPCSTR GetPath(LPCSTR pModule);
+
 	static size_t GetBase(int index, bool isFile = false);
+	static size_t GetBase(LPCSTR pModule, bool isFile = false);
+
 	static size_t GetTop(int index, bool isFile = false);
+	static size_t GetTop(LPCSTR pModule, bool isFile = false);
+
 	static size_t GetSize(int index);
-	static size_t GetOffset(size_t addr, int index, bool isFile = false);
+	static size_t GetSize(LPCSTR pModule);
+
+	static size_t GetOffset(int index, size_t addr, bool isFile = false);
+	static size_t GetOffset(LPCSTR pModule, size_t addr, bool isFile);
 
 	template<typename T>
-	static T GetAddess(size_t offset, LPCSTR pModule);
+	static T GetAddress(int index, size_t offset);
 	template<typename T>
-	static T &GetReference(size_t offset, LPCSTR pModule);
+	static T GetAddress(LPCSTR pModule, size_t offset);
+
 	template<typename T>
-	static void Write(size_t offset, T data, LPCSTR pModule);
+	static T &GetReference(int index, size_t offset);
+	template<typename T>
+	static T &GetReference(LPCSTR pModule, size_t offset);
+
+	template<typename T>
+	static void Write(int index, size_t offset, T data);
+	template<typename T>
+	static void Write(LPCSTR pModule, size_t offset, T data);
 
 	static void Update();
 
 private:
-	static char   m_path[1024][MAX_PATH];
-	static size_t m_addr[1024];
-	static size_t m_base[1024];
-	static size_t m_size[1024];
+	static s_module m_modules[1024];
 };
 
-char   IModuleInterface::m_path[1024][MAX_PATH] = {};
-size_t IModuleInterface::m_addr[1024] = {};
-size_t IModuleInterface::m_base[1024] = {};
-size_t IModuleInterface::m_size[1024] = {};
+IModuleInterface::s_module IModuleInterface::m_modules[1024] = {};
 
 IModuleInterface::IModuleInterface()
 {
 	for (size_t i = 0; i < 1024; i++)
 	{
-		memset(m_path[i], 0, MAX_PATH);
-		m_addr[i] = 0;
-		m_base[i] = 0;
-		m_size[i] = 0;
+		memset(m_modules[i].m_path, 0, MAX_PATH);
+		m_modules[i].m_addr = 0;
+		m_modules[i].m_base = 0;
+		m_modules[i].m_size = 0;
 	}
 }
 
@@ -55,11 +75,11 @@ IModuleInterface::~IModuleInterface()
 
 bool IModuleInterface::IsValidModule(int index)
 {
-	bool result = m_path[index][0] && m_addr[index] && m_base[index] && m_size[index];
+	bool result = GetPath(index)[0] && GetBase(index) && GetBase(index, true) && GetSize(index);
 	return result;
 }
 
-bool IModuleInterface::IsInModule(size_t addr, int index, bool isFile)
+bool IModuleInterface::IsInModule(int index, size_t addr, bool isFile)
 {
 	bool result = IsValidModule(index) && addr >= GetBase(index, isFile) && addr < GetTop(index, isFile);
 	return result;
@@ -72,73 +92,145 @@ int IModuleInterface::GetCount()
 	{
 		index++;
 	}
-
 	return index;
+}
+
+int IModuleInterface::GetIndex(LPCSTR pModule)
+{
+	int result = int();
+	for (int i = 0; i < GetCount(); i++)
+	{
+		if (strstr(GetPath(i), pModule) != 0)
+		{
+			result = i;
+		}
+	}
+	return result;
 }
 
 LPCSTR IModuleInterface::GetPath(int index)
 {
-	LPCSTR result = m_path[index];
+	LPCSTR result = m_modules[index].m_path;
+	return result;
+}
+
+LPCSTR IModuleInterface::GetPath(LPCSTR pModule)
+{
+	auto index = GetIndex(pModule);
+	LPCSTR result = m_modules[index].m_path;
 	return result;
 }
 
 size_t IModuleInterface::GetBase(int index, bool isFile)
 {
-	size_t result = isFile ? m_base[index] : m_addr[index];
+	size_t result = isFile ? m_modules[index].m_base : m_modules[index].m_addr;
+	return result;
+}
+
+size_t IModuleInterface::GetBase(LPCSTR pModule, bool isFile)
+{
+	auto index = GetIndex(pModule);
+	size_t result = isFile ? m_modules[index].m_base : m_modules[index].m_addr;
 	return result;
 }
 
 size_t IModuleInterface::GetTop(int index, bool isFile)
 {
-	size_t result = m_size[index] + GetBase(index, isFile);
+	size_t result = GetBase(index, isFile) + GetSize(index);
+	return result;
+}
+
+size_t IModuleInterface::GetTop(LPCSTR pModule, bool isFile)
+{
+	auto index = GetIndex(pModule);
+	size_t result = GetBase(index, isFile) + GetSize(index);
 	return result;
 }
 
 size_t IModuleInterface::GetSize(int index)
 {
-	size_t result = m_size[index];
+	size_t result = m_modules[index].m_size;
 	return result;
 }
 
-size_t IModuleInterface::GetOffset(size_t addr, int index, bool isFile)
+size_t IModuleInterface::GetSize(LPCSTR pModule)
+{
+	auto index = GetIndex(pModule);
+	size_t result = m_modules[index].m_size;
+	return result;
+}
+
+size_t IModuleInterface::GetOffset(int index, size_t addr, bool isFile)
 {
 	size_t result = size_t();
-	if (IsInModule(addr, index, isFile))
+	if (IsInModule(index, addr, isFile))
 	{
 		result = addr - GetBase(index, isFile);
 	}
+	return result;
+}
 
+size_t IModuleInterface::GetOffset(LPCSTR pModule, size_t addr, bool isFile)
+{
+	size_t result = size_t();
+	auto index = GetIndex(pModule);
+	if (IsInModule(index, addr, isFile))
+	{
+		result = addr - GetBase(index, isFile);
+	}
 	return result;
 }
 
 template<typename T>
-T IModuleInterface::GetAddess(size_t offset, LPCSTR pModule)
+T IModuleInterface::GetAddress(int index, size_t offset)
 {
 	size_t result = size_t();
-	for (int i = 0; i < GetCount(); i++)
+	if (IsInModule(index, GetBase(index, true) + GetOffset(index, offset, true), true))
 	{
-		if (strstr(GetPath(i), pModule) != 0)
-		{
-			if (IsInModule(GetBase(i, true) + GetOffset(offset, i, true), i, true))
-			{
-				result = GetBase(i) + GetOffset(offset, i, true);
-			}
-		}
+		result = GetBase(index) + GetOffset(index, offset, true);
 	}
-
 	return (T)result;
 }
 
 template<typename T>
-T &IModuleInterface::GetReference(size_t offset, LPCSTR pModule)
+T IModuleInterface::GetAddress(LPCSTR pModule, size_t offset)
 {
-	return *GetAddess<T *>(offset, pModule);
+	size_t result = size_t();
+	auto index = GetIndex(pModule);
+	if (IsInModule(index, GetBase(index, true) + GetOffset(index, offset, true), true))
+	{
+		result = GetBase(index) + GetOffset(index, offset, true);
+	}
+	return (T)result;
 }
 
 template<typename T>
-void IModuleInterface::Write(size_t offset, T data, LPCSTR pModule)
+T &IModuleInterface::GetReference(int index, size_t offset)
 {
-	auto addr = IModuleInterface::GetAddess<LPVOID>(offset, IGameInterface::s_modulePath);
+	return *GetAddress<T *>(index, offset);
+}
+
+template<typename T>
+T &IModuleInterface::GetReference(LPCSTR pModule, size_t offset)
+{
+	return *GetAddress<T *>(pModule, offset);
+}
+
+template<typename T>
+void IModuleInterface::Write(int index, size_t offset, T data)
+{
+	auto addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
+	DWORD old;
+	VirtualProtect(addr, sizeof(T), PAGE_READWRITE, &old);
+	memcpy(addr, data, sizeof(T));
+	VirtualProtect(addr, sizeof(T), old, &old);
+}
+
+template<typename T>
+void IModuleInterface::Write(LPCSTR pModule, size_t offset, T data)
+{
+	auto index = GetIndex(pModule);
+	auto addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
 	DWORD old;
 	VirtualProtect(addr, sizeof(T), PAGE_READWRITE, &old);
 	memcpy(addr, data, sizeof(T));
@@ -156,12 +248,12 @@ void IModuleInterface::Update()
 			MODULEINFO moduleInformation;
 			if (GetModuleInformation(hProcess, m_hModules[i], &moduleInformation, sizeof(moduleInformation)))
 			{
-				if (GetModuleFileNameExA(hProcess, m_hModules[i], m_path[i], sizeof(m_path[i]) / sizeof(char)))
+				if (GetModuleFileNameExA(hProcess, m_hModules[i], m_modules[i].m_path, sizeof(m_modules[i].m_path) / sizeof(char)))
 				{
-					m_addr[i] = (size_t)moduleInformation.lpBaseOfDll;
-					m_size[i] = (size_t)moduleInformation.SizeOfImage;
+					m_modules[i].m_addr = (size_t)moduleInformation.lpBaseOfDll;
+					m_modules[i].m_size = (size_t)moduleInformation.SizeOfImage;
 
-					HANDLE hFile = CreateFileA(m_path[i], GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+					HANDLE hFile = CreateFileA(m_modules[i].m_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 					if (hFile != INVALID_HANDLE_VALUE)
 					{
 						HANDLE hFileMapping = CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
@@ -173,7 +265,7 @@ void IModuleInterface::Update()
 								auto dosHeader = (PIMAGE_DOS_HEADER)lpFileBase;
 								if (dosHeader->e_magic == IMAGE_DOS_SIGNATURE)
 								{
-									m_base[i] = ((PIMAGE_NT_HEADERS)((UINT64)dosHeader + (UINT64)dosHeader->e_lfanew))->OptionalHeader.ImageBase;
+									m_modules[i].m_base = ((PIMAGE_NT_HEADERS)((UINT64)dosHeader + (UINT64)dosHeader->e_lfanew))->OptionalHeader.ImageBase;
 								}
 								UnmapViewOfFile(lpFileBase);
 							}
@@ -199,10 +291,10 @@ auto WriteStackTrace = [=](LPCSTR pCallingFunction = "")
 	{
 		for (int i = 0; i < 1024; i++)
 		{
-			if (IModuleInterface::IsInModule(traces[traceIndex], i))
+			if (IModuleInterface::IsInModule(i, traces[traceIndex]))
 			{
-				auto offset = IModuleInterface::GetOffset(traces[traceIndex], i);
-				printf("\t0x%016llX, %s+0x%08llX\n", IModuleInterface::GetOffset(traces[traceIndex], i, true), GetFileName(IModuleInterface::GetPath(i)).c_str(), offset);
+				auto offset = IModuleInterface::GetOffset(i, traces[traceIndex]);
+				printf("\t0x%016llX, %s+0x%08llX\n", IModuleInterface::GetOffset(i, traces[traceIndex], true), GetFileName(IModuleInterface::GetPath(i)).c_str(), offset);
 			}
 		}
 	}
