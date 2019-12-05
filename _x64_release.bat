@@ -1,10 +1,10 @@
 @echo off
 
-set version=1.1211.0.0
+set version=1.1246.0.0
 
 set is_film=true
 
-set working_dir=D:\Games\Halo\HaloMCC-PC [%version%]\Halo The Master Chief Collection Flighting\
+set working_dir=D:\Games\Halo\HaloMCC-PC [%version%]\Halo The Master Chief Collection\
 set engine=HaloReach
 set game_var=00_basic_editing_054
 set map_var=forge_halo
