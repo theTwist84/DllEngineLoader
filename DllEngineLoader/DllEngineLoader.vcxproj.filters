@@ -65,5 +65,8 @@
     <ClInclude Include="IConsoleAccess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IModuleInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
