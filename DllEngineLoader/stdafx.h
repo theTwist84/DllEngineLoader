@@ -12,6 +12,7 @@
 #include <psapi.h>
 #include <stdio.h>
 #include <string>
+#include <vector>
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <hidusage.h>
@@ -101,3 +102,24 @@ bool g_running = false;
 #include "IGameEngineHost.h"
 
 #include "IConsoleAccess.h"
+
+void print_internal_enum(size_t offset, LPCSTR pName, std::vector<LPCSTR> pNames)
+{
+	static int _previous = -1;
+	int &_current = IModuleInterface::Read<int>(IGameInterface::s_modulePath, offset);
+	if (_current != _previous)
+	{
+		_previous = _current;
+
+		if (_current >= 0 && _current < pNames.size() - 1)
+		{
+			printf("%s(%s)\n", pName, pNames[_current]);
+		}
+	}
+};
+
+void print_addr_at(size_t offset)
+{
+	auto &addr = IModuleInterface::Read<UINT8[4]>(IGameInterface::s_modulePath, offset);
+	printf("%hd.%hd.%hd.%hd\n", addr[3], addr[2], addr[1], addr[0]);
+};

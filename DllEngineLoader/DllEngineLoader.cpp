@@ -51,30 +51,10 @@ int main(int argc, LPSTR *argv)
 	{
 		/*printf("Running!\n");*/
 
-		static auto external_launch_state_previous = -1;
-		auto &external_launch_state = IModuleInterface::GetReference<int>(IGameInterface::s_modulePath, 0x180D494F4);
-		if (external_launch_state != external_launch_state_previous)
-		{
-			const char *external_launch_state_names[] =
-			{
-				"initializing",
-				"creating_local_squad",
-				"selecting_game_mode",
-				"saved_film_selected",
-				"selected_campaign",
-				"selected_campaign_resume",
-				"selected_multiplayer",
-				"selected_survival",
-				"waiting_for_party",
-				"joining_remote_squad",
-				"unused",
-				"starting_game",
-				"game_started"
-			};
-
-			printf("external_launch_state(%s)\n", external_launch_state_names[external_launch_state]);
-			external_launch_state_previous = external_launch_state;
-		}
+		print_internal_enum(0x180D494F4, "external_launch_state", { 
+			"_initialize", "_create_local_squad", "_select_game_mode", "_select_saved_film", "_select_campaign", "_select_campaign_resume", 
+			"_select_multiplayer", "_select_survival", "_wait_for_party", "_join_remote_squad", "_unused", "_start_game", "_game_start" 
+			});
 
 		if (gameRasterizer.IsWindowFocused())
 		{
@@ -82,6 +62,11 @@ int main(int argc, LPSTR *argv)
 			{
 				pEngine->UpdateEngineState(EngineState::eEndGameWriteStats);
 				g_running = false;
+			}
+
+			if (GetKeyState('P') & 0x80)
+			{
+				print_addr_at(0x1838BB3C0 + 0x10);
 			}
 		}
 	};

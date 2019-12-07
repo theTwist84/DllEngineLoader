@@ -41,9 +41,9 @@ public:
 	static T GetAddress(LPCSTR pModule, size_t offset);
 
 	template<typename T>
-	static T &GetReference(int index, size_t offset);
+	static T &Read(int index, size_t offset);
 	template<typename T>
-	static T &GetReference(LPCSTR pModule, size_t offset);
+	static T &Read(LPCSTR pModule, size_t offset);
 
 	template<typename T>
 	static void Write(int index, size_t offset, T data);
@@ -205,13 +205,13 @@ T IModuleInterface::GetAddress(LPCSTR pModule, size_t offset)
 }
 
 template<typename T>
-T &IModuleInterface::GetReference(int index, size_t offset)
+T &IModuleInterface::Read(int index, size_t offset)
 {
 	return *GetAddress<T *>(index, offset);
 }
 
 template<typename T>
-T &IModuleInterface::GetReference(LPCSTR pModule, size_t offset)
+T &IModuleInterface::Read(LPCSTR pModule, size_t offset)
 {
 	return *GetAddress<T *>(pModule, offset);
 }
