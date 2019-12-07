@@ -46,6 +46,8 @@ int main(int argc, LPSTR *argv)
 
 	IConsoleAccess::IConsoleAccess().SetGameInterface(gameInterface);
 
+	gameContext.SetupSession(true, 0x7F7F86B0EE577202, 0x29EF835E2A9E63DE, 0x7F7F86B0EE577202, { 0x7F7F86B0EE577202 }, { 0x0009000002D75AC8 });
+
 	IModuleInterface::Update();
 	auto updateCallBack = [](IGameEngine *pEngine)
 	{
@@ -66,7 +68,8 @@ int main(int argc, LPSTR *argv)
 
 			if (GetKeyState('P') & 0x80)
 			{
-				print_addr_at(0x1838BB3C0 + 0x10);
+				print_insecure_ip_at(0x1838BB3D0);
+				print_secure_ip_at(0x1838BB3C2);
 			}
 		}
 	};

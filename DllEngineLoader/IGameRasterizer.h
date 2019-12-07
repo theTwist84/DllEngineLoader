@@ -13,7 +13,7 @@ private:
 	static HINSTANCE            s_hInstance;
 
 	static ID3D11Device        *s_pDevice;
-	static ID3D11DeviceContext *s_pContext;
+	static ID3D11DeviceContext *s_pDeviceContext;
 	static IDXGISwapChain      *s_pSwapChain;
 
 	static LRESULT CALLBACK     WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -28,7 +28,7 @@ public:
 	static bool                 IsWindowFocused();
 
 	static ID3D11Device        *GetDevice();
-	static ID3D11DeviceContext *GetContext();
+	static ID3D11DeviceContext *GetDeviceContext();
 	static IDXGISwapChain      *GetSwapChain();
 
 	static void                 DisposeWindow();
@@ -45,7 +45,7 @@ HWND                 IGameRasterizer::s_hForegroundWnd = 0;
 HINSTANCE            IGameRasterizer::s_hInstance      = 0;
 
 ID3D11Device        *IGameRasterizer::s_pDevice        = 0;
-ID3D11DeviceContext *IGameRasterizer::s_pContext       = 0;
+ID3D11DeviceContext *IGameRasterizer::s_pDeviceContext       = 0;
 IDXGISwapChain      *IGameRasterizer::s_pSwapChain     = 0;
 
 IGameRasterizer::IGameRasterizer(int width, int height, bool windowed)
@@ -80,9 +80,9 @@ ID3D11Device *IGameRasterizer::GetDevice()
 	return s_pDevice;
 }
 
-ID3D11DeviceContext *IGameRasterizer::GetContext()
+ID3D11DeviceContext *IGameRasterizer::GetDeviceContext()
 {
-	return s_pContext;
+	return s_pDeviceContext;
 }
 
 IDXGISwapChain *IGameRasterizer::GetSwapChain()
@@ -228,7 +228,7 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 	InitializeWindow();
 
 	assert(!s_pDevice);
-	assert(!s_pContext);
+	assert(!s_pDeviceContext);
 	assert(!s_pSwapChain);
 
 	static DXGI_SWAP_CHAIN_DESC s_SwapchainDesc = {};
@@ -258,11 +258,11 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 		D3D11_SDK_VERSION,
 		&s_pDevice,
 		&FeatureLevel,
-		&s_pContext
+		&s_pDeviceContext
 	);
 	assert(D3D11CreateDeviceResult == S_OK);
 	assert(s_pDevice);
-	assert(s_pContext);
+	assert(s_pDeviceContext);
 
 	if (createSwapchain)
 	{

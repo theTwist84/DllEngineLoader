@@ -118,8 +118,14 @@ void print_internal_enum(size_t offset, LPCSTR pName, std::vector<LPCSTR> pNames
 	}
 };
 
-void print_addr_at(size_t offset)
+void print_insecure_ip_at(size_t offset)
 {
 	auto &addr = IModuleInterface::Read<UINT8[4]>(IGameInterface::s_modulePath, offset);
 	printf("%hd.%hd.%hd.%hd\n", addr[3], addr[2], addr[1], addr[0]);
+};
+
+void print_secure_ip_at(size_t offset)
+{
+	auto &addr = IModuleInterface::Read<UINT8[8]>(IGameInterface::s_modulePath, offset);
+	printf("%02X%02X:%02X%02X:%02X%02X:%02X%02X\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5], addr[6], addr[7]);
 };

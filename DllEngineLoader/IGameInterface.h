@@ -81,7 +81,7 @@ void IGameInterface::LaunchTitle(class IGameEngineHost &rGameEngineHost, IGameRa
 	auto pEngine     = GetEngine();
 	auto pDataAccess = GetDataAccess();
 
-	pEngine->InitGraphics(rGameRasterizer.GetDevice(), rGameRasterizer.GetContext(), rGameRasterizer.GetSwapChain(), 0);
+	pEngine->InitGraphics(rGameRasterizer.GetDevice(), rGameRasterizer.GetDeviceContext(), rGameRasterizer.GetSwapChain(), 0);
 	HANDLE hGameThread = pEngine->InitThread(&rGameEngineHost, &rGameContext);
 	assert(hGameThread);
 

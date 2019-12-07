@@ -218,6 +218,27 @@ INT32 MapNameToID(LPCSTR pName)
 
 class IGameContext
 {
+	struct s_session
+	{
+		INT64  m_PartySAddr;
+		INT64  m_LocalSAddr;
+		bool   m_IsHost;
+		UINT8  m_Padding0[7];
+
+		INT64  m_PeerSAddrs[17];
+		size_t m_PeerCount;
+
+		struct
+		{
+			INT64 m_XboxUserId;
+			UINT64 unknown8;
+			UINT64 unknown10;
+			UINT64 unknown18;
+		}      m_Players[16];
+		size_t m_PlayerCount;
+
+		INT64  m_HostSAddr;
+	};
 public:
 	IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText);
 	~IGameContext();
@@ -228,7 +249,7 @@ public:
 		printf("IGameContext::SetGameMode(\"%s\");\n", GameModeFromID(gameMode));
 #endif
 
-		m_gameMode = gameMode;
+		m_GameMode = gameMode;
 	}
 	void SetDifficulty(Difficulty difficulty)
 	{
@@ -236,7 +257,7 @@ public:
 		printf("IGameContext::SetDifficulty(\"%s\");\n", DifficultyFromID(difficulty));
 #endif
 
-		m_difficulty = difficulty;
+		m_Difficulty = difficulty;
 	}
 	void SetMapID(INT32 mapID)
 	{
@@ -244,7 +265,7 @@ public:
 		printf("IGameContext::SetMapID(\"%s\");\n", MapNameFromID(static_cast<MapID>(mapID)));
 #endif
 
-		m_mapID = static_cast<MapID>(mapID);
+		m_MapID = static_cast<MapID>(mapID);
 	}
 	void SetSavedFilmPath(LPCSTR pSavedFilmPath)
 	{
@@ -254,34 +275,52 @@ public:
 
 		m_pSavedFilmPath = pSavedFilmPath;
 	}
+	void SetupSession(bool isHost, UINT64 localID, UINT64 partyID, UINT64 hostID, std::vector<UINT64> peerSAddrs, std::vector<UINT64> xboxUserIds)
+	{
+		if (isHost)
+		{
+			m_Session.m_IsHost  = true;
+			m_Session.m_LocalSAddr = localID;
+			m_Session.m_PartySAddr = partyID;
+		}
+		else
+		{
+			m_Session.m_IsHost  = false;
+			m_Session.m_PartySAddr = partyID;
+			m_Session.m_HostSAddr  = hostID;
+		}
+
+		m_Session.m_PeerCount = peerSAddrs.size();
+		for (size_t i = 0; i < m_Session.m_PeerCount; i++)
+		{
+			m_Session.m_PeerSAddrs[i] = peerSAddrs[i];
+		}
+		m_Session.m_PlayerCount = xboxUserIds.size();
+		for (size_t i = 0; i < m_Session.m_PlayerCount; i++)
+		{
+			m_Session.m_Players[i].m_XboxUserId = xboxUserIds[i];
+		}
+	}
 
 private:
-	GameMode   m_gameMode               = GameMode::eBase;
-	char       m_gameVariant[117760]    = {};
-	char       m_mapVariant[59392]      = {};
-	MapID      m_mapID                  = MapID::eUndefined;
-	Difficulty m_difficulty             = Difficulty::eNormal;
-	UINT16     m_mapInsertionPoint      = 0;
-	UINT8      padding0[10]             = {};
-	UINT64     m_active_skull_flags     = 0x0;
-	UINT8      padding1[8]              = {};
-	LPVOID     m_pGameStateHeader       = 0;
-	size_t     m_gameStateHeaderSize    = 0;
-	LPCSTR     m_pSavedFilmPath         = 0;
-	INT64      m_sessionPartyID         = 0;
-	INT64      m_sessionLocalID         = 0;
-	bool       m_sessionIsHost          = true;
-	UINT8      m_sessionPadding0[7]     = {};
-	INT64      m_sessionPeers[17]       = {};
-	size_t     m_sessionPeerCount       = 1;
-	char       m_sessionPlayers[16][32] = {};
-	size_t     m_sessionPlayerCount     = 1;
-	INT64      m_sessionHostID          = 0;
-	bool       m_unknown0               = 0;
-	UINT8      padding2                 = {};
-	bool       m_useCustomEngineName    = 0;
-	UINT8      padding3[5]              = {};
-	wchar_t   *m_customEngineName       = 0;
+	GameMode   m_GameMode;
+	char       m_GameVariant[117760];
+	char       m_MapVariant[59392];
+	MapID      m_MapID;
+	Difficulty m_Difficulty;
+	UINT16     m_MapInsertionPoint;
+	UINT8      padding0[10];
+	UINT64     m_ActiveSkullFlags;
+	UINT8      padding1[8];
+	LPVOID     m_pGameStateHeader;
+	size_t     m_GameStateHeaderSize;
+	LPCSTR     m_pSavedFilmPath;
+	s_session  m_Session;
+	bool       m_unknown0;
+	UINT8      padding2;
+	bool       m_UseCustomEngineName;
+	UINT8      padding3[5];
+	wchar_t   *m_CustomEngineName;
 };
 
 IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText = true)
@@ -313,10 +352,10 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 			}
 			assert(pGameVariant);
 
-			pGameVariant->CopyTo(&m_gameVariant);
+			pGameVariant->CopyTo(&m_GameVariant);
 
 			GameMode gameMode = GameMode::eBase;
-			switch (*reinterpret_cast<INT32 *>(&m_gameVariant[0]))
+			switch (*reinterpret_cast<INT32 *>(&m_GameVariant[0]))
 			{
 			case 1:
 				gameMode = GameMode::eMultiplayer;
@@ -352,7 +391,7 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 			}
 			assert(pMapVariant);
 
-			pMapVariant->CopyTo(m_mapVariant);
+			pMapVariant->CopyTo(m_MapVariant);
 			SetMapID(pMapVariant->GetID());
 		}
 
@@ -380,10 +419,6 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 		SetConsoleTitleA(windowText);
 		SetWindowTextA(IGameRasterizer::GetWindowHandle(), windowText);
 	}
-
-	m_sessionIsHost      = true;
-	m_sessionPeerCount   = 1;
-	m_sessionPlayerCount = 1;
 }
 
 IGameContext::~IGameContext()
