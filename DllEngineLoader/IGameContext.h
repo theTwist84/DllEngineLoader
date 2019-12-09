@@ -220,24 +220,24 @@ class IGameContext
 {
 	struct s_session
 	{
-		INT64  m_PartySAddr;
-		INT64  m_LocalSAddr;
-		bool   m_IsHost;
-		UINT8  m_Padding0[7];
-
-		INT64  m_PeerSAddrs[17];
-		size_t m_PeerCount;
-
-		struct
+		struct s_session_player
 		{
-			INT64 m_XboxUserId;
+			INT64  m_XboxUserId;
 			UINT64 unknown8;
 			UINT64 unknown10;
-			UINT64 unknown18;
-		}      m_Players[16];
-		size_t m_PlayerCount;
+			UINT32 unknown18;
+			UINT32 unknown1C;
+		};
 
-		INT64  m_HostSAddr;
+		INT64            m_PartySAddr;
+		INT64            m_LocalSAddr;
+		bool             m_IsHost;
+		UINT8            m_Padding0[7];
+		INT64            m_PeerSAddrs[17];
+		size_t           m_PeerCount;
+		s_session_player m_Players[16];
+		size_t           m_PlayerCount;
+		INT64            m_HostSAddr;
 	};
 public:
 	IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGame, LPCSTR pMap, LPCSTR pFilm, bool setWindowText);
@@ -275,30 +275,37 @@ public:
 
 		m_pSavedFilmPath = pSavedFilmPath;
 	}
-	void SetupSession(bool isHost, UINT64 localID, UINT64 partyID, UINT64 hostID, std::vector<UINT64> peerSAddrs, std::vector<UINT64> xboxUserIds)
+	void SetupSession(bool isHost, INT64 localID, INT64 partyID, INT64 hostID = {}, std::vector<INT64> peerSAddrs = {}, std::vector<INT64> xboxUserIds = {})
 	{
-		if (isHost)
+		m_Session.m_LocalSAddr = localID;
+		m_Session.m_PartySAddr = partyID;
+
+		if (m_Session.m_IsHost = isHost, !m_Session.m_IsHost)
 		{
-			m_Session.m_IsHost  = true;
-			m_Session.m_LocalSAddr = localID;
-			m_Session.m_PartySAddr = partyID;
+			if (!peerSAddrs.size())
+			{
+				peerSAddrs = { localID };
+			}
+			m_Session.m_PeerCount = peerSAddrs.size();
+			for (size_t i = 0; i < m_Session.m_PeerCount; i++)
+			{
+				m_Session.m_PeerSAddrs[i] = peerSAddrs[i];
+			}
+
+			if (!xboxUserIds.size())
+			{
+				xboxUserIds = { 0 };
+			}
+			m_Session.m_PlayerCount = xboxUserIds.size();
+			for (size_t i = 0; i < m_Session.m_PlayerCount; i++)
+			{
+				m_Session.m_Players[i].m_XboxUserId = xboxUserIds[i];
+				m_Session.m_Players[i].unknown1C = -1;
+			}
 		}
 		else
 		{
-			m_Session.m_IsHost  = false;
-			m_Session.m_PartySAddr = partyID;
-			m_Session.m_HostSAddr  = hostID;
-		}
-
-		m_Session.m_PeerCount = peerSAddrs.size();
-		for (size_t i = 0; i < m_Session.m_PeerCount; i++)
-		{
-			m_Session.m_PeerSAddrs[i] = peerSAddrs[i];
-		}
-		m_Session.m_PlayerCount = xboxUserIds.size();
-		for (size_t i = 0; i < m_Session.m_PlayerCount; i++)
-		{
-			m_Session.m_Players[i].m_XboxUserId = xboxUserIds[i];
+			m_Session.m_HostSAddr = hostID;
 		}
 	}
 
@@ -316,7 +323,7 @@ private:
 	size_t     m_GameStateHeaderSize;
 	LPCSTR     m_pSavedFilmPath;
 	s_session  m_Session;
-	bool       m_unknown0;
+	bool       m_unknown0;            // used in some networking function (if true ? 2 : 0)
 	UINT8      padding2;
 	bool       m_UseCustomEngineName;
 	UINT8      padding3[5];

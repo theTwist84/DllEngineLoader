@@ -46,7 +46,7 @@ int main(int argc, LPSTR *argv)
 
 	IConsoleAccess::IConsoleAccess().SetGameInterface(gameInterface);
 
-	gameContext.SetupSession(true, 0x7F7F86B0EE577202, 0x29EF835E2A9E63DE, 0x7F7F86B0EE577202, { 0x7F7F86B0EE577202 }, { 0x0009000002D75AC8 });
+	gameContext.SetupSession(true, 0x7F7F86B0EE577202, 0x29EF835E2A9E63DE/*, 0x7F7F86B0EE577202, { 0x7F7F86B0EE577202 }, { 0x0009000002D75AC8 }*/);
 
 	IModuleInterface::Update();
 	auto updateCallBack = [](IGameEngine *pEngine)
