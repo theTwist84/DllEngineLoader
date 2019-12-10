@@ -48,10 +48,10 @@ public:
 	/* 25 */ virtual void         MembershipUpdate(char *, uint32_t);
 	/* 26 */ virtual bool         Member26();
 	/* 27 */ virtual bool         Member27();
-	/* 28 */ virtual bool         Member28(char *);
+	/* 28 */ virtual bool         UpdateGraphics(char *);
 	/* 29 */ virtual INT64        Member29(wchar_t [4][32], char *);
 	/* 30 */ virtual bool         UpdateInput(__int64, InputBuffer *);
-	/* 31 */ virtual void         Member31();
+	/* 31 */ virtual void         Member31(UINT64, float *);
 	/* 32 */ virtual void         Member32();
 	/* 33 */ virtual void         XInputSetState(__int32, XINPUT_VIBRATION *);
 	/* 34 */ virtual bool         SetPlayerNames(__int64 *, wchar_t[4][32], size_t);
@@ -296,14 +296,24 @@ bool IGameEngineHost::Member27()
 	return false;
 }
 
-bool IGameEngineHost::Member28(char *buffer)
+bool IGameEngineHost::UpdateGraphics(char *buffer)
 {
-	printf("IGameEngineHost::Member28(0x%08llX);\n", (UINT64)buffer);
-	if (!buffer)
+	auto &width     = *(INT32  *)&buffer[000];
+	auto &height    = *(INT32  *)&buffer[004];
+	auto &fps_limit = *(UINT16 *)&buffer[041];
+	auto &settings  = *(float  *)&buffer[208];
+
+	width     = 3840;
+	height    = 2160;
+	fps_limit = false;
+
+	for (size_t i = 0; i < 35; i++)
 	{
-		return false;
+		(&settings)[i] = 10.f;
 	}
-	return true;
+
+	printf("IGameEngineHost::UpdateGraphics(0x%08llX);\n", (UINT64)buffer);
+	return fps_limit;
 }
 
 __int64 IGameEngineHost::Member29(wchar_t playerNames[4][32], char *buffer)
@@ -364,17 +374,18 @@ bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 	return unsigned __int8(1);
 }
 
-void IGameEngineHost::Member31()
+void IGameEngineHost::Member31(UINT64 a1, float *a2)
 {
-	printf("IGameEngineHost::Member31\n");
-	// appears to be usermanagement related?
-	// we haven't seen this fire yet and don't know its structure so throw an error
-	throw;
+	//*a2 = 0.f;
+	// printf("IGameEngineHost::Member31\n"); spams
 }
 
 void IGameEngineHost::Member32()
 {
 	printf("IGameEngineHost::Member32\n");
+	// appears to be usermanagement related?
+	// we haven't seen this fire yet and don't know its structure so throw an error
+	throw;
 }
 
 void IGameEngineHost::XInputSetState(__int32 dwUserIndex, XINPUT_VIBRATION *pVibration)
