@@ -40,6 +40,16 @@ int main(int argc, LPSTR *argv)
 	}
 
 	static IGameInterface  gameInterface  = IGameInterface(pEngine);
+
+	IModuleInterface::Update();
+
+	// Return input for map_id coversion function
+	IPatch("HaloReach.dll", 0x18004BF10, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach map_id
+	IPatch("HaloReach.dll", 0x18004C140, { 0x89, 0xC8, 0xC3 }).Apply(); // to mcc map_id
+
+	// Enable original Halo Reach pause screen
+	IPatch("HaloReach.dll", 0x18037A252, { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 }).Apply();
+
 	static IGameEngineHost gameEngineHost = IGameEngineHost();
 	static IGameRasterizer gameRasterizer = IGameRasterizer(1280, 720, true);
 	static IGameContext    gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
@@ -48,7 +58,6 @@ int main(int argc, LPSTR *argv)
 
 	gameContext.SetupSession(true, 0x7F7F86B0EE577202, 0x29EF835E2A9E63DE/*, 0x7F7F86B0EE577202, { 0x7F7F86B0EE577202 }, { 0x0009000002D75AC8 }*/);
 
-	IModuleInterface::Update();
 	auto updateCallBack = [](IGameEngine *pEngine)
 	{
 		/*printf("Running!\n");*/
@@ -73,9 +82,6 @@ int main(int argc, LPSTR *argv)
 			}
 		}
 	};
-
-	UINT8 classic_reach_pause_menu_patch[] = { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 };
-	IModuleInterface::Write(IGameInterface::s_modulePath, 0x18037A252, classic_reach_pause_menu_patch);
 
 	gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
 	gameInterface.LaunchTitle(gameEngineHost, gameRasterizer, gameContext, g_running, updateCallBack);

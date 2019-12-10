@@ -53,6 +53,13 @@ public:
 		{
 			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
 		}
+		else if (pFile = new IFileAccess("%s\\maps\\info\\%s.mapinfo", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
+		{
+			auto map_id = *(INT32 *)&pFile->FileRead(file_size)[0x3C];
+			map_id = ((map_id >> 24) & 0xff) | ((map_id << 8) & 0xff0000) | ((map_id >> 8) & 0xff00) | ((map_id << 24) & 0xff000000);
+
+			pMapVariant = MapVariantCreateFromMapID(map_id);
+		}
 
 		pFile->FileClose();
 		return pMapVariant;

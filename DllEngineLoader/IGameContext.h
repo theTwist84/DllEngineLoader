@@ -381,18 +381,28 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 		}
 
 		{
-			IFileAccess file = IFileAccess("%s%s.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), pMap);
-			if (file.FileOpen(FileAccessType::Read))
 			{
-				size_t size = 0;
-				pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead(size));
+				IFileAccess file = IFileAccess("%s%s.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), pMap);
+				if (file.FileOpen(FileAccessType::Read))
+				{
+					size_t size = 0;
+					pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead(size));
+				}
+				file.FileClose();
 			}
-			file.FileClose();
 
 			if (!pMapVariant)
 			{
 				if (pMapVariant = pDataAccess->GetMapVariant(pEngine, pMap), !pMapVariant)
 				{
+					IFileAccess file = IFileAccess("%s%s.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), pMap);
+					if (file.FileOpen(FileAccessType::Read))
+					{
+						size_t size = 0;
+						pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead(size));
+					}
+					file.FileClose();
+
 					pMapVariant = pDataAccess->MapVariantCreateFromMapID(MapNameToID(pMap));
 				}
 			}

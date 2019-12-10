@@ -233,7 +233,7 @@ void IModuleInterface::Write(LPCSTR pModule, size_t offset, T data)
 	auto addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
 	DWORD old;
 	VirtualProtect(addr, sizeof(T), PAGE_READWRITE, &old);
-	memcpy(addr, data, sizeof(T));
+	memcpy(addr, &data, sizeof(T));
 	VirtualProtect(addr, sizeof(T), old, &old);
 }
 
@@ -301,3 +301,71 @@ auto WriteStackTrace = [=](LPCSTR pCallingFunction = "")
 
 	printf("}\n");
 };
+
+
+class IPatch
+{
+public:
+	IPatch(LPCSTR pModule, size_t offset, std::initializer_list<UINT8> patchBytes);
+	~IPatch();
+
+	void Apply(bool revert = false);
+
+private:
+	LPCSTR                       Module;
+	size_t                       Offset;
+	std::initializer_list<UINT8> PatchBytes;
+	std::vector<UINT8>           OrigBytes;
+};
+
+class IPatchInterface
+{
+public:
+	IPatchInterface(IPatch &rPatch);
+	~IPatchInterface();
+
+	static std::vector<IPatch> Get();
+
+private:
+	static std::vector<IPatch> s_Patches;
+};
+
+std::vector<IPatch> IPatchInterface::s_Patches;
+
+IPatch::IPatch(LPCSTR pModule, size_t offset, std::initializer_list<UINT8> patchBytes)
+	: Module(pModule), Offset(offset), PatchBytes(patchBytes)
+{
+	for (size_t i = 0; i < PatchBytes.size(); i++)
+	{
+		OrigBytes.push_back(IModuleInterface::Read<UINT8>(pModule, offset + i));
+	}
+
+	IPatchInterface(*this);
+}
+
+IPatch::~IPatch()
+{
+}
+
+void IPatch::Apply(bool revert)
+{
+	auto bytes = revert ? OrigBytes : PatchBytes;
+	for (size_t i = 0; i < PatchBytes.size(); i++)
+	{
+		IModuleInterface::Write(Module, Offset + i, bytes[i]);
+	}
+}
+
+IPatchInterface::IPatchInterface(IPatch &rPatch)
+{
+	s_Patches.push_back(rPatch);
+}
+
+IPatchInterface::~IPatchInterface()
+{
+}
+
+std::vector<IPatch> IPatchInterface::Get()
+{
+	return s_Patches;
+}
