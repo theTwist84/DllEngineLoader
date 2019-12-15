@@ -68,5 +68,8 @@
     <ClInclude Include="IModuleInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ITagInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

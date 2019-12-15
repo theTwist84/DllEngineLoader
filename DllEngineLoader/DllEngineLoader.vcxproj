@@ -182,6 +182,7 @@
     <ClInclude Include="IModuleInterface.h" />
     <ClInclude Include="ISaveFilmMetadata.h" />
     <ClInclude Include="IGameInput.h" />
+    <ClInclude Include="ITagInterface.h" />
     <ClInclude Include="IVariantAccessorBase.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

@@ -77,6 +77,12 @@ void IConsoleAccess::Thread()
 	}
 }
 
+template<typename T>
+struct vector_3d
+{
+	T I, J, K;
+};
+
 // TODO: Support lowercase
 void IConsoleAccess::Commands(std::string Commands)
 {
@@ -139,17 +145,88 @@ void IConsoleAccess::Commands(std::string Commands)
 		return;
 	}
 
+	if (Commands.find("TagGet") != std::string::npos)
+	{
+		bool showHelp = true;
+		if (Commands.find("Scenario") != std::string::npos)
+		{
+			showHelp = false;
+			auto scenarioDatumHandle = TagCacheGetGlobal('scnr');
+			printf("[scnr, 0x%08X]\n", scenarioDatumHandle.m_Index);
+
+			auto pScenarioDefinition = TagGetDefinition<char *>('scnr', scenarioDatumHandle);
+
+			if (Commands.find("MapID") != std::string::npos)
+			{
+				printf("[map_id, %u]\n", *reinterpret_cast<UINT32 *>(&pScenarioDefinition[0xC]));
+			}
+
+			return;
+		}
+		if (Commands.find("Weapon") != std::string::npos)
+		{
+			if (Commands.find("objects\\weapons\\rifle\\assault_rifle\\assault_rifle") != std::string::npos)
+			{
+				showHelp = false;
+
+				// 1.1246.0.0, cex_prisoner, 0xEBB7086A [objects\weapons\rifle\assault_rifle\assault_rifle]
+				auto pAssaultRifleDefinition = TagGetDefinition<char *>('weap', 0xEBB7086A);
+
+				if (*reinterpret_cast<UINT32 *>(pAssaultRifleDefinition) != 0xFFFFFFFF)
+				{
+					auto &FirstPersonWeaponOffset = *reinterpret_cast<vector_3d<float> *>(pAssaultRifleDefinition + 0x4CC);
+
+					printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
+
+					printf("[First Person Weapon Offset, Enter new values]:\n");
+					if (scanf("%f %f %f", &FirstPersonWeaponOffset.I, &FirstPersonWeaponOffset.J, &FirstPersonWeaponOffset.K))
+					{
+						printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
+					}
+				}
+
+				return;
+			}
+
+			if (showHelp)
+			{
+				WriteLine("enum TagName\n{");
+
+				WriteLine("\t%s", "objects\\weapons\\rifle\\assault_rifle\\assault_rifle");
+
+				WriteLine("};");
+			}
+
+			return;
+		}
+
+
+		if (showHelp)
+		{
+			WriteLine("enum TagGroup\n{");
+
+			WriteLine("\t%s", "Scenario");
+			WriteLine("\t%s", "Weapon");
+
+			WriteLine("};");
+		}
+
+		return;
+	}
+
 	enum class Commands : int
 	{
 		LaunchTitle,
 		EngineState,
+		TagGet,
 
 		kCount
 	};
 	LPCSTR commands[static_cast<int>(Commands::kCount)] =
 	{
 		"LaunchTitle",
-		"EngineState"
+		"EngineState",
+		"TagGet"
 	};
 	auto commandCount = static_cast<size_t>(Commands::kCount);
 

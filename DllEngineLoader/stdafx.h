@@ -101,6 +101,8 @@ bool g_running = false;
 #include "IGameEvents.h"
 #include "IGameEngineHost.h"
 
+#include "ITagInterface.h"
+
 #include "IConsoleAccess.h"
 
 void print_internal_enum(size_t offset, LPCSTR pName, std::vector<LPCSTR> pNames)
