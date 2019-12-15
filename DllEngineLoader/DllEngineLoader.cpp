@@ -34,7 +34,7 @@ int main(int argc, LPSTR *argv)
 	default:
 		pEngine = "HaloReach";
 		pGame   = "00_basic_editing_054";
-		pMap    = "cex_timberland";
+		pMap    = "cex_prisoner";
 		//pFilm   = "asq_45_laun_217D482C";
 		break;
 	}
@@ -80,6 +80,12 @@ int main(int argc, LPSTR *argv)
 				print_insecure_ip_at(0x1838BB3D0);
 				print_secure_ip_at(0x1838BB3C2);
 			}
+		}
+
+		bool &g_output_debug_frame_time = IModuleInterface::Read<bool>(IGameInterface::s_modulePath, 0x1838CF3C9);
+		if (!g_output_debug_frame_time)
+		{
+			g_output_debug_frame_time = true;
 		}
 	};
 

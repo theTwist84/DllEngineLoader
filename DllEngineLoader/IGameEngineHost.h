@@ -104,7 +104,7 @@ void IGameEngineHost::Member02(__int64 player_identifier, unsigned int a2, __int
 
 void IGameEngineHost::EngineStateUpdateHandler(EngineState state)
 {
-	printf("IGameEngineHost::EngineStateUpdateHandler(%s);\n", EngineStateFromID(state));
+	printf("IGameEngineHost::EngineStateUpdateHandler(EngineState::%s);\n", EngineStateFromID(state));
 
 	// `Unknown16` also needs a second arg so we skip it
 	if (state != EngineState::eUnknown16)

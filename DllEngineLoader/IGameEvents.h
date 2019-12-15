@@ -8,133 +8,133 @@ public:
 	IGameEvents();
 	~IGameEvents();
 
-	/* 000 */	virtual void AchievementEarned(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 AchievementID);
-	/* 001 */	virtual void AshesToAshes(wchar_t *UserID, GUID PlayerSessionID);
-	/* 002 */	virtual void Assist(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade);
-	/* 003 */	virtual void AudioLogClaimed(wchar_t *UserID, GUID PlayerSessionID, INT32 AudioLogID);
-	/* 004 */	virtual void Base(wchar_t *UserID, GUID PlayerSessionID);
-	/* 005 */	virtual void Betrayal(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade);
-	/* 006 */	virtual void BIFactControllerSettings(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 ControllerConfigurationID, bool LookInverted);
-	/* 007 */	virtual void BIFactDeepLink(wchar_t *UserID, GUID PlayerSessionID);
-	/* 008 */	virtual void BIFactDeepLinkRecieve(wchar_t *UserID, GUID PlayerSessionID, wchar_t *DeepLinkCorrelationID, wchar_t *DeepLinkURL);
-	/* 009 */	virtual void BIFactDeepLinkSend(wchar_t *UserID, GUID PlayerSessionID, wchar_t *DeepLinkCorrelationID, wchar_t *DeepLinkURL);
-	/* 010 */	virtual void BIFactDualWield(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 LeftWeaponID, INT32 RightWeaponID, FILETIME DualWieldTimeStamp);
-	/* 011 */	virtual void BIFactGameSession(wchar_t *UserID, GUID PlayerSessionID, FILETIME SessionStartTimeStamp, FILETIME SessionEndTimeStamp, wchar_t *HaloTitleID, FILETIME SubTitleStartTimeStamp, FILETIME SubTitleEndTimeStamp, INT32 GameCategoryID, wchar_t *LocaleID, INT32 MapID, INT32 ArmorID, UINT64 SkullsUsed, wchar_t *HopperID, INT32 PlayerCount, bool Matchmade, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, bool Won, UINT64 Score, UINT64 TeamScore, INT32 Standing, bool FirstPlace, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 Betrayals, INT32 Suicides);
-	/* 012 */	virtual void BIFactLoadout(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 PrimaryWeaponID, INT32 SecondaryWeaponID, INT32 GrenadeID, INT32 ShieldID);
-	/* 013 */	virtual void BIFactMatchmaking(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *LobbyID, FILETIME LobbyEntryTimeStamp, bool JoinedMatch, FILETIME JoinMatchTimeStamp, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, INT32 PartySize, GUID PartyID);
-	/* 014 */	virtual void BIFactMatchmakingDetails(wchar_t *UserID, GUID PlayerSessionID, INT32 NumPlayersInParty, bool GSRFired, bool BecameActiveInSession, bool ConnectedToPeerGameHost, bool GameStarted, FILETIME LobbyEntryTimeStamp, FILETIME LobbyExitTimeStamp, INT32 ExitReason, wchar_t *GameUniqiueID, bool IsArbiter, bool IsThunderheadGame, INT32 NumPlayers, INT32 NumPreserveSessionTicketsCreated);
-	/* 015 */	virtual void BIFactMedia(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, FILETIME MediaStartTimeStamp, bool WasSkipped, FILETIME MediaSkipTimeStamp, wchar_t *MediaID);
-	/* 016 */	virtual void BirdOfPrey(wchar_t *UserID, GUID PlayerSessionID);
-	/* 017 */	virtual void BitsAndPiecesDestroyed(wchar_t *UserID, GUID PlayerSessionID);
-	/* 018 */	virtual void BroadcastingAssist(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 CurrentAssists);
-	/* 019 */	virtual void BroadcastingDeath(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, wchar_t *VictimXuid, UINT32 VictimTeamID, wchar_t *KillerXuid, UINT32 KillerTeamID, wchar_t *AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentDeaths);
-	/* 020 */	virtual void BroadcastingHeartbeat(wchar_t *UserID, GUID PlayerSessionID, INT64 Heartbeat);
-	/* 021 */	virtual void BroadcastingKill(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, wchar_t *VictimXuid, UINT32 VictimTeamID, wchar_t *KillerXuid, UINT32 KillerTeamID, wchar_t *AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentKills);
-	/* 022 */	virtual void BroadcastingMatchEnd(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp);
-	/* 023 */	virtual void BroadcastingMatchRoundEnd(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp);
-	/* 024 */	virtual void BroadcastingMatchRoundStart(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 RoundNumber);
-	/* 025 */	virtual void BroadcastingMatchStart(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MapVariantID, INT32 GameVariantID, wchar_t *PlaylistID);
-	/* 026 */	virtual void BroadcastingMedal(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MedalID);
-	/* 027 */	virtual void BroadcastingPlayerJoined(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID);
-	/* 028 */	virtual void BroadcastingPlayerLeft(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp);
-	/* 029 */	virtual void BroadcastingPlayerSpawn(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp);
-	/* 030 */	virtual void BroadcastingPlayerSwitchedTeams(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID, wchar_t *WebColor);
-	/* 031 */	virtual void BroadcastingScore(wchar_t *UserID, GUID PlayerSessionID, INT32 ControllerIndex, FILETIME Timestamp, INT32 CurrentRoundScore, INT32 CurrentTotalScore, INT32 CurrentRoundTeamScore, INT32 CurrentTotalTeamScore);
-	/* 032 */	virtual void BroadcastingStart(wchar_t *UserID, GUID PlayerSessionID, UINT32 GameType, UINT32 Map, UINT32 TopPlayerRank, wchar_t *PlayerIDs, GUID MatchID, bool PlayerIsCaster, INT64 MatchStartTime);
-	/* 033 */	virtual void CampaignDifficulty(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *CampaignDifficulty);
-	/* 034 */	virtual void ChallengeCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 ChallengeID);
-	/* 035 */	virtual void ClassicModeSwitched(wchar_t *UserID, GUID PlayerSessionID, INT32 MapID);
-	/* 036 */	virtual void CleverGirl(wchar_t *UserID, GUID PlayerSessionID);
-	/* 037 */	virtual void ClueClaimed(wchar_t *UserID, GUID PlayerSessionID, INT32 ClueID);
-	/* 038 */	virtual void CoopMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MissionID, INT32 MapID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed, INT32 DifficultyID);
-	/* 039 */	virtual void CoopSpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 DifficultyID);
-	/* 040 */	virtual void CompletionCount(wchar_t *UserID, GUID PlayerSessionID, INT32 Count);
-	/* 041 */	virtual void Customization(wchar_t *UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2, wchar_t *ServiceID, wchar_t *ClanID, INT32 AvatarID, INT32 NameplateID);
-	/* 042 */	virtual void DashboardContext(wchar_t *UserID, GUID PlayerSessionID, wchar_t *DashboardContext);
-	/* 043 */	virtual void Death(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot);
-	/* 044 */	virtual void DollFound(wchar_t *UserID, GUID PlayerSessionID, INT32 DollID);
-	/* 045 */	virtual void EliteWin(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, bool MatchMade);
-	/* 046 */	virtual void Emblem(wchar_t *UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2);
-	/* 047 */	virtual void EnemyDefeated(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot);
-	/* 048 */	virtual void FriendsBestedOnHeroLeaderboard(wchar_t *UserID, GUID PlayerSessionID, INT32 LeaderboardID, INT32 LeaderboardRows);
-	/* 049 */	virtual void GameProgress(wchar_t *UserID, GUID PlayerSessionID, float CompletionPercent);
-	/* 050 */	virtual void GameVarSaved(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 BaseGameCategory, wchar_t *GameVarName);
-	/* 051 */	virtual void GrenadeStick(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID);
-	/* 052 */	virtual void HelloNurse(wchar_t *UserID, GUID PlayerSessionID);
-	/* 053 */	virtual void InGamePresence(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitle, INT32 CampaignDifficulty, INT32 MultiplayerMap);
-	/* 054 */	virtual void ISeeYou(wchar_t *UserID, GUID PlayerSessionID);
-	/* 055 */	virtual void Joinability(wchar_t *UserID, GUID PlayerSessionID, bool InGame);
-	/* 056 */	virtual void Lobby(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *Lobby);
-	/* 057 */	virtual void MainMenuPresence(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MainMenuPresence);
-	/* 058 */	virtual void MapVarSaved(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 BaseMapID, wchar_t *MapVarName);
-	/* 059 */	virtual void MatchmakingHopper(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *MatchmakingHopper);
-	/* 060 */	virtual void MediaUsage(wchar_t *AppSessionID, wchar_t *AppSessionStartDateTime, UINT32 UserIDType, wchar_t *UserID, wchar_t *SubscriptionTierType, wchar_t *SubscriptionTier, wchar_t *MediaType, wchar_t *ProviderID, wchar_t *ProviderMediaID, wchar_t *ProviderMediaInstanceID, GUID BingID, UINT64 MediaLengthMs, UINT32 MediaControlAction, float PlaybackSpeed, UINT64 MediaPositionMs, UINT64 PlaybackDurationMs, wchar_t *AcquisitionType, wchar_t *AcquisitionContext, wchar_t *AcquisitionContextType, wchar_t *AcquisitionContextID, INT32 PlaybackIsStream, INT32 PlaybackIsTethered, wchar_t *MarketplaceLocation, wchar_t *ContentLocale, float TimeZoneOffset, UINT32 ScreenState);
-	/* 061 */	virtual void MeldOfferPresented(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, wchar_t *Page, INT32 SourceTileIndex);
-	/* 062 */	virtual void MeldOfferResponded(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, INT32 UpsellOutcome);
-	/* 063 */	virtual void MeldPageAction(wchar_t *UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, wchar_t *Page, wchar_t *TemplateID, wchar_t *DestinationPage, wchar_t *Content, INT32 SourceTileIndex, INT32 SourceTileX, INT32 SourceTileY, INT32 SourceTileWidth, INT32 SourceTileHeight);
-	/* 064 */	virtual void MeldPageView(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Page, wchar_t *RefererPage, INT32 PageTypeID, wchar_t *PageTags, wchar_t *TemplateID, wchar_t *Content, wchar_t *FilterContext, INT32 FilterDirection);
-	/* 065 */	virtual void MissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 GameCategoryID, bool Coop, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, INT32 DifficultyID, UINT64 MissionScore64, UINT64 SkullUsedFlags, INT32 NumPlayers, wchar_t *PlayerSectionStats, INT32 Kills, float Multiplier, INT32 Penalties, float SkullMultiplier, INT32 TotalSoloMissionsComplete, INT32 TotalCoopMissionsComplete);
-	/* 066 */	virtual void MortardomWraithsKilled(wchar_t *UserID, GUID PlayerSessionID);
-	/* 067 */	virtual void MultiplayerGameEngine(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *MultiplayerGameEngine);
-	/* 068 */	virtual void MultiplayerMap(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *MultiplayerMap);
-	/* 069 */	virtual void MultiplayerRoundEnd(wchar_t *UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID, float TimeInSeconds, INT32 ExitStatusID);
-	/* 070 */	virtual void MultiplayerRoundStart(wchar_t *UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID);
-	/* 071 */	virtual void NappersCaught(wchar_t *UserID, GUID PlayerSessionID);
-	/* 072 */	virtual void NewsStoryRead(wchar_t *UserID, GUID PlayerSessionID, wchar_t *StoryID);
-	/* 073 */	virtual void ObjectiveEnd(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID, INT32 ExitStatusID);
-	/* 074 */	virtual void ObjectiveStart(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID);
-	/* 075 */	virtual void PageAction(wchar_t *UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, wchar_t *Page, wchar_t *TemplateID, wchar_t *DestinationPage, wchar_t *Content);
-	/* 076 */	virtual void PageView(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Page, wchar_t *RefererPage, INT32 PageTypeID, wchar_t *PageTags, wchar_t *TemplateID, wchar_t *Content);
-	/* 077 */	virtual void PhantomHunter(wchar_t *UserID, GUID PlayerSessionID);
-	/* 078 */	virtual void PigsCanFly(wchar_t *UserID, GUID PlayerSessionID);
-	/* 079 */	virtual void PlayerCheckedInToday(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID);
-	/* 080 */	virtual void PlayerDefeated(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 EnemyWeaponID, float LocationX, float LocationY, float LocationZ);
-	/* 081 */	virtual void PlayerGameResults(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 GameIndexByCategory, INT32 GameIndexByTitle, INT32 GameIndexByTitleCategory, INT32 MapID, INT32 GameCategoryID, bool MatchMade, bool Won, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, UINT64 Score64, INT32 Standing, bool FirstPlace, INT32 MedalCount, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 HeadShots, INT32 MostKillsInARow, wchar_t *CustomStat1ID, INT32 CustomStat1, wchar_t *CustomStat2ID, INT32 CustomStat2, wchar_t *CustomStat3ID, INT32 CustomStat3, wchar_t *CustomStat4ID, INT32 CustomStat4, GUID MatchID);
-	/* 082 */	virtual void PlayerGameResultsDamageStat(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 DamageReportingType, INT32 DamageStatisticType, INT32 DamageCount, INT32 GameCategoryID);
-	/* 083 */	virtual void PlayerGameResultsGriefingStat(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty);
-	/* 084 */	virtual void PlayerGameResultsGriefingStats(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty);
-	/* 085 */	virtual void PlayerGameResultsInterestStats(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 OrdnanceDrops, INT32 OrdnanceStrikes, UINT64 TimeMSDriven, INT32 UnitsDriven, UINT64 TimeMSPiloted, INT32 UnitsPiloted, UINT64 TimeMSPassenger, INT32 UnitsMovedPassenger, UINT64 TimeMSOnFoot, INT32 UnitsMovedOnFoot, INT32 DriverAssists, INT32 ArmorAbilityUseJetpack, INT32 ArmorAbilityUseHologram, INT32 ArmorAbilityUseReflectiveShield, INT32 ArmorAbilityUseActiveCamo, INT32 ArmorAbilityUseThrusterPack, INT32 ArmorAbilityUseAutoTurret, INT32 ArmorAbilityUseXRay);
-	/* 086 */	virtual void PlayerGameResultsMedal(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 MedalType, INT32 MedalCount);
-	/* 087 */	virtual void PlayerSessionEnd(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID);
-	/* 088 */	virtual void PlayerSessionPause(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID);
-	/* 089 */	virtual void PlayerSessionResume(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID);
-	/* 090 */	virtual void PlayerSessionStart(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID);
-	/* 091 */	virtual void PlayerSpawned(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, float LocationX, float LocationY, float LocationZ);
-	/* 092 */	virtual void PlaylistCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, UINT32 PlaylistID, UINT64 Score64, UINT64 TimeMS, INT32 Penalties, wchar_t *MissionStats, bool IsCoop);
-	/* 093 */	virtual void PlaylistProgress(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 PlaylistID, INT32 NumMapsCompleted, UINT64 Score64, bool IsCoop, INT32 NumPlayers, bool ShouldPostTime, UINT64 TotalPlayListTimeMS);
-	/* 094 */	virtual void RankedStatsDNFInfo(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, double FinishesOverStarts, INT32 FinishesMinusStarts, INT32 FinishesPlusPenaltiesMinusStarts, double FinishesPlusPenaltiesOverStarts);
-	/* 095 */	virtual void RankedStatsOverride(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked);
-	/* 096 */	virtual void RankedStatsPenalty(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, INT32 NumPenaltiesApplied);
-	/* 097 */	virtual void RankedStatsUpdate(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked, bool PenaltyApplied);
-	/* 098 */	virtual void RankedUpSpartanIv(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 SpartanIvRank, INT32 SpecialisationType);
-	/* 099 */	virtual void RealtimeFlagCaptured(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, bool MatchMade);
-	/* 100 */	virtual void RealtimeMedal(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 GameCategoryID, INT32 GameMode, bool MatchMade, INT32 MedalType, INT32 MedalCount);
-	/* 101 */	virtual void RealtimePilotedVehicle(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, bool MatchMade, INT32 VehicleID, UINT64 TimeMS, INT32 Distance);
-	/* 102 */	virtual void RivalID(wchar_t *UserID, GUID PlayerSessionID, INT64 RivalID);
-	/* 103 */	virtual void SectionEnd(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID, INT32 MissionID);
-	/* 104 */	virtual void SectionStart(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 MissionID);
-	/* 105 */	virtual void SectionStats(wchar_t *UserID, GUID PlayerSessionID, INT32 MissionID, INT32 SectionID, INT32 SectionOrdinal, float ScoreWithoutTimeBonus, float ScoreWithTimeBonus, float TimeInSeconds);
-	/* 106 */	virtual void SessionSizeUpdate(wchar_t *UserID, GUID PlayerSessionID, INT32 SessionSize, INT32 SessionSizeMax);
-	/* 107 */	virtual void SizeIsEverything(wchar_t *UserID, GUID PlayerSessionID);
-	/* 108 */	virtual void SkeetShooter(wchar_t *UserID, GUID PlayerSessionID);
-	/* 109 */	virtual void SkullClaimed(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 SkullID, INT32 DifficultyID);
-	/* 110 */	virtual void SoloMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 DifficultyID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed);
-	/* 111 */	virtual void SoloSpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 DifficultyID);
-	/* 112 */	virtual void SpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 MissionID, INT32 DifficultyID, bool IsCoop);
-	/* 113 */	virtual void Supercombine(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID);
-	/* 114 */	virtual void SurvivalSpace(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *SurvivalSpace);
-	/* 115 */	virtual void TerminalFound(wchar_t *UserID, GUID PlayerSessionID, INT32 TerminalID);
-	/* 116 */	virtual void TerminalID(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 SkullID, INT32 DifficultyID);
-	/* 117 */	virtual void TicketsEarned(wchar_t *UserID, GUID PlayerSessionID, INT32 TicketCount);
-	/* 118 */	virtual void TitleCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID);
-	/* 119 */	virtual void TitleLaunched(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID);
-	/* 120 */	virtual void ValhallaSign(wchar_t *UserID, GUID PlayerSessionID, INT32 SignID);
-	/* 121 */	virtual void ViewOffer(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid);
-	/* 122 */	virtual void VIPStatusEarned(wchar_t *UserID, GUID PlayerSessionID);
-	/* 123 */	virtual void WhatAboutTanksDestroyed(wchar_t *UserID, GUID PlayerSessionID);
-	/* 124 */	virtual void WonWarGame(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID);
-	/* 125 */	virtual void ZanzibarSign(wchar_t *UserID, GUID PlayerSessionID, INT32 SignID);
-	/* 126 */	virtual void FirefightGameResults(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, bool MatchMade, UINT64 TimePlayedMS, UINT32 Kills, UINT32 MostKillsInARow, UINT32 SetsCompleted, UINT32 WavesCompleted, UINT32 GeneratorsDestroyed);
+	/* 000 */	virtual void AchievementEarned(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 AchievementID);
+	/* 001 */	virtual void AshesToAshes(LPWSTR UserID, GUID PlayerSessionID);
+	/* 002 */	virtual void Assist(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade);
+	/* 003 */	virtual void AudioLogClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 AudioLogID);
+	/* 004 */	virtual void Base(LPWSTR UserID, GUID PlayerSessionID);
+	/* 005 */	virtual void Betrayal(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade);
+	/* 006 */	virtual void BIFactControllerSettings(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 ControllerConfigurationID, bool LookInverted);
+	/* 007 */	virtual void BIFactDeepLink(LPWSTR UserID, GUID PlayerSessionID);
+	/* 008 */	virtual void BIFactDeepLinkRecieve(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DeepLinkCorrelationID, LPWSTR DeepLinkURL);
+	/* 009 */	virtual void BIFactDeepLinkSend(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DeepLinkCorrelationID, LPWSTR DeepLinkURL);
+	/* 010 */	virtual void BIFactDualWield(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 LeftWeaponID, INT32 RightWeaponID, FILETIME DualWieldTimeStamp);
+	/* 011 */	virtual void BIFactGameSession(LPWSTR UserID, GUID PlayerSessionID, FILETIME SessionStartTimeStamp, FILETIME SessionEndTimeStamp, LPWSTR HaloTitleID, FILETIME SubTitleStartTimeStamp, FILETIME SubTitleEndTimeStamp, INT32 GameCategoryID, LPWSTR LocaleID, INT32 MapID, INT32 ArmorID, UINT64 SkullsUsed, LPWSTR HopperID, INT32 PlayerCount, bool Matchmade, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, bool Won, UINT64 Score, UINT64 TeamScore, INT32 Standing, bool FirstPlace, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 Betrayals, INT32 Suicides);
+	/* 012 */	virtual void BIFactLoadout(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 PrimaryWeaponID, INT32 SecondaryWeaponID, INT32 GrenadeID, INT32 ShieldID);
+	/* 013 */	virtual void BIFactMatchmaking(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR LobbyID, FILETIME LobbyEntryTimeStamp, bool JoinedMatch, FILETIME JoinMatchTimeStamp, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, INT32 PartySize, GUID PartyID);
+	/* 014 */	virtual void BIFactMatchmakingDetails(LPWSTR UserID, GUID PlayerSessionID, INT32 NumPlayersInParty, bool GSRFired, bool BecameActiveInSession, bool ConnectedToPeerGameHost, bool GameStarted, FILETIME LobbyEntryTimeStamp, FILETIME LobbyExitTimeStamp, INT32 ExitReason, LPWSTR GameUniqiueID, bool IsArbiter, bool IsThunderheadGame, INT32 NumPlayers, INT32 NumPreserveSessionTicketsCreated);
+	/* 015 */	virtual void BIFactMedia(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, FILETIME MediaStartTimeStamp, bool WasSkipped, FILETIME MediaSkipTimeStamp, LPWSTR MediaID);
+	/* 016 */	virtual void BirdOfPrey(LPWSTR UserID, GUID PlayerSessionID);
+	/* 017 */	virtual void BitsAndPiecesDestroyed(LPWSTR UserID, GUID PlayerSessionID);
+	/* 018 */	virtual void BroadcastingAssist(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 CurrentAssists);
+	/* 019 */	virtual void BroadcastingDeath(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, LPWSTR VictimXuid, UINT32 VictimTeamID, LPWSTR KillerXuid, UINT32 KillerTeamID, LPWSTR AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentDeaths);
+	/* 020 */	virtual void BroadcastingHeartbeat(LPWSTR UserID, GUID PlayerSessionID, INT64 Heartbeat);
+	/* 021 */	virtual void BroadcastingKill(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, LPWSTR VictimXuid, UINT32 VictimTeamID, LPWSTR KillerXuid, UINT32 KillerTeamID, LPWSTR AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentKills);
+	/* 022 */	virtual void BroadcastingMatchEnd(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp);
+	/* 023 */	virtual void BroadcastingMatchRoundEnd(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp);
+	/* 024 */	virtual void BroadcastingMatchRoundStart(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 RoundNumber);
+	/* 025 */	virtual void BroadcastingMatchStart(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MapVariantID, INT32 GameVariantID, LPWSTR PlaylistID);
+	/* 026 */	virtual void BroadcastingMedal(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MedalID);
+	/* 027 */	virtual void BroadcastingPlayerJoined(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID);
+	/* 028 */	virtual void BroadcastingPlayerLeft(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp);
+	/* 029 */	virtual void BroadcastingPlayerSpawn(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp);
+	/* 030 */	virtual void BroadcastingPlayerSwitchedTeams(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID, LPWSTR WebColor);
+	/* 031 */	virtual void BroadcastingScore(LPWSTR UserID, GUID PlayerSessionID, INT32 ControllerIndex, FILETIME Timestamp, INT32 CurrentRoundScore, INT32 CurrentTotalScore, INT32 CurrentRoundTeamScore, INT32 CurrentTotalTeamScore);
+	/* 032 */	virtual void BroadcastingStart(LPWSTR UserID, GUID PlayerSessionID, UINT32 GameType, UINT32 Map, UINT32 TopPlayerRank, LPWSTR PlayerIDs, GUID MatchID, bool PlayerIsCaster, INT64 MatchStartTime);
+	/* 033 */	virtual void CampaignDifficulty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR CampaignDifficulty);
+	/* 034 */	virtual void ChallengeCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 ChallengeID);
+	/* 035 */	virtual void ClassicModeSwitched(LPWSTR UserID, GUID PlayerSessionID, INT32 MapID);
+	/* 036 */	virtual void CleverGirl(LPWSTR UserID, GUID PlayerSessionID);
+	/* 037 */	virtual void ClueClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 ClueID);
+	/* 038 */	virtual void CoopMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MissionID, INT32 MapID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed, INT32 DifficultyID);
+	/* 039 */	virtual void CoopSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID);
+	/* 040 */	virtual void CompletionCount(LPWSTR UserID, GUID PlayerSessionID, INT32 Count);
+	/* 041 */	virtual void Customization(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2, LPWSTR ServiceID, LPWSTR ClanID, INT32 AvatarID, INT32 NameplateID);
+	/* 042 */	virtual void DashboardContext(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DashboardContext);
+	/* 043 */	virtual void Death(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot);
+	/* 044 */	virtual void DollFound(LPWSTR UserID, GUID PlayerSessionID, INT32 DollID);
+	/* 045 */	virtual void EliteWin(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade);
+	/* 046 */	virtual void Emblem(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2);
+	/* 047 */	virtual void EnemyDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot);
+	/* 048 */	virtual void FriendsBestedOnHeroLeaderboard(LPWSTR UserID, GUID PlayerSessionID, INT32 LeaderboardID, INT32 LeaderboardRows);
+	/* 049 */	virtual void GameProgress(LPWSTR UserID, GUID PlayerSessionID, float CompletionPercent);
+	/* 050 */	virtual void GameVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 BaseGameCategory, LPWSTR GameVarName);
+	/* 051 */	virtual void GrenadeStick(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID);
+	/* 052 */	virtual void HelloNurse(LPWSTR UserID, GUID PlayerSessionID);
+	/* 053 */	virtual void InGamePresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitle, INT32 CampaignDifficulty, INT32 MultiplayerMap);
+	/* 054 */	virtual void ISeeYou(LPWSTR UserID, GUID PlayerSessionID);
+	/* 055 */	virtual void Joinability(LPWSTR UserID, GUID PlayerSessionID, bool InGame);
+	/* 056 */	virtual void Lobby(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR Lobby);
+	/* 057 */	virtual void MainMenuPresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MainMenuPresence);
+	/* 058 */	virtual void MapVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 BaseMapID, LPWSTR MapVarName);
+	/* 059 */	virtual void MatchmakingHopper(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MatchmakingHopper);
+	/* 060 */	virtual void MediaUsage(LPWSTR AppSessionID, LPWSTR AppSessionStartDateTime, UINT32 UserIDType, LPWSTR UserID, LPWSTR SubscriptionTierType, LPWSTR SubscriptionTier, LPWSTR MediaType, LPWSTR ProviderID, LPWSTR ProviderMediaID, LPWSTR ProviderMediaInstanceID, GUID BingID, UINT64 MediaLengthMs, UINT32 MediaControlAction, float PlaybackSpeed, UINT64 MediaPositionMs, UINT64 PlaybackDurationMs, LPWSTR AcquisitionType, LPWSTR AcquisitionContext, LPWSTR AcquisitionContextType, LPWSTR AcquisitionContextID, INT32 PlaybackIsStream, INT32 PlaybackIsTethered, LPWSTR MarketplaceLocation, LPWSTR ContentLocale, float TimeZoneOffset, UINT32 ScreenState);
+	/* 061 */	virtual void MeldOfferPresented(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, LPWSTR Page, INT32 SourceTileIndex);
+	/* 062 */	virtual void MeldOfferResponded(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, INT32 UpsellOutcome);
+	/* 063 */	virtual void MeldPageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, LPWSTR Page, LPWSTR TemplateID, LPWSTR DestinationPage, LPWSTR Content, INT32 SourceTileIndex, INT32 SourceTileX, INT32 SourceTileY, INT32 SourceTileWidth, INT32 SourceTileHeight);
+	/* 064 */	virtual void MeldPageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPWSTR RefererPage, INT32 PageTypeID, LPWSTR PageTags, LPWSTR TemplateID, LPWSTR Content, LPWSTR FilterContext, INT32 FilterDirection);
+	/* 065 */	virtual void MissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 GameCategoryID, bool Coop, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, INT32 DifficultyID, UINT64 MissionScore64, UINT64 SkullUsedFlags, INT32 NumPlayers, LPWSTR PlayerSectionStats, INT32 Kills, float Multiplier, INT32 Penalties, float SkullMultiplier, INT32 TotalSoloMissionsComplete, INT32 TotalCoopMissionsComplete);
+	/* 066 */	virtual void MortardomWraithsKilled(LPWSTR UserID, GUID PlayerSessionID);
+	/* 067 */	virtual void MultiplayerGameEngine(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MultiplayerGameEngine);
+	/* 068 */	virtual void MultiplayerMap(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MultiplayerMap);
+	/* 069 */	virtual void MultiplayerRoundEnd(LPWSTR UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID, float TimeInSeconds, INT32 ExitStatusID);
+	/* 070 */	virtual void MultiplayerRoundStart(LPWSTR UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID);
+	/* 071 */	virtual void NappersCaught(LPWSTR UserID, GUID PlayerSessionID);
+	/* 072 */	virtual void NewsStoryRead(LPWSTR UserID, GUID PlayerSessionID, LPWSTR StoryID);
+	/* 073 */	virtual void ObjectiveEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID, INT32 ExitStatusID);
+	/* 074 */	virtual void ObjectiveStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID);
+	/* 075 */	virtual void PageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, LPWSTR Page, LPWSTR TemplateID, LPWSTR DestinationPage, LPWSTR Content);
+	/* 076 */	virtual void PageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPWSTR RefererPage, INT32 PageTypeID, LPWSTR PageTags, LPWSTR TemplateID, LPWSTR Content);
+	/* 077 */	virtual void PhantomHunter(LPWSTR UserID, GUID PlayerSessionID);
+	/* 078 */	virtual void PigsCanFly(LPWSTR UserID, GUID PlayerSessionID);
+	/* 079 */	virtual void PlayerCheckedInToday(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID);
+	/* 080 */	virtual void PlayerDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 EnemyWeaponID, float LocationX, float LocationY, float LocationZ);
+	/* 081 */	virtual void PlayerGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 GameIndexByCategory, INT32 GameIndexByTitle, INT32 GameIndexByTitleCategory, INT32 MapID, INT32 GameCategoryID, bool MatchMade, bool Won, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, UINT64 Score64, INT32 Standing, bool FirstPlace, INT32 MedalCount, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 HeadShots, INT32 MostKillsInARow, LPWSTR CustomStat1ID, INT32 CustomStat1, LPWSTR CustomStat2ID, INT32 CustomStat2, LPWSTR CustomStat3ID, INT32 CustomStat3, LPWSTR CustomStat4ID, INT32 CustomStat4, GUID MatchID);
+	/* 082 */	virtual void PlayerGameResultsDamageStat(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 DamageReportingType, INT32 DamageStatisticType, INT32 DamageCount, INT32 GameCategoryID);
+	/* 083 */	virtual void PlayerGameResultsGriefingStat(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty);
+	/* 084 */	virtual void PlayerGameResultsGriefingStats(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty);
+	/* 085 */	virtual void PlayerGameResultsInterestStats(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 OrdnanceDrops, INT32 OrdnanceStrikes, UINT64 TimeMSDriven, INT32 UnitsDriven, UINT64 TimeMSPiloted, INT32 UnitsPiloted, UINT64 TimeMSPassenger, INT32 UnitsMovedPassenger, UINT64 TimeMSOnFoot, INT32 UnitsMovedOnFoot, INT32 DriverAssists, INT32 ArmorAbilityUseJetpack, INT32 ArmorAbilityUseHologram, INT32 ArmorAbilityUseReflectiveShield, INT32 ArmorAbilityUseActiveCamo, INT32 ArmorAbilityUseThrusterPack, INT32 ArmorAbilityUseAutoTurret, INT32 ArmorAbilityUseXRay);
+	/* 086 */	virtual void PlayerGameResultsMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 MedalType, INT32 MedalCount);
+	/* 087 */	virtual void PlayerSessionEnd(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID);
+	/* 088 */	virtual void PlayerSessionPause(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID);
+	/* 089 */	virtual void PlayerSessionResume(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID);
+	/* 090 */	virtual void PlayerSessionStart(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID);
+	/* 091 */	virtual void PlayerSpawned(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, float LocationX, float LocationY, float LocationZ);
+	/* 092 */	virtual void PlaylistCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, UINT32 PlaylistID, UINT64 Score64, UINT64 TimeMS, INT32 Penalties, LPWSTR MissionStats, bool IsCoop);
+	/* 093 */	virtual void PlaylistProgress(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 PlaylistID, INT32 NumMapsCompleted, UINT64 Score64, bool IsCoop, INT32 NumPlayers, bool ShouldPostTime, UINT64 TotalPlayListTimeMS);
+	/* 094 */	virtual void RankedStatsDNFInfo(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double FinishesOverStarts, INT32 FinishesMinusStarts, INT32 FinishesPlusPenaltiesMinusStarts, double FinishesPlusPenaltiesOverStarts);
+	/* 095 */	virtual void RankedStatsOverride(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked);
+	/* 096 */	virtual void RankedStatsPenalty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, INT32 NumPenaltiesApplied);
+	/* 097 */	virtual void RankedStatsUpdate(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked, bool PenaltyApplied);
+	/* 098 */	virtual void RankedUpSpartanIv(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SpartanIvRank, INT32 SpecialisationType);
+	/* 099 */	virtual void RealtimeFlagCaptured(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, bool MatchMade);
+	/* 100 */	virtual void RealtimeMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 GameCategoryID, INT32 GameMode, bool MatchMade, INT32 MedalType, INT32 MedalCount);
+	/* 101 */	virtual void RealtimePilotedVehicle(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, bool MatchMade, INT32 VehicleID, UINT64 TimeMS, INT32 Distance);
+	/* 102 */	virtual void RivalID(LPWSTR UserID, GUID PlayerSessionID, INT64 RivalID);
+	/* 103 */	virtual void SectionEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID, INT32 MissionID);
+	/* 104 */	virtual void SectionStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 MissionID);
+	/* 105 */	virtual void SectionStats(LPWSTR UserID, GUID PlayerSessionID, INT32 MissionID, INT32 SectionID, INT32 SectionOrdinal, float ScoreWithoutTimeBonus, float ScoreWithTimeBonus, float TimeInSeconds);
+	/* 106 */	virtual void SessionSizeUpdate(LPWSTR UserID, GUID PlayerSessionID, INT32 SessionSize, INT32 SessionSizeMax);
+	/* 107 */	virtual void SizeIsEverything(LPWSTR UserID, GUID PlayerSessionID);
+	/* 108 */	virtual void SkeetShooter(LPWSTR UserID, GUID PlayerSessionID);
+	/* 109 */	virtual void SkullClaimed(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SkullID, INT32 DifficultyID);
+	/* 110 */	virtual void SoloMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed);
+	/* 111 */	virtual void SoloSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID);
+	/* 112 */	virtual void SpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 MissionID, INT32 DifficultyID, bool IsCoop);
+	/* 113 */	virtual void Supercombine(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID);
+	/* 114 */	virtual void SurvivalSpace(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR SurvivalSpace);
+	/* 115 */	virtual void TerminalFound(LPWSTR UserID, GUID PlayerSessionID, INT32 TerminalID);
+	/* 116 */	virtual void TerminalID(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SkullID, INT32 DifficultyID);
+	/* 117 */	virtual void TicketsEarned(LPWSTR UserID, GUID PlayerSessionID, INT32 TicketCount);
+	/* 118 */	virtual void TitleCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID);
+	/* 119 */	virtual void TitleLaunched(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID);
+	/* 120 */	virtual void ValhallaSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID);
+	/* 121 */	virtual void ViewOffer(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid);
+	/* 122 */	virtual void VIPStatusEarned(LPWSTR UserID, GUID PlayerSessionID);
+	/* 123 */	virtual void WhatAboutTanksDestroyed(LPWSTR UserID, GUID PlayerSessionID);
+	/* 124 */	virtual void WonWarGame(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID);
+	/* 125 */	virtual void ZanzibarSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID);
+	/* 126 */	virtual void FirefightGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade, UINT64 TimePlayedMS, UINT32 Kills, UINT32 MostKillsInARow, UINT32 SetsCompleted, UINT32 WavesCompleted, UINT32 GeneratorsDestroyed);
 	/* 127 */	virtual void EnemyDefeated_0(); // probably zombie defeated as these are in alphabetical order
 	/* 128 */	virtual void Member128();
 	/* 129 */	virtual void Member129();
@@ -182,7 +182,7 @@ IGameEvents::~IGameEvents()
 {
 }
 
-void IGameEvents::AchievementEarned(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 AchievementID)
+void IGameEvents::AchievementEarned(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 AchievementID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -192,7 +192,7 @@ void IGameEvents::AchievementEarned(wchar_t *UserID, GUID PlayerSessionID, wchar
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::AshesToAshes(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::AshesToAshes(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -202,7 +202,7 @@ void IGameEvents::AshesToAshes(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Assist(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade)
+void IGameEvents::Assist(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -212,7 +212,7 @@ void IGameEvents::Assist(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID,
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::AudioLogClaimed(wchar_t *UserID, GUID PlayerSessionID, INT32 AudioLogID)
+void IGameEvents::AudioLogClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 AudioLogID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -222,7 +222,7 @@ void IGameEvents::AudioLogClaimed(wchar_t *UserID, GUID PlayerSessionID, INT32 A
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Base(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::Base(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -232,7 +232,7 @@ void IGameEvents::Base(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Betrayal(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade)
+void IGameEvents::Betrayal(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -242,7 +242,7 @@ void IGameEvents::Betrayal(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionI
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactControllerSettings(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 ControllerConfigurationID, bool LookInverted)
+void IGameEvents::BIFactControllerSettings(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 ControllerConfigurationID, bool LookInverted)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -252,7 +252,7 @@ void IGameEvents::BIFactControllerSettings(wchar_t *UserID, GUID PlayerSessionID
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactDeepLink(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::BIFactDeepLink(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -262,7 +262,7 @@ void IGameEvents::BIFactDeepLink(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactDeepLinkRecieve(wchar_t *UserID, GUID PlayerSessionID, wchar_t *DeepLinkCorrelationID, wchar_t *DeepLinkURL)
+void IGameEvents::BIFactDeepLinkRecieve(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DeepLinkCorrelationID, LPWSTR DeepLinkURL)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -272,7 +272,7 @@ void IGameEvents::BIFactDeepLinkRecieve(wchar_t *UserID, GUID PlayerSessionID, w
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactDeepLinkSend(wchar_t *UserID, GUID PlayerSessionID, wchar_t *DeepLinkCorrelationID, wchar_t *DeepLinkURL)
+void IGameEvents::BIFactDeepLinkSend(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DeepLinkCorrelationID, LPWSTR DeepLinkURL)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -282,7 +282,7 @@ void IGameEvents::BIFactDeepLinkSend(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactDualWield(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 LeftWeaponID, INT32 RightWeaponID, FILETIME DualWieldTimeStamp)
+void IGameEvents::BIFactDualWield(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 LeftWeaponID, INT32 RightWeaponID, FILETIME DualWieldTimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -295,7 +295,7 @@ void IGameEvents::BIFactDualWield(wchar_t *UserID, GUID PlayerSessionID, bool Is
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactGameSession(wchar_t *UserID, GUID PlayerSessionID, FILETIME SessionStartTimeStamp, FILETIME SessionEndTimeStamp, wchar_t *HaloTitleID, FILETIME SubTitleStartTimeStamp, FILETIME SubTitleEndTimeStamp, INT32 GameCategoryID, wchar_t *LocaleID, INT32 MapID, INT32 ArmorID, UINT64 SkullsUsed, wchar_t *HopperID, INT32 PlayerCount, bool Matchmade, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, bool Won, UINT64 Score, UINT64 TeamScore, INT32 Standing, bool FirstPlace, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 Betrayals, INT32 Suicides)
+void IGameEvents::BIFactGameSession(LPWSTR UserID, GUID PlayerSessionID, FILETIME SessionStartTimeStamp, FILETIME SessionEndTimeStamp, LPWSTR HaloTitleID, FILETIME SubTitleStartTimeStamp, FILETIME SubTitleEndTimeStamp, INT32 GameCategoryID, LPWSTR LocaleID, INT32 MapID, INT32 ArmorID, UINT64 SkullsUsed, LPWSTR HopperID, INT32 PlayerCount, bool Matchmade, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, bool Won, UINT64 Score, UINT64 TeamScore, INT32 Standing, bool FirstPlace, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 Betrayals, INT32 Suicides)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -305,7 +305,7 @@ void IGameEvents::BIFactGameSession(wchar_t *UserID, GUID PlayerSessionID, FILET
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactLoadout(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 PrimaryWeaponID, INT32 SecondaryWeaponID, INT32 GrenadeID, INT32 ShieldID)
+void IGameEvents::BIFactLoadout(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 PrimaryWeaponID, INT32 SecondaryWeaponID, INT32 GrenadeID, INT32 ShieldID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -315,7 +315,7 @@ void IGameEvents::BIFactLoadout(wchar_t *UserID, GUID PlayerSessionID, bool IsGu
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactMatchmaking(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *LobbyID, FILETIME LobbyEntryTimeStamp, bool JoinedMatch, FILETIME JoinMatchTimeStamp, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, INT32 PartySize, GUID PartyID)
+void IGameEvents::BIFactMatchmaking(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR LobbyID, FILETIME LobbyEntryTimeStamp, bool JoinedMatch, FILETIME JoinMatchTimeStamp, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, INT32 PartySize, GUID PartyID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -333,7 +333,7 @@ void IGameEvents::BIFactMatchmaking(wchar_t *UserID, GUID PlayerSessionID, bool 
 	::CoTaskMemFree(PartyIDStr);
 }
 
-void IGameEvents::BIFactMatchmakingDetails(wchar_t *UserID, GUID PlayerSessionID, INT32 NumPlayersInParty, bool GSRFired, bool BecameActiveInSession, bool ConnectedToPeerGameHost, bool GameStarted, FILETIME LobbyEntryTimeStamp, FILETIME LobbyExitTimeStamp, INT32 ExitReason, wchar_t *GameUniqiueID, bool IsArbiter, bool IsThunderheadGame, INT32 NumPlayers, INT32 NumPreserveSessionTicketsCreated)
+void IGameEvents::BIFactMatchmakingDetails(LPWSTR UserID, GUID PlayerSessionID, INT32 NumPlayersInParty, bool GSRFired, bool BecameActiveInSession, bool ConnectedToPeerGameHost, bool GameStarted, FILETIME LobbyEntryTimeStamp, FILETIME LobbyExitTimeStamp, INT32 ExitReason, LPWSTR GameUniqiueID, bool IsArbiter, bool IsThunderheadGame, INT32 NumPlayers, INT32 NumPreserveSessionTicketsCreated)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -343,7 +343,7 @@ void IGameEvents::BIFactMatchmakingDetails(wchar_t *UserID, GUID PlayerSessionID
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BIFactMedia(wchar_t *UserID, GUID PlayerSessionID, bool IsGuest, wchar_t *HaloTitleID, FILETIME MediaStartTimeStamp, bool WasSkipped, FILETIME MediaSkipTimeStamp, wchar_t *MediaID)
+void IGameEvents::BIFactMedia(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, FILETIME MediaStartTimeStamp, bool WasSkipped, FILETIME MediaSkipTimeStamp, LPWSTR MediaID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -358,7 +358,7 @@ void IGameEvents::BIFactMedia(wchar_t *UserID, GUID PlayerSessionID, bool IsGues
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BirdOfPrey(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::BirdOfPrey(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -368,7 +368,7 @@ void IGameEvents::BirdOfPrey(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BitsAndPiecesDestroyed(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::BitsAndPiecesDestroyed(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -378,7 +378,7 @@ void IGameEvents::BitsAndPiecesDestroyed(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingAssist(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 CurrentAssists)
+void IGameEvents::BroadcastingAssist(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 CurrentAssists)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -391,7 +391,7 @@ void IGameEvents::BroadcastingAssist(wchar_t *UserID, GUID PlayerSessionID, FILE
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingDeath(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, wchar_t *VictimXuid, UINT32 VictimTeamID, wchar_t *KillerXuid, UINT32 KillerTeamID, wchar_t *AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentDeaths)
+void IGameEvents::BroadcastingDeath(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, LPWSTR VictimXuid, UINT32 VictimTeamID, LPWSTR KillerXuid, UINT32 KillerTeamID, LPWSTR AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentDeaths)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -401,7 +401,7 @@ void IGameEvents::BroadcastingDeath(wchar_t *UserID, GUID PlayerSessionID, FILET
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingHeartbeat(wchar_t *UserID, GUID PlayerSessionID, INT64 Heartbeat)
+void IGameEvents::BroadcastingHeartbeat(LPWSTR UserID, GUID PlayerSessionID, INT64 Heartbeat)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -411,7 +411,7 @@ void IGameEvents::BroadcastingHeartbeat(wchar_t *UserID, GUID PlayerSessionID, I
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingKill(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, wchar_t *VictimXuid, UINT32 VictimTeamID, wchar_t *KillerXuid, UINT32 KillerTeamID, wchar_t *AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentKills)
+void IGameEvents::BroadcastingKill(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, LPWSTR VictimXuid, UINT32 VictimTeamID, LPWSTR KillerXuid, UINT32 KillerTeamID, LPWSTR AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentKills)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -421,7 +421,7 @@ void IGameEvents::BroadcastingKill(wchar_t *UserID, GUID PlayerSessionID, FILETI
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingMatchEnd(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp)
+void IGameEvents::BroadcastingMatchEnd(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -434,7 +434,7 @@ void IGameEvents::BroadcastingMatchEnd(wchar_t *UserID, GUID PlayerSessionID, FI
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingMatchRoundEnd(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp)
+void IGameEvents::BroadcastingMatchRoundEnd(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -447,7 +447,7 @@ void IGameEvents::BroadcastingMatchRoundEnd(wchar_t *UserID, GUID PlayerSessionI
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingMatchRoundStart(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 RoundNumber)
+void IGameEvents::BroadcastingMatchRoundStart(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 RoundNumber)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -460,7 +460,7 @@ void IGameEvents::BroadcastingMatchRoundStart(wchar_t *UserID, GUID PlayerSessio
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingMatchStart(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MapVariantID, INT32 GameVariantID, wchar_t *PlaylistID)
+void IGameEvents::BroadcastingMatchStart(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MapVariantID, INT32 GameVariantID, LPWSTR PlaylistID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -473,7 +473,7 @@ void IGameEvents::BroadcastingMatchStart(wchar_t *UserID, GUID PlayerSessionID, 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingMedal(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MedalID)
+void IGameEvents::BroadcastingMedal(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MedalID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -486,7 +486,7 @@ void IGameEvents::BroadcastingMedal(wchar_t *UserID, GUID PlayerSessionID, FILET
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingPlayerJoined(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID)
+void IGameEvents::BroadcastingPlayerJoined(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -499,7 +499,7 @@ void IGameEvents::BroadcastingPlayerJoined(wchar_t *UserID, GUID PlayerSessionID
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingPlayerLeft(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp)
+void IGameEvents::BroadcastingPlayerLeft(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -511,7 +511,7 @@ void IGameEvents::BroadcastingPlayerLeft(wchar_t *UserID, GUID PlayerSessionID, 
 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
-void IGameEvents::BroadcastingPlayerSpawn(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp)
+void IGameEvents::BroadcastingPlayerSpawn(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -524,7 +524,7 @@ void IGameEvents::BroadcastingPlayerSpawn(wchar_t *UserID, GUID PlayerSessionID,
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingPlayerSwitchedTeams(wchar_t *UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID, wchar_t *WebColor)
+void IGameEvents::BroadcastingPlayerSwitchedTeams(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID, LPWSTR WebColor)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -537,7 +537,7 @@ void IGameEvents::BroadcastingPlayerSwitchedTeams(wchar_t *UserID, GUID PlayerSe
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingScore(wchar_t *UserID, GUID PlayerSessionID, INT32 ControllerIndex, FILETIME Timestamp, INT32 CurrentRoundScore, INT32 CurrentTotalScore, INT32 CurrentRoundTeamScore, INT32 CurrentTotalTeamScore)
+void IGameEvents::BroadcastingScore(LPWSTR UserID, GUID PlayerSessionID, INT32 ControllerIndex, FILETIME Timestamp, INT32 CurrentRoundScore, INT32 CurrentTotalScore, INT32 CurrentRoundTeamScore, INT32 CurrentTotalTeamScore)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -550,7 +550,7 @@ void IGameEvents::BroadcastingScore(wchar_t *UserID, GUID PlayerSessionID, INT32
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::BroadcastingStart(wchar_t *UserID, GUID PlayerSessionID, UINT32 GameType, UINT32 Map, UINT32 TopPlayerRank, wchar_t *PlayerIDs, GUID MatchID, bool PlayerIsCaster, INT64 MatchStartTime)
+void IGameEvents::BroadcastingStart(LPWSTR UserID, GUID PlayerSessionID, UINT32 GameType, UINT32 Map, UINT32 TopPlayerRank, LPWSTR PlayerIDs, GUID MatchID, bool PlayerIsCaster, INT64 MatchStartTime)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -563,7 +563,7 @@ void IGameEvents::BroadcastingStart(wchar_t *UserID, GUID PlayerSessionID, UINT3
 	::CoTaskMemFree(MatchIDStr);
 }
 
-void IGameEvents::CampaignDifficulty(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *CampaignDifficulty)
+void IGameEvents::CampaignDifficulty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR CampaignDifficulty)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -573,7 +573,7 @@ void IGameEvents::CampaignDifficulty(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ChallengeCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 ChallengeID)
+void IGameEvents::ChallengeCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 ChallengeID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -583,7 +583,7 @@ void IGameEvents::ChallengeCompleted(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ClassicModeSwitched(wchar_t *UserID, GUID PlayerSessionID, INT32 MapID)
+void IGameEvents::ClassicModeSwitched(LPWSTR UserID, GUID PlayerSessionID, INT32 MapID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -593,7 +593,7 @@ void IGameEvents::ClassicModeSwitched(wchar_t *UserID, GUID PlayerSessionID, INT
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::CleverGirl(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::CleverGirl(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -603,7 +603,7 @@ void IGameEvents::CleverGirl(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ClueClaimed(wchar_t *UserID, GUID PlayerSessionID, INT32 ClueID)
+void IGameEvents::ClueClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 ClueID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -613,7 +613,7 @@ void IGameEvents::ClueClaimed(wchar_t *UserID, GUID PlayerSessionID, INT32 ClueI
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::CoopMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MissionID, INT32 MapID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed, INT32 DifficultyID)
+void IGameEvents::CoopMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MissionID, INT32 MapID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -623,7 +623,7 @@ void IGameEvents::CoopMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wc
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::CoopSpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 DifficultyID)
+void IGameEvents::CoopSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -633,7 +633,7 @@ void IGameEvents::CoopSpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSes
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::CompletionCount(wchar_t *UserID, GUID PlayerSessionID, INT32 Count)
+void IGameEvents::CompletionCount(LPWSTR UserID, GUID PlayerSessionID, INT32 Count)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -643,7 +643,7 @@ void IGameEvents::CompletionCount(wchar_t *UserID, GUID PlayerSessionID, INT32 C
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Customization(wchar_t *UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2, wchar_t *ServiceID, wchar_t *ClanID, INT32 AvatarID, INT32 NameplateID)
+void IGameEvents::Customization(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2, LPWSTR ServiceID, LPWSTR ClanID, INT32 AvatarID, INT32 NameplateID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -653,7 +653,7 @@ void IGameEvents::Customization(wchar_t *UserID, GUID PlayerSessionID, INT32 Tex
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::DashboardContext(wchar_t *UserID, GUID PlayerSessionID, wchar_t *DashboardContext)
+void IGameEvents::DashboardContext(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DashboardContext)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -663,7 +663,7 @@ void IGameEvents::DashboardContext(wchar_t *UserID, GUID PlayerSessionID, wchar_
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Death(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot)
+void IGameEvents::Death(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -673,7 +673,7 @@ void IGameEvents::Death(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::DollFound(wchar_t *UserID, GUID PlayerSessionID, INT32 DollID)
+void IGameEvents::DollFound(LPWSTR UserID, GUID PlayerSessionID, INT32 DollID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -683,7 +683,7 @@ void IGameEvents::DollFound(wchar_t *UserID, GUID PlayerSessionID, INT32 DollID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::EliteWin(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, bool MatchMade)
+void IGameEvents::EliteWin(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -693,7 +693,7 @@ void IGameEvents::EliteWin(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloT
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Emblem(wchar_t *UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2)
+void IGameEvents::Emblem(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -703,7 +703,7 @@ void IGameEvents::Emblem(wchar_t *UserID, GUID PlayerSessionID, INT32 Texture0, 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::EnemyDefeated(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, wchar_t *HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot)
+void IGameEvents::EnemyDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -713,7 +713,7 @@ void IGameEvents::EnemyDefeated(wchar_t *UserID, INT32 SectionID, GUID PlayerSes
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::FriendsBestedOnHeroLeaderboard(wchar_t *UserID, GUID PlayerSessionID, INT32 LeaderboardID, INT32 LeaderboardRows)
+void IGameEvents::FriendsBestedOnHeroLeaderboard(LPWSTR UserID, GUID PlayerSessionID, INT32 LeaderboardID, INT32 LeaderboardRows)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -723,7 +723,7 @@ void IGameEvents::FriendsBestedOnHeroLeaderboard(wchar_t *UserID, GUID PlayerSes
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::GameProgress(wchar_t *UserID, GUID PlayerSessionID, float CompletionPercent)
+void IGameEvents::GameProgress(LPWSTR UserID, GUID PlayerSessionID, float CompletionPercent)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -733,7 +733,7 @@ void IGameEvents::GameProgress(wchar_t *UserID, GUID PlayerSessionID, float Comp
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::GameVarSaved(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 BaseGameCategory, wchar_t *GameVarName)
+void IGameEvents::GameVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 BaseGameCategory, LPWSTR GameVarName)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -743,7 +743,7 @@ void IGameEvents::GameVarSaved(wchar_t *UserID, GUID PlayerSessionID, wchar_t *H
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::GrenadeStick(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID)
+void IGameEvents::GrenadeStick(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -753,7 +753,7 @@ void IGameEvents::GrenadeStick(wchar_t *UserID, INT32 SectionID, GUID PlayerSess
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::HelloNurse(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::HelloNurse(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -763,7 +763,7 @@ void IGameEvents::HelloNurse(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::InGamePresence(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitle, INT32 CampaignDifficulty, INT32 MultiplayerMap)
+void IGameEvents::InGamePresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitle, INT32 CampaignDifficulty, INT32 MultiplayerMap)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -773,7 +773,7 @@ void IGameEvents::InGamePresence(wchar_t *UserID, GUID PlayerSessionID, wchar_t 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ISeeYou(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::ISeeYou(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -783,7 +783,7 @@ void IGameEvents::ISeeYou(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Joinability(wchar_t *UserID, GUID PlayerSessionID, bool InGame)
+void IGameEvents::Joinability(LPWSTR UserID, GUID PlayerSessionID, bool InGame)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -793,7 +793,7 @@ void IGameEvents::Joinability(wchar_t *UserID, GUID PlayerSessionID, bool InGame
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Lobby(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *Lobby)
+void IGameEvents::Lobby(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR Lobby)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -803,7 +803,7 @@ void IGameEvents::Lobby(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitl
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MainMenuPresence(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MainMenuPresence)
+void IGameEvents::MainMenuPresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MainMenuPresence)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -813,7 +813,7 @@ void IGameEvents::MainMenuPresence(wchar_t *UserID, GUID PlayerSessionID, wchar_
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MapVarSaved(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 BaseMapID, wchar_t *MapVarName)
+void IGameEvents::MapVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 BaseMapID, LPWSTR MapVarName)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -823,7 +823,7 @@ void IGameEvents::MapVarSaved(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Ha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MatchmakingHopper(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *MatchmakingHopper)
+void IGameEvents::MatchmakingHopper(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MatchmakingHopper)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -833,7 +833,7 @@ void IGameEvents::MatchmakingHopper(wchar_t *UserID, GUID PlayerSessionID, wchar
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MediaUsage(wchar_t *AppSessionID, wchar_t *AppSessionStartDateTime, UINT32 UserIDType, wchar_t *UserID, wchar_t *SubscriptionTierType, wchar_t *SubscriptionTier, wchar_t *MediaType, wchar_t *ProviderID, wchar_t *ProviderMediaID, wchar_t *ProviderMediaInstanceID, GUID BingID, UINT64 MediaLengthMs, UINT32 MediaControlAction, float PlaybackSpeed, UINT64 MediaPositionMs, UINT64 PlaybackDurationMs, wchar_t *AcquisitionType, wchar_t *AcquisitionContext, wchar_t *AcquisitionContextType, wchar_t *AcquisitionContextID, INT32 PlaybackIsStream, INT32 PlaybackIsTethered, wchar_t *MarketplaceLocation, wchar_t *ContentLocale, float TimeZoneOffset, UINT32 ScreenState)
+void IGameEvents::MediaUsage(LPWSTR AppSessionID, LPWSTR AppSessionStartDateTime, UINT32 UserIDType, LPWSTR UserID, LPWSTR SubscriptionTierType, LPWSTR SubscriptionTier, LPWSTR MediaType, LPWSTR ProviderID, LPWSTR ProviderMediaID, LPWSTR ProviderMediaInstanceID, GUID BingID, UINT64 MediaLengthMs, UINT32 MediaControlAction, float PlaybackSpeed, UINT64 MediaPositionMs, UINT64 PlaybackDurationMs, LPWSTR AcquisitionType, LPWSTR AcquisitionContext, LPWSTR AcquisitionContextType, LPWSTR AcquisitionContextID, INT32 PlaybackIsStream, INT32 PlaybackIsTethered, LPWSTR MarketplaceLocation, LPWSTR ContentLocale, float TimeZoneOffset, UINT32 ScreenState)
 {
 	OLECHAR *BingIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(BingID, &BingIDStr);
@@ -843,7 +843,7 @@ void IGameEvents::MediaUsage(wchar_t *AppSessionID, wchar_t *AppSessionStartDate
 	::CoTaskMemFree(BingIDStr);
 }
 
-void IGameEvents::MeldOfferPresented(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, wchar_t *Page, INT32 SourceTileIndex)
+void IGameEvents::MeldOfferPresented(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, LPWSTR Page, INT32 SourceTileIndex)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -859,7 +859,7 @@ void IGameEvents::MeldOfferPresented(wchar_t *UserID, GUID PlayerSessionID, GUID
 	::CoTaskMemFree(ProductGuidStr);
 }
 
-void IGameEvents::MeldOfferResponded(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, INT32 UpsellOutcome)
+void IGameEvents::MeldOfferResponded(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, INT32 UpsellOutcome)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -875,7 +875,7 @@ void IGameEvents::MeldOfferResponded(wchar_t *UserID, GUID PlayerSessionID, GUID
 	::CoTaskMemFree(ProductGuidStr);
 }
 
-void IGameEvents::MeldPageAction(wchar_t *UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, wchar_t *Page, wchar_t *TemplateID, wchar_t *DestinationPage, wchar_t *Content, INT32 SourceTileIndex, INT32 SourceTileX, INT32 SourceTileY, INT32 SourceTileWidth, INT32 SourceTileHeight)
+void IGameEvents::MeldPageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, LPWSTR Page, LPWSTR TemplateID, LPWSTR DestinationPage, LPWSTR Content, INT32 SourceTileIndex, INT32 SourceTileX, INT32 SourceTileY, INT32 SourceTileWidth, INT32 SourceTileHeight)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -885,7 +885,7 @@ void IGameEvents::MeldPageAction(wchar_t *UserID, GUID PlayerSessionID, INT32 Ac
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MeldPageView(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Page, wchar_t *RefererPage, INT32 PageTypeID, wchar_t *PageTags, wchar_t *TemplateID, wchar_t *Content, wchar_t *FilterContext, INT32 FilterDirection)
+void IGameEvents::MeldPageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPWSTR RefererPage, INT32 PageTypeID, LPWSTR PageTags, LPWSTR TemplateID, LPWSTR Content, LPWSTR FilterContext, INT32 FilterDirection)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -895,7 +895,7 @@ void IGameEvents::MeldPageView(wchar_t *UserID, GUID PlayerSessionID, wchar_t *P
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 GameCategoryID, bool Coop, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, INT32 DifficultyID, UINT64 MissionScore64, UINT64 SkullUsedFlags, INT32 NumPlayers, wchar_t *PlayerSectionStats, INT32 Kills, float Multiplier, INT32 Penalties, float SkullMultiplier, INT32 TotalSoloMissionsComplete, INT32 TotalCoopMissionsComplete)
+void IGameEvents::MissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 GameCategoryID, bool Coop, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, INT32 DifficultyID, UINT64 MissionScore64, UINT64 SkullUsedFlags, INT32 NumPlayers, LPWSTR PlayerSectionStats, INT32 Kills, float Multiplier, INT32 Penalties, float SkullMultiplier, INT32 TotalSoloMissionsComplete, INT32 TotalCoopMissionsComplete)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -905,7 +905,7 @@ void IGameEvents::MissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MortardomWraithsKilled(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::MortardomWraithsKilled(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -915,7 +915,7 @@ void IGameEvents::MortardomWraithsKilled(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MultiplayerGameEngine(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *MultiplayerGameEngine)
+void IGameEvents::MultiplayerGameEngine(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MultiplayerGameEngine)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -925,7 +925,7 @@ void IGameEvents::MultiplayerGameEngine(wchar_t *UserID, GUID PlayerSessionID, w
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MultiplayerMap(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *MultiplayerMap)
+void IGameEvents::MultiplayerMap(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MultiplayerMap)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -935,7 +935,7 @@ void IGameEvents::MultiplayerMap(wchar_t *UserID, GUID PlayerSessionID, wchar_t 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MultiplayerRoundEnd(wchar_t *UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID, float TimeInSeconds, INT32 ExitStatusID)
+void IGameEvents::MultiplayerRoundEnd(LPWSTR UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID, float TimeInSeconds, INT32 ExitStatusID)
 {
 	OLECHAR *RoundIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
@@ -948,7 +948,7 @@ void IGameEvents::MultiplayerRoundEnd(wchar_t *UserID, GUID RoundID, INT32 Secti
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::MultiplayerRoundStart(wchar_t *UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID)
+void IGameEvents::MultiplayerRoundStart(LPWSTR UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID)
 {
 	OLECHAR *RoundIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
@@ -961,7 +961,7 @@ void IGameEvents::MultiplayerRoundStart(wchar_t *UserID, GUID RoundID, INT32 Sec
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::NappersCaught(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::NappersCaught(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -971,7 +971,7 @@ void IGameEvents::NappersCaught(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::NewsStoryRead(wchar_t *UserID, GUID PlayerSessionID, wchar_t *StoryID)
+void IGameEvents::NewsStoryRead(LPWSTR UserID, GUID PlayerSessionID, LPWSTR StoryID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -981,7 +981,7 @@ void IGameEvents::NewsStoryRead(wchar_t *UserID, GUID PlayerSessionID, wchar_t *
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ObjectiveEnd(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID, INT32 ExitStatusID)
+void IGameEvents::ObjectiveEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID, INT32 ExitStatusID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -991,7 +991,7 @@ void IGameEvents::ObjectiveEnd(wchar_t *UserID, INT32 SectionID, GUID PlayerSess
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ObjectiveStart(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID)
+void IGameEvents::ObjectiveStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1001,7 +1001,7 @@ void IGameEvents::ObjectiveStart(wchar_t *UserID, INT32 SectionID, GUID PlayerSe
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PageAction(wchar_t *UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, wchar_t *Page, wchar_t *TemplateID, wchar_t *DestinationPage, wchar_t *Content)
+void IGameEvents::PageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, LPWSTR Page, LPWSTR TemplateID, LPWSTR DestinationPage, LPWSTR Content)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1011,7 +1011,7 @@ void IGameEvents::PageAction(wchar_t *UserID, GUID PlayerSessionID, INT32 Action
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PageView(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Page, wchar_t *RefererPage, INT32 PageTypeID, wchar_t *PageTags, wchar_t *TemplateID, wchar_t *Content)
+void IGameEvents::PageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPWSTR RefererPage, INT32 PageTypeID, LPWSTR PageTags, LPWSTR TemplateID, LPWSTR Content)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1021,7 +1021,7 @@ void IGameEvents::PageView(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Page,
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PhantomHunter(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::PhantomHunter(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1031,7 +1031,7 @@ void IGameEvents::PhantomHunter(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PigsCanFly(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::PigsCanFly(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1041,7 +1041,7 @@ void IGameEvents::PigsCanFly(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerCheckedInToday(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID)
+void IGameEvents::PlayerCheckedInToday(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1051,7 +1051,7 @@ void IGameEvents::PlayerCheckedInToday(wchar_t *UserID, GUID PlayerSessionID, wc
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerDefeated(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 EnemyWeaponID, float LocationX, float LocationY, float LocationZ)
+void IGameEvents::PlayerDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 EnemyWeaponID, float LocationX, float LocationY, float LocationZ)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1061,7 +1061,7 @@ void IGameEvents::PlayerDefeated(wchar_t *UserID, INT32 SectionID, GUID PlayerSe
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerGameResults(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 GameIndexByCategory, INT32 GameIndexByTitle, INT32 GameIndexByTitleCategory, INT32 MapID, INT32 GameCategoryID, bool MatchMade, bool Won, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, UINT64 Score64, INT32 Standing, bool FirstPlace, INT32 MedalCount, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 HeadShots, INT32 MostKillsInARow, wchar_t *CustomStat1ID, INT32 CustomStat1, wchar_t *CustomStat2ID, INT32 CustomStat2, wchar_t *CustomStat3ID, INT32 CustomStat3, wchar_t *CustomStat4ID, INT32 CustomStat4, GUID MatchID)
+void IGameEvents::PlayerGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 GameIndexByCategory, INT32 GameIndexByTitle, INT32 GameIndexByTitleCategory, INT32 MapID, INT32 GameCategoryID, bool MatchMade, bool Won, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, UINT64 Score64, INT32 Standing, bool FirstPlace, INT32 MedalCount, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 HeadShots, INT32 MostKillsInARow, LPWSTR CustomStat1ID, INT32 CustomStat1, LPWSTR CustomStat2ID, INT32 CustomStat2, LPWSTR CustomStat3ID, INT32 CustomStat3, LPWSTR CustomStat4ID, INT32 CustomStat4, GUID MatchID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1071,7 +1071,7 @@ void IGameEvents::PlayerGameResults(wchar_t *UserID, GUID PlayerSessionID, wchar
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerGameResultsDamageStat(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 DamageReportingType, INT32 DamageStatisticType, INT32 DamageCount, INT32 GameCategoryID)
+void IGameEvents::PlayerGameResultsDamageStat(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 DamageReportingType, INT32 DamageStatisticType, INT32 DamageCount, INT32 GameCategoryID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1081,7 +1081,7 @@ void IGameEvents::PlayerGameResultsDamageStat(wchar_t *UserID, GUID PlayerSessio
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerGameResultsGriefingStat(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty)
+void IGameEvents::PlayerGameResultsGriefingStat(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1091,7 +1091,7 @@ void IGameEvents::PlayerGameResultsGriefingStat(wchar_t *UserID, GUID PlayerSess
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerGameResultsGriefingStats(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty)
+void IGameEvents::PlayerGameResultsGriefingStats(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1101,7 +1101,7 @@ void IGameEvents::PlayerGameResultsGriefingStats(wchar_t *UserID, GUID PlayerSes
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerGameResultsInterestStats(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameCategoryID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 OrdnanceDrops, INT32 OrdnanceStrikes, UINT64 TimeMSDriven, INT32 UnitsDriven, UINT64 TimeMSPiloted, INT32 UnitsPiloted, UINT64 TimeMSPassenger, INT32 UnitsMovedPassenger, UINT64 TimeMSOnFoot, INT32 UnitsMovedOnFoot, INT32 DriverAssists, INT32 ArmorAbilityUseJetpack, INT32 ArmorAbilityUseHologram, INT32 ArmorAbilityUseReflectiveShield, INT32 ArmorAbilityUseActiveCamo, INT32 ArmorAbilityUseThrusterPack, INT32 ArmorAbilityUseAutoTurret, INT32 ArmorAbilityUseXRay)
+void IGameEvents::PlayerGameResultsInterestStats(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 OrdnanceDrops, INT32 OrdnanceStrikes, UINT64 TimeMSDriven, INT32 UnitsDriven, UINT64 TimeMSPiloted, INT32 UnitsPiloted, UINT64 TimeMSPassenger, INT32 UnitsMovedPassenger, UINT64 TimeMSOnFoot, INT32 UnitsMovedOnFoot, INT32 DriverAssists, INT32 ArmorAbilityUseJetpack, INT32 ArmorAbilityUseHologram, INT32 ArmorAbilityUseReflectiveShield, INT32 ArmorAbilityUseActiveCamo, INT32 ArmorAbilityUseThrusterPack, INT32 ArmorAbilityUseAutoTurret, INT32 ArmorAbilityUseXRay)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1111,7 +1111,7 @@ void IGameEvents::PlayerGameResultsInterestStats(wchar_t *UserID, GUID PlayerSes
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerGameResultsMedal(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 MedalType, INT32 MedalCount)
+void IGameEvents::PlayerGameResultsMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 MedalType, INT32 MedalCount)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1121,7 +1121,7 @@ void IGameEvents::PlayerGameResultsMedal(wchar_t *UserID, GUID PlayerSessionID, 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerSessionEnd(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID)
+void IGameEvents::PlayerSessionEnd(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1131,7 +1131,7 @@ void IGameEvents::PlayerSessionEnd(wchar_t *UserID, GUID PlayerSessionID, wchar_
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerSessionPause(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID)
+void IGameEvents::PlayerSessionPause(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1141,7 +1141,7 @@ void IGameEvents::PlayerSessionPause(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerSessionResume(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID)
+void IGameEvents::PlayerSessionResume(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1151,7 +1151,7 @@ void IGameEvents::PlayerSessionResume(wchar_t *UserID, GUID PlayerSessionID, wch
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerSessionStart(wchar_t *UserID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID)
+void IGameEvents::PlayerSessionStart(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1161,7 +1161,7 @@ void IGameEvents::PlayerSessionStart(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlayerSpawned(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, float LocationX, float LocationY, float LocationZ)
+void IGameEvents::PlayerSpawned(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, float LocationX, float LocationY, float LocationZ)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1174,7 +1174,7 @@ void IGameEvents::PlayerSpawned(wchar_t *UserID, INT32 SectionID, GUID PlayerSes
 	::CoTaskMemFree(RoundIDStr);
 }
 
-void IGameEvents::PlaylistCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, UINT32 PlaylistID, UINT64 Score64, UINT64 TimeMS, INT32 Penalties, wchar_t *MissionStats, bool IsCoop)
+void IGameEvents::PlaylistCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, UINT32 PlaylistID, UINT64 Score64, UINT64 TimeMS, INT32 Penalties, LPWSTR MissionStats, bool IsCoop)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1184,7 +1184,7 @@ void IGameEvents::PlaylistCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::PlaylistProgress(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 PlaylistID, INT32 NumMapsCompleted, UINT64 Score64, bool IsCoop, INT32 NumPlayers, bool ShouldPostTime, UINT64 TotalPlayListTimeMS)
+void IGameEvents::PlaylistProgress(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 PlaylistID, INT32 NumMapsCompleted, UINT64 Score64, bool IsCoop, INT32 NumPlayers, bool ShouldPostTime, UINT64 TotalPlayListTimeMS)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1194,7 +1194,7 @@ void IGameEvents::PlaylistProgress(wchar_t *UserID, GUID PlayerSessionID, wchar_
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RankedStatsDNFInfo(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, double FinishesOverStarts, INT32 FinishesMinusStarts, INT32 FinishesPlusPenaltiesMinusStarts, double FinishesPlusPenaltiesOverStarts)
+void IGameEvents::RankedStatsDNFInfo(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double FinishesOverStarts, INT32 FinishesMinusStarts, INT32 FinishesPlusPenaltiesMinusStarts, double FinishesPlusPenaltiesOverStarts)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1204,7 +1204,7 @@ void IGameEvents::RankedStatsDNFInfo(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RankedStatsOverride(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked)
+void IGameEvents::RankedStatsOverride(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1214,7 +1214,7 @@ void IGameEvents::RankedStatsOverride(wchar_t *UserID, GUID PlayerSessionID, wch
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RankedStatsPenalty(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, INT32 NumPenaltiesApplied)
+void IGameEvents::RankedStatsPenalty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, INT32 NumPenaltiesApplied)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1224,7 +1224,7 @@ void IGameEvents::RankedStatsPenalty(wchar_t *UserID, GUID PlayerSessionID, wcha
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RankedStatsUpdate(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked, bool PenaltyApplied)
+void IGameEvents::RankedStatsUpdate(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked, bool PenaltyApplied)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1234,7 +1234,7 @@ void IGameEvents::RankedStatsUpdate(wchar_t *UserID, GUID PlayerSessionID, wchar
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RankedUpSpartanIv(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 SpartanIvRank, INT32 SpecialisationType)
+void IGameEvents::RankedUpSpartanIv(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SpartanIvRank, INT32 SpecialisationType)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1244,7 +1244,7 @@ void IGameEvents::RankedUpSpartanIv(wchar_t *UserID, GUID PlayerSessionID, wchar
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RealtimeFlagCaptured(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, bool MatchMade)
+void IGameEvents::RealtimeFlagCaptured(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1254,7 +1254,7 @@ void IGameEvents::RealtimeFlagCaptured(wchar_t *UserID, GUID PlayerSessionID, wc
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RealtimeMedal(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 GameCategoryID, INT32 GameMode, bool MatchMade, INT32 MedalType, INT32 MedalCount)
+void IGameEvents::RealtimeMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 GameCategoryID, INT32 GameMode, bool MatchMade, INT32 MedalType, INT32 MedalCount)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1264,7 +1264,7 @@ void IGameEvents::RealtimeMedal(wchar_t *UserID, GUID PlayerSessionID, wchar_t *
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RealtimePilotedVehicle(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, bool MatchMade, INT32 VehicleID, UINT64 TimeMS, INT32 Distance)
+void IGameEvents::RealtimePilotedVehicle(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, bool MatchMade, INT32 VehicleID, UINT64 TimeMS, INT32 Distance)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1274,7 +1274,7 @@ void IGameEvents::RealtimePilotedVehicle(wchar_t *UserID, GUID PlayerSessionID, 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::RivalID(wchar_t *UserID, GUID PlayerSessionID, INT64 RivalID)
+void IGameEvents::RivalID(LPWSTR UserID, GUID PlayerSessionID, INT64 RivalID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1284,7 +1284,7 @@ void IGameEvents::RivalID(wchar_t *UserID, GUID PlayerSessionID, INT64 RivalID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SectionEnd(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID, INT32 MissionID)
+void IGameEvents::SectionEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID, INT32 MissionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1294,7 +1294,7 @@ void IGameEvents::SectionEnd(wchar_t *UserID, INT32 SectionID, GUID PlayerSessio
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SectionStart(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 MissionID)
+void IGameEvents::SectionStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 MissionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1304,7 +1304,7 @@ void IGameEvents::SectionStart(wchar_t *UserID, INT32 SectionID, GUID PlayerSess
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SectionStats(wchar_t *UserID, GUID PlayerSessionID, INT32 MissionID, INT32 SectionID, INT32 SectionOrdinal, float ScoreWithoutTimeBonus, float ScoreWithTimeBonus, float TimeInSeconds)
+void IGameEvents::SectionStats(LPWSTR UserID, GUID PlayerSessionID, INT32 MissionID, INT32 SectionID, INT32 SectionOrdinal, float ScoreWithoutTimeBonus, float ScoreWithTimeBonus, float TimeInSeconds)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1314,7 +1314,7 @@ void IGameEvents::SectionStats(wchar_t *UserID, GUID PlayerSessionID, INT32 Miss
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SessionSizeUpdate(wchar_t *UserID, GUID PlayerSessionID, INT32 SessionSize, INT32 SessionSizeMax)
+void IGameEvents::SessionSizeUpdate(LPWSTR UserID, GUID PlayerSessionID, INT32 SessionSize, INT32 SessionSizeMax)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1324,7 +1324,7 @@ void IGameEvents::SessionSizeUpdate(wchar_t *UserID, GUID PlayerSessionID, INT32
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SizeIsEverything(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::SizeIsEverything(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1334,7 +1334,7 @@ void IGameEvents::SizeIsEverything(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SkeetShooter(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::SkeetShooter(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1344,7 +1344,7 @@ void IGameEvents::SkeetShooter(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SkullClaimed(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 SkullID, INT32 DifficultyID)
+void IGameEvents::SkullClaimed(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SkullID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1354,7 +1354,7 @@ void IGameEvents::SkullClaimed(wchar_t *UserID, GUID PlayerSessionID, wchar_t *H
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SoloMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 DifficultyID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed)
+void IGameEvents::SoloMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1364,7 +1364,7 @@ void IGameEvents::SoloMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wc
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SoloSpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 DifficultyID)
+void IGameEvents::SoloSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1374,7 +1374,7 @@ void IGameEvents::SoloSpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSes
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 MapID, INT32 MissionID, INT32 DifficultyID, bool IsCoop)
+void IGameEvents::SpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 MissionID, INT32 DifficultyID, bool IsCoop)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1384,7 +1384,7 @@ void IGameEvents::SpartanOpsMissionCompleted(wchar_t *UserID, GUID PlayerSession
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::Supercombine(wchar_t *UserID, INT32 SectionID, GUID PlayerSessionID, wchar_t *MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID)
+void IGameEvents::Supercombine(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1394,7 +1394,7 @@ void IGameEvents::Supercombine(wchar_t *UserID, INT32 SectionID, GUID PlayerSess
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::SurvivalSpace(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, wchar_t *SurvivalSpace)
+void IGameEvents::SurvivalSpace(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR SurvivalSpace)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1404,7 +1404,7 @@ void IGameEvents::SurvivalSpace(wchar_t *UserID, GUID PlayerSessionID, wchar_t *
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::TerminalFound(wchar_t *UserID, GUID PlayerSessionID, INT32 TerminalID)
+void IGameEvents::TerminalFound(LPWSTR UserID, GUID PlayerSessionID, INT32 TerminalID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1414,7 +1414,7 @@ void IGameEvents::TerminalFound(wchar_t *UserID, GUID PlayerSessionID, INT32 Ter
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::TerminalID(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, INT32 SkullID, INT32 DifficultyID)
+void IGameEvents::TerminalID(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SkullID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1424,7 +1424,7 @@ void IGameEvents::TerminalID(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Hal
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::TicketsEarned(wchar_t *UserID, GUID PlayerSessionID, INT32 TicketCount)
+void IGameEvents::TicketsEarned(LPWSTR UserID, GUID PlayerSessionID, INT32 TicketCount)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1434,7 +1434,7 @@ void IGameEvents::TicketsEarned(wchar_t *UserID, GUID PlayerSessionID, INT32 Tic
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::TitleCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID)
+void IGameEvents::TitleCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1444,7 +1444,7 @@ void IGameEvents::TitleCompleted(wchar_t *UserID, GUID PlayerSessionID, wchar_t 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::TitleLaunched(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID)
+void IGameEvents::TitleLaunched(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1454,7 +1454,7 @@ void IGameEvents::TitleLaunched(wchar_t *UserID, GUID PlayerSessionID, wchar_t *
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ValhallaSign(wchar_t *UserID, GUID PlayerSessionID, INT32 SignID)
+void IGameEvents::ValhallaSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1464,7 +1464,7 @@ void IGameEvents::ValhallaSign(wchar_t *UserID, GUID PlayerSessionID, INT32 Sign
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ViewOffer(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid)
+void IGameEvents::ViewOffer(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1480,7 +1480,7 @@ void IGameEvents::ViewOffer(wchar_t *UserID, GUID PlayerSessionID, GUID OfferGui
 	::CoTaskMemFree(ProductGuidStr);
 }
 
-void IGameEvents::VIPStatusEarned(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::VIPStatusEarned(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1490,7 +1490,7 @@ void IGameEvents::VIPStatusEarned(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::WhatAboutTanksDestroyed(wchar_t *UserID, GUID PlayerSessionID)
+void IGameEvents::WhatAboutTanksDestroyed(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1500,7 +1500,7 @@ void IGameEvents::WhatAboutTanksDestroyed(wchar_t *UserID, GUID PlayerSessionID)
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::WonWarGame(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID)
+void IGameEvents::WonWarGame(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1510,7 +1510,7 @@ void IGameEvents::WonWarGame(wchar_t *UserID, GUID PlayerSessionID, wchar_t *Hal
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::ZanzibarSign(wchar_t *UserID, GUID PlayerSessionID, INT32 SignID)
+void IGameEvents::ZanzibarSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
@@ -1520,12 +1520,12 @@ void IGameEvents::ZanzibarSign(wchar_t *UserID, GUID PlayerSessionID, INT32 Sign
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
 
-void IGameEvents::FirefightGameResults(wchar_t *UserID, GUID PlayerSessionID, wchar_t *HaloTitleID, bool MatchMade, UINT64 TimePlayedMS, UINT32 Kills, UINT32 MostKillsInARow, UINT32 SetsCompleted, UINT32 WavesCompleted, UINT32 GeneratorsDestroyed)
+void IGameEvents::FirefightGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade, UINT64 TimePlayedMS, UINT32 Kills, UINT32 MostKillsInARow, UINT32 SetsCompleted, UINT32 WavesCompleted, UINT32 GeneratorsDestroyed)
 {
 	OLECHAR *PlayerSessionIDStr;
 	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
-	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
+	printf("IGameEvents::FirefightGameResults(\"%S\", %S, \"%S\", %s, %llu, %u, %u, %u, %u, %u)\n", UserID, PlayerSessionIDStr, HaloTitleID, MatchMade ? "true" : "false", TimePlayedMS, Kills, MostKillsInARow, SetsCompleted, WavesCompleted, GeneratorsDestroyed);
 
 	::CoTaskMemFree(PlayerSessionIDStr);
 }
