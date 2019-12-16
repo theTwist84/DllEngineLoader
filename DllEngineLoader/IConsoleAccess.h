@@ -78,7 +78,7 @@ void IConsoleAccess::Thread()
 }
 
 template<typename T>
-struct vector_3d
+struct vector3d
 {
 	T I, J, K;
 };
@@ -151,7 +151,7 @@ void IConsoleAccess::Commands(std::string Commands)
 		if (Commands.find("Scenario") != std::string::npos)
 		{
 			showHelp = false;
-			auto scenarioDatumHandle = TagCacheGetGlobal('scnr');
+			auto scenarioDatumHandle = CacheGlobalTagGet('scnr');
 			printf("[scnr, 0x%08X]\n", scenarioDatumHandle.m_Index);
 
 			auto pScenarioDefinition = TagGetDefinition<char *>('scnr', scenarioDatumHandle);
@@ -160,6 +160,7 @@ void IConsoleAccess::Commands(std::string Commands)
 			{
 				printf("[map_id, %u]\n", *reinterpret_cast<UINT32 *>(&pScenarioDefinition[0xC]));
 			}
+			CacheGlobalTagPrint('scnr');
 
 			return;
 		}
@@ -174,7 +175,7 @@ void IConsoleAccess::Commands(std::string Commands)
 
 				if (*reinterpret_cast<UINT32 *>(pAssaultRifleDefinition) != 0xFFFFFFFF)
 				{
-					auto &FirstPersonWeaponOffset = *reinterpret_cast<vector_3d<float> *>(pAssaultRifleDefinition + 0x4CC);
+					auto &FirstPersonWeaponOffset = *reinterpret_cast<vector3d<float> *>(pAssaultRifleDefinition + 0x4CC);
 
 					printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
 

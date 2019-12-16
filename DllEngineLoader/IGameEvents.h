@@ -147,7 +147,7 @@ public:
 	/* 136 */	virtual GUID *__fastcall GetPlayerSessionID();
 	/* 137 */	virtual void Member137();
 	/* 138 */	virtual void CheckpointSaved();
-	/* 139 */	virtual void Member139();
+	/* 139 */	virtual void CheckpointLoaded();
 
 	struct __declspec(align(8)) UnknownType
 	{
@@ -1578,8 +1578,10 @@ void IGameEvents::Member137()
 
 void IGameEvents::CheckpointSaved()
 {
+	printf("IGameEvents::CheckpointSaved()\n");
 }
 
-void IGameEvents::Member139()
+void IGameEvents::CheckpointLoaded()
 {
+	printf("IGameEvents::CheckpointLoaded()\n");
 }

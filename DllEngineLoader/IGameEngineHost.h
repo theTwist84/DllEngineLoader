@@ -1,19 +1,99 @@
 #pragma once
+#pragma comment(lib, "XInput.lib")
+
+#define sign(value) (value < 0 ? -1 : 1)
+#define clamp(value, min_value, max_value) ((value) > (max_value) ? (max_value) : ((value) < (min_value) ? (min_value) : (value)))
+#define CONTROLLER_JOYSTICK_THRESHOLD 0.15f
+
+static std::atomic<int> s_uiStackLength = 0;
 
 class IGameEngineHost
 {
+	enum class InputSource : int
+	{
+		Gamepad,
+		MouseAndKeyboard
+	};
 #pragma pack(push, 1)
 	struct InputBuffer
 	{
-		int     unknown0;
-		char    keyboardState[256];
-		float   MouseX;
-		float   MouseY;
-		__int64 unknown10C;
-		char    mouseButtonBits;
-		char    unknown115[19];
+		IGameEngineHost::InputSource inputSource;
+		char                         keyboardState[256];
+		float                        MouseX;
+		float                        MouseY;
+		UINT64                       unknown10C;
+		char                         mouseButtonBits;
+		char                         __padding[3];
+		DWORD                        wButtons;
+		BYTE                         bLeftTrigger;
+		BYTE                         bRightTrigger;
+		SHORT                        sThumbLX;
+		SHORT                        sThumbLY;
+		SHORT                        sThumbRX;
+		SHORT                        sThumbRY;
+		char                         __padding2[2];
 	};
 #pragma pack(pop)
+
+	struct s_player_configuration
+	{
+		INT32   option0;
+		char    padding4[12];
+		char    unknown10;
+		char    padding11;
+		char    option12;
+		char    option13;
+		char    option14;
+		char    padding15;
+		char    auto_center_look_option;
+		char    crouch_lock_option;
+		char    padding18;
+		char    clench_protection_option;
+		char    unknown1A[14];
+		char    option28;
+		char    padding29[7];
+		INT32   option30_customization_related;
+		INT32   option34_customization_related;
+		INT32   option38_customization_related;
+		INT32   option3C_customization_related;
+		INT32   option40_customization_related;
+		INT32   option44_customization_related;
+		INT32   option48_customization_related;
+		INT32   option4C_customization_related;
+		INT32   option50_customization_related;
+		INT32   option54_customization_related;
+		INT32   option58_customization_related;
+		INT32   option5C_customization_related;
+		INT32   option60_customization_related;
+		INT32   option64_customization_related;
+		INT32   option68_customization_related;
+		char    padding6C[4];
+		wchar_t service_tag[5];
+		char    padding7A[2];
+		INT32   option7C;
+		INT32   option80;
+		INT32   option84;
+		float   option88;
+		float   option8C;
+		char    padding90[8];
+		INT32   controller_layout_option;
+		INT32   option9C;
+		INT32   optionA0;
+		char    paddingA4[16];
+		INT32   look_sensitivity_option;
+		INT32   optionB8;
+		INT32   optionBC;
+		INT32   optionC0;
+		char    optionC4;
+		char    optionC5;
+		char    unknownC6;
+		char    paddingC7;
+		char    unknownC8[56];
+		char    unknown100[256];
+		char    unknown200[512];
+		char    unknown400[512];
+		char    unknown600[128];
+	};
 
 
 public:
@@ -49,7 +129,7 @@ public:
 	/* 26 */ virtual bool         Member26();
 	/* 27 */ virtual bool         Member27();
 	/* 28 */ virtual bool         UpdateGraphics(char *);
-	/* 29 */ virtual INT64        Member29(wchar_t [4][32], char *);
+	/* 29 */ virtual INT64        UpdatePlayerConfiguration(LPWSTR, s_player_configuration *);
 	/* 30 */ virtual bool         UpdateInput(__int64, InputBuffer *);
 	/* 31 */ virtual void         Member31(UINT64, float *);
 	/* 32 */ virtual void         Member32();
@@ -67,7 +147,7 @@ public:
 	/* 44 */ virtual bool         GetPathByType(int, char *, size_t);
 	/* 45 */ virtual bool         GetWidePathByType(int, wchar_t *, size_t);
 	/* 46 */ virtual UINT8       *Member46(__int64, LPVOID *, __int64);
-	/* 47 */ virtual __int64      Member47(UINT64, UINT64);
+	/* 47 */ virtual __int64      IsAntiCheatDisabled(UINT64, UINT64);
 
 	IGameEvents *pGameEvents = 0;
 	UINT8 data1[46904] = {};
@@ -106,9 +186,20 @@ void IGameEngineHost::EngineStateUpdateHandler(EngineState state)
 {
 	printf("IGameEngineHost::EngineStateUpdateHandler(EngineState::%s);\n", EngineStateFromID(state));
 
-	// `Unknown16` also needs a second arg so we skip it
-	if (state != EngineState::eUnknown16)
+	if (state != EngineState::eUnknown16) // `Unknown16` also needs a second arg so we skip it
 	{
+		switch (state)
+		{
+		case EngineState::ePushUIPage:
+			printf("Push UI stack\n");
+			s_uiStackLength++;
+			break;
+		case EngineState::ePopUIPage:
+			printf("Pop UI stack\n");
+			s_uiStackLength--;
+			break;
+		}
+
 		IGameInterface::GetEngine()->UpdateEngineState(state);
 	}
 }
@@ -298,6 +389,8 @@ bool IGameEngineHost::Member27()
 
 bool IGameEngineHost::UpdateGraphics(char *buffer)
 {
+	printf("IGameEngineHost::UpdateGraphics(0x%08llX);\n", (UINT64)buffer);
+
 	auto &width     = *(INT32  *)&buffer[000];
 	auto &height    = *(INT32  *)&buffer[004];
 	auto &fps_limit = *(UINT16 *)&buffer[041];
@@ -312,21 +405,38 @@ bool IGameEngineHost::UpdateGraphics(char *buffer)
 		(&settings)[i] = 10.f;
 	}
 
-	printf("IGameEngineHost::UpdateGraphics(0x%08llX);\n", (UINT64)buffer);
 	return fps_limit;
 }
 
-__int64 IGameEngineHost::Member29(wchar_t playerNames[4][32], char *buffer)
+INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configuration *pPlayerConfiguration)
 {
-	printf("IGameEngineHost::Member29\n");
-	//_snwprintf(buffer->service_tag, 5, L"%s\0", "UNSC");
-	return __int64(1);
+	printf("IGameEngineHost::UpdatePlayerConfiguration(\"Player0\", 0x%08llX)\n", (UINT64)&pPlayerConfiguration);
+
+	memset(pPlayerConfiguration, 0, sizeof(*pPlayerConfiguration));
+
+	_snwprintf(pPlayerConfiguration->service_tag, 5, L"%S\0", "UNSC");
+	//buffer->option30_customization_related = 1;
+	//buffer->option34_customization_related = 1;
+	//buffer->option38_customization_related = 1;
+	//buffer->option3C_customization_related = 1;
+	//buffer->option40_customization_related = 1;
+	//buffer->option44_customization_related = 1;
+	//buffer->option48_customization_related = 1;
+	//buffer->option4C_customization_related = 1;
+	//buffer->option50_customization_related = 1;
+	//buffer->option54_customization_related = 1;
+	//buffer->option58_customization_related = 1;
+	//buffer->option5C_customization_related = 1;
+	//buffer->option60_customization_related = 1;
+	//buffer->option64_customization_related = 1;
+	//buffer->option68_customization_related = 1;
+
+	return INT64(1);
 }
 
 bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 {
 	memset(pInputBuffer, 0, sizeof(*pInputBuffer));
-	pInputBuffer->unknown0 = 1;
 
 	bool windowFocused = IGameRasterizer::IsWindowFocused();
 
@@ -337,39 +447,124 @@ bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 	}
 	IGameInput::SetMode(mode, IGameRasterizer::GetWindowHandle());
 
-	// get keyboard state
-	BYTE keyboardState[256] = {};
-	pInputBuffer->MouseX = 0.0f;
-	pInputBuffer->MouseY = 0.0f;
-	pInputBuffer->mouseButtonBits = 0;
+	static InputSource sCurrentInputSource = InputSource::MouseAndKeyboard;
 
-	if (windowFocused)
+	// grab controller
+	// grab mouse and keyboard
+
+	BYTE keyboardState[256] = {};
+	float mouseInputX = 0;
+	float mouseInputY = 0;
+	bool leftButtonPressed = 0;
+	bool rightButtonPressed = 0;
+	bool middleButtonPressed = 0;
+
+	bool hasControllerInput = false;
+	bool hasMouseAndKeyboardInput = false;
+
+	float fThumbLX = 0;
+	float fThumbLY = 0;
+	float fThumbRX = 0;
+	float fThumbRY = 0;
+	float fThumbL_Length = 0;
+	float fThumbR_Length = 0;
+	XINPUT_STATE xinputState = {};
+
+	if (windowFocused || true)
 	{
-		GetKeyState(-1); // force keys to update
-		if (GetKeyboardState(keyboardState))
+		DWORD xinputGetStateResult = XInputGetState(0, &xinputState);
+		if (xinputGetStateResult == ERROR_SUCCESS)
 		{
-			for (int i = 0; i < 256; i++)
+			hasControllerInput |= xinputState.Gamepad.wButtons != 0;
+			hasControllerInput |= xinputState.Gamepad.bLeftTrigger != 0;
+			hasControllerInput |= xinputState.Gamepad.bRightTrigger != 0;
+
+			fThumbLX = static_cast<float>(static_cast<short>(xinputState.Gamepad.sThumbLX));
+			fThumbLY = static_cast<float>(static_cast<short>(xinputState.Gamepad.sThumbLY));
+			fThumbRX = static_cast<float>(static_cast<short>(xinputState.Gamepad.sThumbRX));
+			fThumbRY = static_cast<float>(static_cast<short>(xinputState.Gamepad.sThumbRY));
+
+			fThumbLX /= static_cast<float>(fThumbLX > 0.0f ? INT16_MAX : -INT16_MIN);
+			fThumbLY /= static_cast<float>(fThumbLY > 0.0f ? INT16_MAX : -INT16_MIN);
+			fThumbRX /= static_cast<float>(fThumbRX > 0.0f ? INT16_MAX : -INT16_MIN);
+			fThumbRY /= static_cast<float>(fThumbRY > 0.0f ? INT16_MAX : -INT16_MIN);
+
+			fThumbL_Length = sqrtf(fThumbLX * fThumbLX + fThumbLY * fThumbLY);
+			fThumbR_Length = sqrtf(fThumbRX * fThumbRX + fThumbRY * fThumbRY);
+
+			fThumbLX = sign(fThumbLX) * clamp(abs(fThumbLX) - CONTROLLER_JOYSTICK_THRESHOLD, 0.0f, 1.0f - CONTROLLER_JOYSTICK_THRESHOLD) / (1.0f - CONTROLLER_JOYSTICK_THRESHOLD);
+			fThumbLY = sign(fThumbLY) * clamp(abs(fThumbLY) - CONTROLLER_JOYSTICK_THRESHOLD, 0.0f, 1.0f - CONTROLLER_JOYSTICK_THRESHOLD) / (1.0f - CONTROLLER_JOYSTICK_THRESHOLD);
+			fThumbRX = sign(fThumbRX) * clamp(abs(fThumbRX) - CONTROLLER_JOYSTICK_THRESHOLD, 0.0f, 1.0f - CONTROLLER_JOYSTICK_THRESHOLD) / (1.0f - CONTROLLER_JOYSTICK_THRESHOLD);
+			fThumbRY = sign(fThumbRY) * clamp(abs(fThumbRY) - CONTROLLER_JOYSTICK_THRESHOLD, 0.0f, 1.0f - CONTROLLER_JOYSTICK_THRESHOLD) / (1.0f - CONTROLLER_JOYSTICK_THRESHOLD);
+
+			hasControllerInput |= fThumbL_Length > CONTROLLER_JOYSTICK_THRESHOLD;
+			hasControllerInput |= fThumbR_Length > CONTROLLER_JOYSTICK_THRESHOLD;
+		}
+
+		{
+			GetKeyState(-1); // force keys to update
+			if (!GetKeyboardState(keyboardState))
+				ZeroMemory(keyboardState, sizeof(keyboardState));
+
+			mouseInputX = IGameInput::GetMouseX();
+			mouseInputY = IGameInput::GetMouseY();
+
+			leftButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Left);
+			rightButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Right);
+			middleButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Middle);
+
 			{
-				pInputBuffer->keyboardState[i] = (keyboardState[i] & 0b10000000) != 0;
+				//for (size_t i = 0; i < sizeof(keyboardState); i++)
+				//	hasMouseAndKeyboardInput |= keyboardState[i] != 0;
+
+				hasMouseAndKeyboardInput |= mouseInputX != 0.0f;
+				hasMouseAndKeyboardInput |= mouseInputY != 0.0f;
+				hasMouseAndKeyboardInput |= leftButtonPressed;
+				hasMouseAndKeyboardInput |= rightButtonPressed;
+				hasMouseAndKeyboardInput |= middleButtonPressed;
+
+				if (hasMouseAndKeyboardInput)
+				{
+					sCurrentInputSource = InputSource::MouseAndKeyboard;
+				}
 			}
 		}
-
-		{
-			float mouseInputX = IGameInput::GetMouseX();
-			float mouseInputY = IGameInput::GetMouseY();
-
-			pInputBuffer->MouseX += mouseInputX;
-			pInputBuffer->MouseY += mouseInputY;
-
-			bool leftButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Left);
-			bool rightButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Right);
-			bool middleButtonPressed = IGameInput::GetMouseButton(MouseInputButton::Middle);
-
-			pInputBuffer->mouseButtonBits |= BYTE(leftButtonPressed) << 0;
-			pInputBuffer->mouseButtonBits |= BYTE(middleButtonPressed) << 1;
-			pInputBuffer->mouseButtonBits |= BYTE(rightButtonPressed) << 2;
-		}
 	}
+
+	if (hasControllerInput)
+	{
+		sCurrentInputSource = InputSource::Gamepad;
+	}
+	else if (hasMouseAndKeyboardInput)
+	{
+		sCurrentInputSource = InputSource::MouseAndKeyboard;
+	}
+
+	if (sCurrentInputSource == InputSource::MouseAndKeyboard)
+	{
+		for (int i = 0; i < 256; i++)
+		{
+			pInputBuffer->keyboardState[i] = (keyboardState[i] & 0b10000000) != 0;
+		}
+		pInputBuffer->MouseX += mouseInputX;
+		pInputBuffer->MouseY += mouseInputY;
+		pInputBuffer->mouseButtonBits |= BYTE(leftButtonPressed) << 0;
+		pInputBuffer->mouseButtonBits |= BYTE(middleButtonPressed) << 1;
+		pInputBuffer->mouseButtonBits |= BYTE(rightButtonPressed) << 2;
+	}
+
+	if (sCurrentInputSource == InputSource::Gamepad)
+	{
+		pInputBuffer->wButtons = xinputState.Gamepad.wButtons;
+		pInputBuffer->bLeftTrigger = xinputState.Gamepad.bLeftTrigger;
+		pInputBuffer->bRightTrigger = xinputState.Gamepad.bRightTrigger;
+		pInputBuffer->sThumbLX = fThumbLX * static_cast<float>(fThumbLX > 0 ? INT16_MAX : -INT16_MIN);
+		pInputBuffer->sThumbLY = fThumbLY * static_cast<float>(fThumbLY > 0 ? INT16_MAX : -INT16_MIN);
+		pInputBuffer->sThumbRX = fThumbRX * static_cast<float>(fThumbRX > 0 ? INT16_MAX : -INT16_MIN);
+		pInputBuffer->sThumbRY = fThumbRY * static_cast<float>(fThumbRY > 0 ? INT16_MAX : -INT16_MIN);
+	}
+
+	pInputBuffer->inputSource = sCurrentInputSource;
 
 	return unsigned __int8(1);
 }
@@ -391,7 +586,7 @@ void IGameEngineHost::Member32()
 void IGameEngineHost::XInputSetState(__int32 dwUserIndex, XINPUT_VIBRATION *pVibration)
 {
 	//printf("IGameEngineHost::XInputSetState\n"); // spams
-	//::XInputSetState(dwUserIndex, pVibration);
+	::XInputSetState(dwUserIndex, pVibration);
 }
 
 bool IGameEngineHost::SetPlayerNames(__int64 *playerIndices, wchar_t playerNames[4][32], size_t size_in_bytes)
@@ -516,9 +711,9 @@ unsigned __int8 *IGameEngineHost::Member46(__int64 a1, LPVOID *a2, __int64 a3)
 	return 0;
 }
 
-__int64 IGameEngineHost::Member47(UINT64 a1, UINT64 a2)
+__int64 IGameEngineHost::IsAntiCheatDisabled(UINT64 a1, UINT64 a2)
 {
-	printf("IGameEngineHost::Member47(0x%08llX, 0x%08llX);\n", a1, a2); 
+	printf("IGameEngineHost::IsAntiCheatDisabled(0x%08llX, 0x%08llX);\n", a1, a2); 
 	// security related
-	return 0;
+	return 1;
 }

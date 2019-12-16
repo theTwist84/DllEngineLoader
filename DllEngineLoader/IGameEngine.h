@@ -10,8 +10,8 @@ enum class EngineState : INT32
 	eReloadSettings,
 	eStartLoading,
 	eEndLoading,
-	eShowMouse,
-	eHideMouse,
+	ePushUIPage,
+	ePopUIPage,
 	eSaveGameVariant,
 	eSaveMapVariant,
 	eEndRound,
@@ -43,10 +43,10 @@ LPCSTR EngineStateFromID(EngineState id)
 		return "StartLoading";
 	case EngineState::eEndLoading:
 		return "EndLoading";
-	case EngineState::eShowMouse:
-		return "ShowMouse";
-	case EngineState::eHideMouse:
-		return "HideMouse";
+	case EngineState::ePushUIPage:
+		return "PushUIPage";
+	case EngineState::ePopUIPage:
+		return "PopUIPage";
 	case EngineState::eSaveGameVariant:
 		return "SaveGameVariant";
 	case EngineState::eSaveMapVariant:

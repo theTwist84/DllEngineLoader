@@ -50,6 +50,10 @@ int main(int argc, LPSTR *argv)
 	// Enable original Halo Reach pause screen
 	IPatch("HaloReach.dll", 0x18037A252, { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 }).Apply();
 
+	// Enable spawning AI via scripts or effects, props to Zeddikins
+	IPatch("HaloReach.dll", 0x1807301F7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	IPatch("HaloReach.dll", 0x18076F4F1, { 0xEB }).Apply();
+
 	static IGameEngineHost gameEngineHost = IGameEngineHost();
 	static IGameRasterizer gameRasterizer = IGameRasterizer(1280, 720, true);
 	static IGameContext    gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
@@ -89,6 +93,6 @@ int main(int argc, LPSTR *argv)
 		}
 	};
 
-	gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
+	//gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
 	gameInterface.LaunchTitle(gameEngineHost, gameRasterizer, gameContext, g_running, updateCallBack);
 }
