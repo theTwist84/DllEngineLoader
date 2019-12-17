@@ -164,18 +164,15 @@ void IConsoleAccess::Commands(std::string Commands)
 
 			return;
 		}
-		if (Commands.find("Weapon") != std::string::npos)
+		if (Commands.find("weap") != std::string::npos)
 		{
-			if (Commands.find("objects\\weapons\\rifle\\assault_rifle\\assault_rifle") != std::string::npos)
+			auto weapon_edit_fp_offset = [](LPCSTR pName)
 			{
-				showHelp = false;
+				char *pWeaponDefinition = TagGetDefinition<char *>(pName);
 
-				// 1.1246.0.0, cex_prisoner, 0xEBB7086A [objects\weapons\rifle\assault_rifle\assault_rifle]
-				auto pAssaultRifleDefinition = TagGetDefinition<char *>('weap', 0xEBB7086A);
-
-				if (*reinterpret_cast<UINT32 *>(pAssaultRifleDefinition) != 0xFFFFFFFF)
+				if (*reinterpret_cast<UINT32 *>(pWeaponDefinition) != 0xFFFFFFFF)
 				{
-					auto &FirstPersonWeaponOffset = *reinterpret_cast<vector3d<float> *>(pAssaultRifleDefinition + 0x4CC);
+					auto &FirstPersonWeaponOffset = *reinterpret_cast<vector3d<float> *>(pWeaponDefinition + 0x4CC);
 
 					printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
 
@@ -185,15 +182,29 @@ void IConsoleAccess::Commands(std::string Commands)
 						printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
 					}
 				}
+			};
 
-				return;
+			for (auto& cmd : SplitString(Commands.c_str(), " "))
+			{
+				if (cmd.find(".weapon") != std::string::npos)
+				{
+					showHelp = false;
+
+					weapon_edit_fp_offset(cmd.c_str());
+				}
 			}
 
 			if (showHelp)
 			{
-				WriteLine("enum TagName\n{");
+				WriteLine("enum Weapon\n{");
 
-				WriteLine("\t%s", "objects\\weapons\\rifle\\assault_rifle\\assault_rifle");
+				for (auto& tagInfo : ITagList::Get())
+				{
+					if (tagInfo.Name[0] && strstr(tagInfo.Name, ".weapon") != 0)
+					{
+						WriteLine("\t%s", tagInfo.Name);
+					}
+				}
 
 				WriteLine("};");
 			}
@@ -206,8 +217,8 @@ void IConsoleAccess::Commands(std::string Commands)
 		{
 			WriteLine("enum TagGroup\n{");
 
-			WriteLine("\t%s", "Scenario");
-			WriteLine("\t%s", "Weapon");
+			WriteLine("\t%s", ".scnr");
+			WriteLine("\t%s", ".weap");
 
 			WriteLine("};");
 		}

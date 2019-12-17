@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <ctime>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <psapi.h>
@@ -78,6 +79,20 @@ void EnsureModuleIsLoaded(LPCSTR pLibPath)
 			FreeLibrary(hModule);
 		}
 	}
+}
+
+std::vector<std::string> SplitString(std::string phrase, LPCSTR delimiter)
+{
+	std::vector<std::string> list;
+	std::string s = phrase;
+	size_t pos = 0;
+	while ((pos = s.find(delimiter)) != std::string::npos)
+	{
+		list.push_back(s.substr(0, pos));
+		s.erase(0, pos + strlen(delimiter));
+	}
+	list.push_back(s.c_str());
+	return list;
 }
 
 bool g_running = false;

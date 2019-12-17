@@ -558,10 +558,10 @@ bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 		pInputBuffer->wButtons = xinputState.Gamepad.wButtons;
 		pInputBuffer->bLeftTrigger = xinputState.Gamepad.bLeftTrigger;
 		pInputBuffer->bRightTrigger = xinputState.Gamepad.bRightTrigger;
-		pInputBuffer->sThumbLX = fThumbLX * static_cast<float>(fThumbLX > 0 ? INT16_MAX : -INT16_MIN);
-		pInputBuffer->sThumbLY = fThumbLY * static_cast<float>(fThumbLY > 0 ? INT16_MAX : -INT16_MIN);
-		pInputBuffer->sThumbRX = fThumbRX * static_cast<float>(fThumbRX > 0 ? INT16_MAX : -INT16_MIN);
-		pInputBuffer->sThumbRY = fThumbRY * static_cast<float>(fThumbRY > 0 ? INT16_MAX : -INT16_MIN);
+		pInputBuffer->sThumbLX = static_cast<SHORT>(fThumbLX * static_cast<float>(fThumbLX > 0 ? INT16_MAX : -INT16_MIN));
+		pInputBuffer->sThumbLY = static_cast<SHORT>(fThumbLY * static_cast<float>(fThumbLY > 0 ? INT16_MAX : -INT16_MIN));
+		pInputBuffer->sThumbRX = static_cast<SHORT>(fThumbRX * static_cast<float>(fThumbRX > 0 ? INT16_MAX : -INT16_MIN));
+		pInputBuffer->sThumbRY = static_cast<SHORT>(fThumbRY * static_cast<float>(fThumbRY > 0 ? INT16_MAX : -INT16_MIN));
 	}
 
 	pInputBuffer->inputSource = sCurrentInputSource;

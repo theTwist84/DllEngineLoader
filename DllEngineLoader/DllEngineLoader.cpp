@@ -54,6 +54,8 @@ int main(int argc, LPSTR *argv)
 	IPatch("HaloReach.dll", 0x1807301F7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
 	IPatch("HaloReach.dll", 0x18076F4F1, { 0xEB }).Apply();
 
+	ITagList::ITagList();
+
 	static IGameEngineHost gameEngineHost = IGameEngineHost();
 	static IGameRasterizer gameRasterizer = IGameRasterizer(1280, 720, true);
 	static IGameContext    gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
@@ -91,6 +93,8 @@ int main(int argc, LPSTR *argv)
 		{
 			g_output_debug_frame_time = true;
 		}
+
+		ITagList::FromFile();
 	};
 
 	//gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
