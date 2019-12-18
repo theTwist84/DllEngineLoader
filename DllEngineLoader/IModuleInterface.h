@@ -8,6 +8,9 @@ class IModuleInterface
 		size_t m_addr;
 		size_t m_base;
 		size_t m_size;
+
+		// TODO: add file version
+		//size_t m_ver
 	};
 
 public:

@@ -33,9 +33,9 @@ int main(int argc, LPSTR *argv)
 		break;
 	default:
 		pEngine = "HaloReach";
-		pGame   = "00_basic_editing_054";
+		pGame   = "slayer_054";
 		pMap    = "hang_em_high_cl_031";
-		//pFilm   = "asq_45_laun_217D482C";
+		//pFilm   = "asq_m30_EF0E4721";
 		break;
 	}
 
@@ -47,12 +47,18 @@ int main(int argc, LPSTR *argv)
 	IPatch("HaloReach.dll", 0x18004BF10, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach map_id
 	IPatch("HaloReach.dll", 0x18004C140, { 0x89, 0xC8, 0xC3 }).Apply(); // to mcc map_id
 
-	// Enable original Halo Reach pause screen
-	IPatch("HaloReach.dll", 0x18037A252, { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 }).Apply();
+	// Enable original Halo Reach pause screen, this will crash the engine
+	/*1.1246.0.0*/ //IPatch("HaloReach.dll", 0x18037A252, { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 }).Apply();
+	/*1.1270.0.0*/ //IPatch("HaloReach.dll", 0x18037A2E2, { 0xE9, 0xA3, 0x00, 0x00, 0x00, 0x90 }).Apply();
 
 	// Enable spawning AI via scripts or effects, props to Zeddikins
-	IPatch("HaloReach.dll", 0x1807301F7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
-	IPatch("HaloReach.dll", 0x18076F4F1, { 0xEB }).Apply();
+	/*1.1246.0.0*/ //IPatch("HaloReach.dll", 0x1807301F7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1246.0.0*/ //IPatch("HaloReach.dll", 0x18076F4F1, { 0xEB }).Apply();
+	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x180730287, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x18076F581, { 0xEB }).Apply();
+
+	// Return input for armor option coversion function
+	IPatch("HaloReach.dll", 0x18004E800, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach armor option
 
 	ITagList::ITagList();
 

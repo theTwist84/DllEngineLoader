@@ -418,21 +418,22 @@ INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configu
 	// sub_18004E800 applies customization conversion from MCC to Reach
 	// TODO: get conversion table from sub_18004E800
 	// sub_18004E800 converts customization from MCC to Reach
-	rPlayerConfiguration.is_elite 	                 = true;
-	rPlayerConfiguration.armor_helmet_option         = 0;
-	rPlayerConfiguration.armor_left_shoulder_option  = 0;
-	rPlayerConfiguration.armor_right_shoulder_option = 0;
-	rPlayerConfiguration.armor_chest_option          = 0;
-	rPlayerConfiguration.armor_wrist_option          = 0;
-	rPlayerConfiguration.armor_leg_utility_option    = 0;
-	rPlayerConfiguration.armor_knees_option          = 0;
-	rPlayerConfiguration.armor_effect_dupe_option    = 0;
-	rPlayerConfiguration.elite_armor_option          = 0;
-	rPlayerConfiguration.armor_effect_option         = 0;
-	rPlayerConfiguration.firefight_voice_option      = 0;
-	rPlayerConfiguration.primary_color_option        = 25;   // HR_Color_Yellow
-	rPlayerConfiguration.secondary_color_option      = 13;   // HR_Color_Cobalt
-	rPlayerConfiguration.crouch_lock_option          = true;
+	rPlayerConfiguration.is_elite 	                    = true;
+	rPlayerConfiguration.armor_helmet_option            = 0;
+	rPlayerConfiguration.armor_left_shoulder_option     = 0;
+	rPlayerConfiguration.armor_right_shoulder_option    = 0;
+	rPlayerConfiguration.armor_chest_option             = 0;
+	rPlayerConfiguration.armor_wrist_option             = 0;
+	rPlayerConfiguration.armor_leg_utility_option       = 0;
+	rPlayerConfiguration.armor_knees_option             = 0;
+	rPlayerConfiguration.option4C_customization_related = 6;
+	rPlayerConfiguration.armor_effect_dupe_option       = 0;
+	rPlayerConfiguration.elite_armor_option             = 0;
+	rPlayerConfiguration.armor_effect_option            = 0;
+	rPlayerConfiguration.firefight_voice_option         = 0;
+	rPlayerConfiguration.primary_color_option           = 6;   // HR_Color_Sage
+	rPlayerConfiguration.secondary_color_option         = 6;   // HR_Color_Sage
+	rPlayerConfiguration.crouch_lock_option             = true;
 
 	_snwprintf(rPlayerConfiguration.service_tag, 5, L"%S\0", "UNSC");
 
