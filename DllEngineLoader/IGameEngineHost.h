@@ -50,23 +50,23 @@ class IGameEngineHost
 		char    padding18;
 		char    clench_protection_option;
 		char    unknown1A[14];
-		char    option28;
+		bool    is_elite;
 		char    padding29[7];
-		INT32   armor_helmet_index;
-		INT32   armor_left_shoulder_index;
-		INT32   armor_right_shoulder_index;
-		INT32   armor_chest_index;
-		INT32   armor_wrist_index;
-		INT32   armor_leg_utility_index;
-		INT32   armor_knee_index;
+		INT32   armor_helmet_option;
+		INT32   armor_left_shoulder_option;
+		INT32   armor_right_shoulder_option;
+		INT32   armor_chest_option;
+		INT32   armor_wrist_option;
+		INT32   armor_leg_utility_option;
+		INT32   armor_knees_option;
 		INT32   option4C_customization_related;
-		INT32   armor_effect_dupe_index;
-		INT32   option54_customization_related;
-		INT32   elite_armor_index;
-		INT32   armor_effect_index;
-		INT32   firefight_voice_index;
-		INT32   option64_customization_related;
-		INT32   option68_customization_related;
+		INT32   armor_effect_dupe_option;
+		INT32   option54_customization_option;
+		INT32   elite_armor_option;
+		INT32   armor_effect_option;
+		INT32   firefight_voice_option;
+		INT32   primary_color_option;
+		INT32   secondary_color_option;
 		char    padding6C[4];
 		wchar_t service_tag[5];
 		char    padding7A[2];
@@ -129,7 +129,7 @@ public:
 	/* 26 */ virtual bool         Member26();
 	/* 27 */ virtual bool         Member27();
 	/* 28 */ virtual bool         UpdateGraphics(char *);
-	/* 29 */ virtual INT64        UpdatePlayerConfiguration(LPWSTR, s_player_configuration *);
+	/* 29 */ virtual INT64        UpdatePlayerConfiguration(LPWSTR, s_player_configuration &);
 	/* 30 */ virtual bool         UpdateInput(INT64, InputBuffer *);
 	/* 31 */ virtual void         Member31(UINT64, float *);
 	/* 32 */ virtual void         Member32();
@@ -408,32 +408,33 @@ bool IGameEngineHost::UpdateGraphics(char *buffer)
 	return fps_limit;
 }
 
-INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configuration *pPlayerConfiguration)
+INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configuration &rPlayerConfiguration)
 {
-	WriteStackTrace("IGameEngineHost::UpdatePlayerConfiguration");
+	printf("IGameEngineHost::UpdatePlayerConfiguration(\"Player0\", 0x%08llX)\n", (UINT64)&rPlayerConfiguration);
 
-	printf("IGameEngineHost::UpdatePlayerConfiguration(\"Player0\", 0x%08llX)\n", (UINT64)&pPlayerConfiguration);
-
-	memset(pPlayerConfiguration, 0, sizeof(*pPlayerConfiguration));
-
-	_snwprintf(pPlayerConfiguration->service_tag, 5, L"%S\0", "UNSC");
+	rPlayerConfiguration = {}; // reset values
 
 
 	// sub_18004E800 applies customization conversion from MCC to Reach
 	// TODO: get conversion table from sub_18004E800
 	// sub_18004E800 converts customization from MCC to Reach
-	pPlayerConfiguration->armor_helmet_index         = 0;
-	pPlayerConfiguration->armor_left_shoulder_index  = 0;
-	pPlayerConfiguration->armor_right_shoulder_index = 0;
-	pPlayerConfiguration->armor_chest_index          = 0;
-	pPlayerConfiguration->armor_wrist_index          = 0;
-	pPlayerConfiguration->armor_leg_utility_index    = 0;
-	pPlayerConfiguration->armor_knee_index           = 0;
-	pPlayerConfiguration->armor_effect_dupe_index    = 0;
-	pPlayerConfiguration->elite_armor_index          = 0;
-	pPlayerConfiguration->armor_effect_index         = 0;
-	pPlayerConfiguration->firefight_voice_index      = 0;
-	pPlayerConfiguration->crouch_lock_option         = true;
+	rPlayerConfiguration.is_elite 	                 = true;
+	rPlayerConfiguration.armor_helmet_option         = 0;
+	rPlayerConfiguration.armor_left_shoulder_option  = 0;
+	rPlayerConfiguration.armor_right_shoulder_option = 0;
+	rPlayerConfiguration.armor_chest_option          = 0;
+	rPlayerConfiguration.armor_wrist_option          = 0;
+	rPlayerConfiguration.armor_leg_utility_option    = 0;
+	rPlayerConfiguration.armor_knees_option          = 0;
+	rPlayerConfiguration.armor_effect_dupe_option    = 0;
+	rPlayerConfiguration.elite_armor_option          = 0;
+	rPlayerConfiguration.armor_effect_option         = 0;
+	rPlayerConfiguration.firefight_voice_option      = 0;
+	rPlayerConfiguration.primary_color_option        = 25;   // HR_Color_Yellow
+	rPlayerConfiguration.secondary_color_option      = 13;   // HR_Color_Cobalt
+	rPlayerConfiguration.crouch_lock_option          = true;
+
+	_snwprintf(rPlayerConfiguration.service_tag, 5, L"%S\0", "UNSC");
 
 	return INT64(1);
 }
