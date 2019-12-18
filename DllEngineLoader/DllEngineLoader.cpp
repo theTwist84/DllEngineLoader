@@ -34,7 +34,7 @@ int main(int argc, LPSTR *argv)
 	default:
 		pEngine = "HaloReach";
 		pGame   = "00_basic_editing_054";
-		pMap    = "cex_prisoner";
+		pMap    = "hang_em_high_cl_031";
 		//pFilm   = "asq_45_laun_217D482C";
 		break;
 	}

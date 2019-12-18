@@ -52,19 +52,19 @@ class IGameEngineHost
 		char    unknown1A[14];
 		char    option28;
 		char    padding29[7];
-		INT32   option30_customization_related;
-		INT32   option34_customization_related;
-		INT32   option38_customization_related;
-		INT32   option3C_customization_related;
-		INT32   option40_customization_related;
-		INT32   option44_customization_related;
-		INT32   option48_customization_related;
+		INT32   armor_helmet_index;
+		INT32   armor_left_shoulder_index;
+		INT32   armor_right_shoulder_index;
+		INT32   armor_chest_index;
+		INT32   armor_wrist_index;
+		INT32   armor_leg_utility_index;
+		INT32   armor_knee_index;
 		INT32   option4C_customization_related;
-		INT32   option50_customization_related;
+		INT32   armor_effect_dupe_index;
 		INT32   option54_customization_related;
-		INT32   option58_customization_related;
-		INT32   option5C_customization_related;
-		INT32   option60_customization_related;
+		INT32   elite_armor_index;
+		INT32   armor_effect_index;
+		INT32   firefight_voice_index;
 		INT32   option64_customization_related;
 		INT32   option68_customization_related;
 		char    padding6C[4];
@@ -102,52 +102,52 @@ public:
 
 	/* 00 */ virtual char         BeginFrame();
 	/* 01 */ virtual void         EndFrame(IDXGISwapChain *, __int64);
-	/* 02 */ virtual void         Member02(__int64, unsigned int, __int64, float, float, float, float);
+	/* 02 */ virtual void         Member02(INT64, UINT32, INT64, float, float, float, float);
 	/* 03 */ virtual void         EngineStateUpdateHandler(EngineState);
 	/* 04 */ virtual INT64        GameExitHandler(unsigned int, char *, int);
 	/* 05 */ virtual INT64        GameStateWriteHandler(char *, size_t);
 	/* 06 */ virtual void         Member06(char *);
 	/* 07 */ virtual void         GamePauseHandler(int);
-	/* 08 */ virtual void         Member08(wchar_t *, wchar_t *);
-	/* 09 */ virtual void         Member09(wchar_t *, wchar_t *);
+	/* 08 */ virtual void         Member08(LPWSTR, LPWSTR);
+	/* 09 */ virtual void         Member09(LPWSTR, LPWSTR);
 	/* 10 */ virtual IGameEvents *GetGameEvents();
 	/* 11 */ virtual void         GameVariantWrite(IGameVariant *);
 	/* 12 */ virtual void         MapVariantWrite(IMapVariant *);
-	/* 13 */ virtual void         Member13(wchar_t *, wchar_t *, LPVOID, UINT32);
+	/* 13 */ virtual void         Member13(LPWSTR, LPWSTR, LPVOID, UINT32);
 	/* 14 */ virtual char         Member14(int, BYTE *);
 	/* 15 */ virtual char         Member15(int, BYTE *);
 	/* 16 */ virtual char         GetNextLevelInfo(MapID *, int *, FILETIME *, __int32 *);
 	/* 17 */ virtual bool         Member17(int);
 	/* 18 */ virtual void         Member18(int);
-	/* 19 */ virtual INT64        MapLoadPecentStatus(__int64, __int64, float);
-	/* 20 */ virtual void         Member20(__int64, __int8);
-	/* 21 */ virtual INT64        GetMachineIDentifier(__int64);
-	/* 22 */ virtual INT64        Member22(char *, __int64);
-	/* 23 */ virtual char         ScoreboardHandler(__int64, __int64);
+	/* 19 */ virtual INT64        MapLoadPecentStatus(INT64, INT64, float);
+	/* 20 */ virtual void         Member20(INT64, __int8);
+	/* 21 */ virtual INT64        GetMachineIDentifier(INT64);
+	/* 22 */ virtual INT64        Member22(char *, INT64);
+	/* 23 */ virtual char         ScoreboardHandler(INT64, INT64);
 	/* 24 */ virtual void         GetSessionInfo(char *);
-	/* 25 */ virtual void         MembershipUpdate(char *, uint32_t);
+	/* 25 */ virtual void         MembershipUpdate(char *, UINT32);
 	/* 26 */ virtual bool         Member26();
 	/* 27 */ virtual bool         Member27();
 	/* 28 */ virtual bool         UpdateGraphics(char *);
 	/* 29 */ virtual INT64        UpdatePlayerConfiguration(LPWSTR, s_player_configuration *);
-	/* 30 */ virtual bool         UpdateInput(__int64, InputBuffer *);
+	/* 30 */ virtual bool         UpdateInput(INT64, InputBuffer *);
 	/* 31 */ virtual void         Member31(UINT64, float *);
 	/* 32 */ virtual void         Member32();
 	/* 33 */ virtual void         XInputSetState(__int32, XINPUT_VIBRATION *);
-	/* 34 */ virtual bool         SetPlayerNames(__int64 *, wchar_t[4][32], size_t);
-	/* 35 */ virtual void         Member35(const wchar_t *, const wchar_t *);
-	/* 36 */ virtual bool         Member36(wchar_t *, __int64);
+	/* 34 */ virtual bool         SetPlayerNames(INT64 *, wchar_t[4][32], size_t);
+	/* 35 */ virtual void         Member35(LPCWSTR, LPCWSTR);
+	/* 36 */ virtual bool         Member36(LPWSTR, INT64);
 	/* 37 */ virtual INT64        NetworkSendTo(int, char *, int, UINT16);
-	/* 38 */ virtual INT64        NetworkReceiveFrom(char *, int, __int64, UINT16);
-	/* 39 */ virtual char        *Member39(unsigned int);
+	/* 38 */ virtual INT64        NetworkReceiveFrom(char *, int, INT64, UINT16);
+	/* 39 */ virtual char        *Member39(UINT32);
 	/* 40 */ virtual int          Member40(BYTE *);
-	/* 41 */ virtual bool         Member41(signed int, __int64, __int64);
+	/* 41 */ virtual bool         Member41(INT32, INT64, INT64);
 	/* 42 */ virtual void         FirefightNew(UINT64, float);
-	/* 43 */ virtual BOOL         Member43(__int64, __int64);
-	/* 44 */ virtual bool         GetPathByType(int, char *, size_t);
-	/* 45 */ virtual bool         GetWidePathByType(int, wchar_t *, size_t);
-	/* 46 */ virtual UINT8       *Member46(__int64, LPVOID *, __int64);
-	/* 47 */ virtual __int64      IsAntiCheatDisabled(UINT64, UINT64);
+	/* 43 */ virtual BOOL         Member43(INT64, INT64);
+	/* 44 */ virtual bool         GetPathByType(int, LPSTR, size_t);
+	/* 45 */ virtual bool         GetWidePathByType(int, LPWSTR, size_t);
+	/* 46 */ virtual UINT8       *Member46(INT64, LPVOID *, INT64);
+	/* 47 */ virtual INT64        IsAntiCheatDisabled(UINT64, UINT64);
 
 	IGameEvents *pGameEvents = 0;
 	UINT8 data1[46904] = {};
@@ -177,7 +177,7 @@ void IGameEngineHost::EndFrame(IDXGISwapChain *pSwapChain, __int64 a2)
 	//printf("IGameEngineHost::EndFrame(0x%08llX %lli);\n", (UINT64)pBuffer, a2);
 }
 
-void IGameEngineHost::Member02(__int64 player_identifier, unsigned int a2, __int64 a3, float a4, float a5, float a6, float a7)
+void IGameEngineHost::Member02(INT64 player_identifier, UINT32 a2, INT64 a3, float a4, float a5, float a6, float a7)
 {
 	//printf("IGameEngineHost::Member02\n");
 }
@@ -227,12 +227,12 @@ void IGameEngineHost::GamePauseHandler(int controllerIndex)
 	printf("IGameEngineHost::GamePauseHandler(%i);\n", controllerIndex);
 }
 
-void IGameEngineHost::Member08(wchar_t *a1, wchar_t *a2)
+void IGameEngineHost::Member08(LPWSTR a1, LPWSTR a2)
 {
 	printf("IGameEngineHost::Member08(\"%S\", \"%S\");\n", a1, a2);
 }
 
-void IGameEngineHost::Member09(wchar_t *a1, wchar_t *a2)
+void IGameEngineHost::Member09(LPWSTR a1, LPWSTR a2)
 {
 	printf("IGameEngineHost::Member09(\"%S\", \"%S\");\n", a1, a2);
 }
@@ -285,7 +285,7 @@ void IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 	}
 }
 
-void IGameEngineHost::Member13(wchar_t *a1, wchar_t *a2, LPVOID a3, UINT32 a4)
+void IGameEngineHost::Member13(LPWSTR a1, LPWSTR a2, LPVOID a3, UINT32 a4)
 {
 	printf("IGameEngineHost::Member13\n");
 }
@@ -319,30 +319,30 @@ void IGameEngineHost::Member18(int a1)
 	printf("IGameEngineHost::Member18(0x%08X);\n", a1);
 }
 
-__int64 IGameEngineHost::MapLoadPecentStatus(__int64 a1, __int64 a2, float a3)
+__int64 IGameEngineHost::MapLoadPecentStatus(INT64 a1, INT64 a2, float a3)
 {
 	//printf("IGameEngineHost::MapLoadPecentStatus %016llx\n", a1); // spams
 	return __int64(0);
 }
 
-void IGameEngineHost::Member20(__int64 a1, __int8 a2)
+void IGameEngineHost::Member20(INT64 a1, __int8 a2)
 {
 	printf("IGameEngineHost::Member20(0x%08llX, %i);\n", a1, a2);
 }
 
-__int64 IGameEngineHost::GetMachineIDentifier(__int64 a1)
+__int64 IGameEngineHost::GetMachineIDentifier(INT64 a1)
 {
 	//printf("IGameEngineHost::GetMachineIDentifier\n"); // spams
 	return __int64(3);
 }
 
-__int64 IGameEngineHost::Member22(char *buffer, __int64 a2)
+__int64 IGameEngineHost::Member22(char *buffer, INT64 a2)
 {
 	printf("IGameEngineHost::Member22(0x%08llX, %lli);\n", (UINT64)buffer, a2);
 	return __int64(0);
 }
 
-char IGameEngineHost::ScoreboardHandler(__int64 a1, __int64 a2)
+char IGameEngineHost::ScoreboardHandler(INT64 a1, INT64 a2)
 {
 	// printf("IGameEngineHost::ScoreboardHandler\n"); // spams
 	return 1;
@@ -353,7 +353,7 @@ void IGameEngineHost::GetSessionInfo(char *buffer)
 	printf("IGameEngineHost::GetSessionInfo(0x%08llX);\n", (UINT64)buffer);
 }
 
-void IGameEngineHost::MembershipUpdate(char *pSessionMembership, uint32_t playercount)
+void IGameEngineHost::MembershipUpdate(char *pSessionMembership, UINT32 playercount)
 {
 	printf("IGameEngineHost::MembershipUpdate(0x%08llX, %i);\n", (UINT64)pSessionMembership, playercount);
 	 
@@ -410,31 +410,35 @@ bool IGameEngineHost::UpdateGraphics(char *buffer)
 
 INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configuration *pPlayerConfiguration)
 {
+	WriteStackTrace("IGameEngineHost::UpdatePlayerConfiguration");
+
 	printf("IGameEngineHost::UpdatePlayerConfiguration(\"Player0\", 0x%08llX)\n", (UINT64)&pPlayerConfiguration);
 
 	memset(pPlayerConfiguration, 0, sizeof(*pPlayerConfiguration));
 
 	_snwprintf(pPlayerConfiguration->service_tag, 5, L"%S\0", "UNSC");
-	//buffer->option30_customization_related = 1;
-	//buffer->option34_customization_related = 1;
-	//buffer->option38_customization_related = 1;
-	//buffer->option3C_customization_related = 1;
-	//buffer->option40_customization_related = 1;
-	//buffer->option44_customization_related = 1;
-	//buffer->option48_customization_related = 1;
-	//buffer->option4C_customization_related = 1;
-	//buffer->option50_customization_related = 1;
-	//buffer->option54_customization_related = 1;
-	//buffer->option58_customization_related = 1;
-	//buffer->option5C_customization_related = 1;
-	//buffer->option60_customization_related = 1;
-	//buffer->option64_customization_related = 1;
-	//buffer->option68_customization_related = 1;
+
+
+	// sub_18004E800 applies customization conversion from MCC to Reach
+	// TODO: get conversion table from sub_18004E800
+	// sub_18004E800 converts customization from MCC to Reach
+	pPlayerConfiguration->armor_helmet_index         = 0;
+	pPlayerConfiguration->armor_left_shoulder_index  = 0;
+	pPlayerConfiguration->armor_right_shoulder_index = 0;
+	pPlayerConfiguration->armor_chest_index          = 0;
+	pPlayerConfiguration->armor_wrist_index          = 0;
+	pPlayerConfiguration->armor_leg_utility_index    = 0;
+	pPlayerConfiguration->armor_knee_index           = 0;
+	pPlayerConfiguration->armor_effect_dupe_index    = 0;
+	pPlayerConfiguration->elite_armor_index          = 0;
+	pPlayerConfiguration->armor_effect_index         = 0;
+	pPlayerConfiguration->firefight_voice_index      = 0;
+	pPlayerConfiguration->crouch_lock_option         = true;
 
 	return INT64(1);
 }
 
-bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
+bool IGameEngineHost::UpdateInput(INT64, InputBuffer *pInputBuffer)
 {
 	memset(pInputBuffer, 0, sizeof(*pInputBuffer));
 
@@ -470,7 +474,7 @@ bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 	float fThumbR_Length = 0;
 	XINPUT_STATE xinputState = {};
 
-	if (windowFocused || true)
+	if (windowFocused)
 	{
 		DWORD xinputGetStateResult = XInputGetState(0, &xinputState);
 		if (xinputGetStateResult == ERROR_SUCCESS)
@@ -566,7 +570,7 @@ bool IGameEngineHost::UpdateInput(__int64, InputBuffer *pInputBuffer)
 
 	pInputBuffer->inputSource = sCurrentInputSource;
 
-	return unsigned __int8(1);
+	return true;
 }
 
 void IGameEngineHost::Member31(UINT64 a1, float *a2)
@@ -589,7 +593,7 @@ void IGameEngineHost::XInputSetState(__int32 dwUserIndex, XINPUT_VIBRATION *pVib
 	::XInputSetState(dwUserIndex, pVibration);
 }
 
-bool IGameEngineHost::SetPlayerNames(__int64 *playerIndices, wchar_t playerNames[4][32], size_t size_in_bytes)
+bool IGameEngineHost::SetPlayerNames(INT64 *playerIndices, wchar_t playerNames[4][32], size_t size_in_bytes)
 {
 	//printf("IGameEngineHost::SetPlayerNames\n"); // spams
 	if (playerNames && size_in_bytes)
@@ -613,12 +617,12 @@ bool IGameEngineHost::SetPlayerNames(__int64 *playerIndices, wchar_t playerNames
 	return false;
 }
 
-void IGameEngineHost::Member35(const wchar_t *a1, const wchar_t *a2)
+void IGameEngineHost::Member35(LPCWSTR a1, LPCWSTR a2)
 {
 	printf("IGameEngineHost::Member35\n");
 }
 
-bool IGameEngineHost::Member36(wchar_t *a1, __int64 a2)
+bool IGameEngineHost::Member36(LPWSTR a1, INT64 a2)
 {
 	printf("IGameEngineHost::Member36\n");
 	return 0;
@@ -631,14 +635,14 @@ __int64 IGameEngineHost::NetworkSendTo(int ipv4, char *buf, int len, UINT16 port
 	return SOCKET_ERROR;
 }
 
-__int64 IGameEngineHost::NetworkReceiveFrom(char *buf, int len, __int64 a4, UINT16 port)
+__int64 IGameEngineHost::NetworkReceiveFrom(char *buf, int len, INT64 a4, UINT16 port)
 {
 	//printf("IGameEngineHost::NetworkReceiveFrom\n"); // spams
 	// returns the number of bytes received
 	return SOCKET_ERROR;
 }
 
-char *__fastcall IGameEngineHost::Member39(unsigned int a1)
+char *__fastcall IGameEngineHost::Member39(UINT32 a1)
 {
 	printf("IGameEngineHost::Member39\n");
 	return 0;
@@ -650,7 +654,7 @@ int IGameEngineHost::Member40(BYTE *buffer)
 	return 0;
 }
 
-bool IGameEngineHost::Member41(signed int a1, __int64 a2, __int64 a3)
+bool IGameEngineHost::Member41(INT32 a1, INT64 a2, INT64 a3)
 {
 	printf("IGameEngineHost::Member41\n");
 	return 0;
@@ -662,13 +666,13 @@ void IGameEngineHost::FirefightNew(UINT64 a1, float a2)
 	printf("IGameEngineHost::FirefightNew(0x%08llX, %f);\n", a1, a2);
 }
 
-BOOL IGameEngineHost::Member43(__int64 a1, __int64 a2)
+BOOL IGameEngineHost::Member43(INT64 a1, INT64 a2)
 {
 	printf("IGameEngineHost::Member43\n");
 	return 0;
 }
 
-bool IGameEngineHost::GetPathByType(int pathType, char *buffer, size_t bufferlength)
+bool IGameEngineHost::GetPathByType(int pathType, LPSTR buffer, size_t bufferlength)
 {
 	auto pModule = std::string(IGameInterface::s_modulePath).substr(std::string(IGameInterface::s_modulePath).find_last_of("/\\") + 1);
 	auto pEngine = pModule.erase(pModule.find_last_of("."), std::string::npos).c_str();
@@ -695,7 +699,7 @@ bool IGameEngineHost::GetPathByType(int pathType, char *buffer, size_t bufferlen
 }
 
 // this is correct implementation inline with MCC
-bool IGameEngineHost::GetWidePathByType(int pathType, wchar_t *wbuffer, size_t len)
+bool IGameEngineHost::GetWidePathByType(int pathType, LPWSTR wbuffer, size_t len)
 {
 	char *buffer = new char[len];
 	GetPathByType(pathType, buffer, len);
@@ -705,7 +709,7 @@ bool IGameEngineHost::GetWidePathByType(int pathType, wchar_t *wbuffer, size_t l
 	return 1;
 }
 
-unsigned __int8 *IGameEngineHost::Member46(__int64 a1, LPVOID *a2, __int64 a3)
+unsigned __int8 *IGameEngineHost::Member46(INT64 a1, LPVOID *a2, INT64 a3)
 {
 	//printf("IGameEngineHost::Member46\n"); // spams
 	return 0;
