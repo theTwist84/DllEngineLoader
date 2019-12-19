@@ -49,90 +49,6 @@ struct ITagSection
 	T     *m_Instances;
 };
 
-template<typename T = char *>
-T GetCacheFileHeader(size_t offset = 0)
-{
-	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, 0x1826077A0);
-	if (pCacheFile)
-	{
-		return *reinterpret_cast<T *>(&pCacheFile[0x10 + offset]);
-	}
-	return T();
-}
-
-std::string GetCacheFileName()
-{
-	static std::string name = "";
-	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, 0x1826077A0);
-	if (pCacheFile)
-	{
-		name = &pCacheFile[0x10 + 0x198];
-	}
-
-	return name;
-}
-
-template<typename T>
-ITagSection<T> &TagCacheGetSection(size_t sectionOffset)
-{
-	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, 0x1826077A0);
-	return *reinterpret_cast<ITagSection<T> *>(&pCacheFile[sectionOffset]);
-}
-
-IDatumHandle CacheGlobalTagGet(UINT32 groupTag)
-{
-	auto globalTagSection = TagCacheGetSection<IGlobalTagInstance>(0xA028);
-
-	for (size_t i = 0; i < globalTagSection.m_Count; ++i)
-	{
-		if (globalTagSection.m_Instances[i].m_GroupTag == groupTag)
-			return globalTagSection.m_Instances[i].m_DatumHandle;
-	}
-
-	return IDatumHandle(0xFFFFFFFF);
-}
-
-void CacheGlobalTagPrint(UINT32 groupTag = -1)
-{
-	auto tagSection = TagCacheGetSection<IGlobalTagInstance>(0xA028);
-
-	for (int i = 0; i < tagSection.m_Count; ++i)
-	{
-		auto group = tagSection.m_Instances[i].m_GroupTag;
-		group = ((group >> 24) & 0xff) | ((group << 8) & 0xff0000) | ((group >> 8) & 0xff00) | ((group << 24) & 0xff000000);
-		char groupStr[5] = {};
-		memcpy(groupStr, &group, 4);
-
-		if (groupTag == -1 || groupTag == tagSection.m_Instances[i].m_GroupTag)
-		{
-			printf("[%s, %04i]\n", groupStr, i);
-		}
-	}
-}
-
-UINT32 CacheTagGet(UINT32 groupIndex)
-{
-	auto tagSection = TagCacheGetSection<ITagInstance>(0xA018);
-
-	for (size_t i = 0; i < tagSection.m_Count; ++i)
-	{
-		if (tagSection.m_Instances[i].m_GroupIndex == groupIndex)
-			return tagSection.m_Instances[i].m_Address;
-	}
-
-	return UINT32(0xFFFFFFFF);
-}
-
-void CacheTagPrint(UINT32 groupTag = -1)
-{
-	auto tagSection = TagCacheGetSection<ITagInstance>(0xA018);
-
-	for (int i = 0; i < tagSection.m_Count; ++i)
-	{
-		printf("[%06i, %06i, %06i, 0x%08X]\n", i, tagSection.m_Instances[i].m_GroupIndex, tagSection.m_Instances[i].m_Identifier, tagSection.m_Instances[i].m_Address);
-	}
-}
-
 struct ITagInfo
 {
 	IDatumHandle Handle;
@@ -148,6 +64,97 @@ struct ITagInfo
 	}
 };
 
+class ITagInterface
+{
+public:
+	ITagInterface();
+	~ITagInterface();
+
+	static void         SetCacheFilePointerOffset(size_t cacheFilePointerOffset);
+	static void         SetTagInstancesOffset(size_t tagInstancesOffset);
+	static void         SetTagAddressTableOffset(size_t tagAddressTableOffset);
+
+	template<typename T = char *>
+	static T            GetHeader(size_t offset = 0);
+	static std::string  GetCacheName();
+	static IDatumHandle GetGlobalHandle(UINT32 groupTag);
+
+	template<typename T = LPVOID>
+	static T           &GetDefinition(LPCSTR pName);
+
+private:
+	static size_t       s_CacheFilePointerOffset;
+	static size_t       s_TagInstancesOffset;
+	static size_t       s_TagAddressTableOffset;
+};
+
+size_t ITagInterface::s_CacheFilePointerOffset = 0;
+size_t ITagInterface::s_TagInstancesOffset     = 0;
+size_t ITagInterface::s_TagAddressTableOffset  = 0;
+
+ITagInterface::ITagInterface()
+{
+	SetCacheFilePointerOffset(0x1826077A0);
+	SetTagInstancesOffset(0x1826887B8);
+	SetTagAddressTableOffset(0x1838D86C0);
+}
+
+ITagInterface::~ITagInterface()
+{
+}
+
+void ITagInterface::SetCacheFilePointerOffset(size_t cacheFilePointerOffset)
+{
+	s_CacheFilePointerOffset = cacheFilePointerOffset;
+}
+
+void ITagInterface::SetTagInstancesOffset(size_t tagInstancesOffset)
+{
+	s_TagInstancesOffset = tagInstancesOffset;
+}
+
+void ITagInterface::SetTagAddressTableOffset(size_t tagAddressTableOffset)
+{
+	s_TagAddressTableOffset = tagAddressTableOffset;
+}
+
+std::string ITagInterface::GetCacheName()
+{
+	static std::string name = "";
+	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
+	if (pCacheFile)
+	{
+		name = &pCacheFile[0x10 + 0x198];
+	}
+
+	return name;
+}
+
+template<typename T>
+T ITagInterface::GetHeader(size_t offset)
+{
+	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
+	if (pCacheFile)
+	{
+		return *reinterpret_cast<T *>(&pCacheFile[0x10 + offset]);
+	}
+	return T();
+}
+
+IDatumHandle ITagInterface::GetGlobalHandle(UINT32 groupTag)
+{
+	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
+	auto globalTagSection = *reinterpret_cast<ITagSection<IGlobalTagInstance> *>(&pCacheFile[0xA028]);
+
+	for (size_t i = 0; i < globalTagSection.m_Count; ++i)
+	{
+		if (globalTagSection.m_Instances[i].m_GroupTag == groupTag)
+			return globalTagSection.m_Instances[i].m_DatumHandle;
+	}
+
+	return IDatumHandle(0xFFFFFFFF);
+}
+
 class ITagList
 {
 
@@ -155,18 +162,29 @@ public:
 	ITagList();
 	~ITagList();
 
-	static void Add(ITagInfo tagInfo);
-	static void FromFile();
+	static void                  Add(ITagInfo tagInfo);
+	static void                  FromFile();
 
 	static std::vector<ITagInfo> Get();
 
-	static IDatumHandle GetHandle(LPCSTR pName);
+	static IDatumHandle          GetHandle(LPCSTR pName);
+	static LPCSTR                GetName(IDatumHandle handle);
 
 private:
 	static std::vector<ITagInfo> s_List;
 };
 
 std::vector<ITagInfo> ITagList::s_List;
+
+template<typename T>
+T &ITagInterface::GetDefinition(LPCSTR pName)
+{
+	auto pTagInstances = IModuleInterface::Read<ITagInstance *>(IGameInterface::s_modulePath, s_TagInstancesOffset);
+	auto pTagAddressTable = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
+
+	IDatumHandle datumHandle = ITagList::GetHandle(pName);
+	return *reinterpret_cast<T *>(&pTagAddressTable[pTagInstances[datumHandle.m_Index].m_Address >> 28][pTagInstances[datumHandle.m_Index].m_Address]);
+};
 
 ITagList::ITagList()
 {
@@ -188,12 +206,12 @@ void ITagList::FromFile()
 	if (!once)
 	{
 		auto engineName = SplitString(GetFileName(IGameInterface::s_modulePath), ".")[0];
-		auto mapName = GetCacheFileName();
+		auto cacheName = ITagInterface::GetCacheName();
 
-		if (mapName.c_str()[0])
+		if (cacheName.c_str()[0])
 		{
 			char path[MAX_PATH] = {};
-			sprintf(path, "%s\\maps\\%s.map.csv", engineName.c_str(), mapName.c_str());
+			sprintf(path, "%s\\maps\\%s.csv", engineName.c_str(), cacheName.c_str());
 
 			std::filebuf fb;
 			if (fb.open(path, std::ios::in))
@@ -206,7 +224,7 @@ void ITagList::FromFile()
 
 					if (line[0])
 					{
-						auto parts = SplitString(line, ", ");
+						auto parts = SplitString(line, ",");
 						auto datumIndex = std::stoul(parts[0], 0, 16);
 						auto tagName = parts[1].c_str();
 
@@ -242,23 +260,58 @@ IDatumHandle ITagList::GetHandle(LPCSTR pName)
 	return IDatumHandle(0xFFFFFFFF);
 }
 
-template<typename T = LPVOID>
-T TagGetDefinition(UINT32 groupTag, IDatumHandle datumHandle)
+LPCSTR ITagList::GetName(IDatumHandle handle)
 {
-	auto pTagInstances    = IModuleInterface::Read<ITagInstance *>(IGameInterface::s_modulePath, 0x1826887B8);
-	auto pTagAddressTable = IModuleInterface::Read<UINT32 *[]>(IGameInterface::s_modulePath, 0x1838D86C0);
+	for (auto &tag : s_List)
+	{
+		if (tag.Handle.AsU32() == handle.AsU32())
+		{
+			return tag.Name;
+		}
+	}
 
-	// TODO: add some sort of groupIndex check
+	return "";
+}
 
-	return (T)&pTagAddressTable[pTagInstances[datumHandle.m_Index].m_Address >> 28][pTagInstances[datumHandle.m_Index].m_Address];
+struct WeaponDefinition
+{
+	char m_data[0x500];
+
+	bool IsNull()
+	{
+		UINT32 valid = -1;
+		for (size_t i = 0; i < sizeof(m_data); i++)
+			valid += m_data[i] != 0 ? 1 : 0;
+		return valid == -1;
+	}
+
+	template<typename T>
+	T &Get(size_t offset)
+	{
+		return *reinterpret_cast<T *>(&m_data[offset]);
+	}
 };
 
-template<typename T = LPVOID>
-T TagGetDefinition(LPCSTR pName)
-{
-	auto pTagInstances = IModuleInterface::Read<ITagInstance *>(IGameInterface::s_modulePath, 0x1826887B8);
-	auto pTagAddressTable = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, 0x1838D86C0);
 
-	IDatumHandle datumHandle = ITagList::GetHandle(pName);
-	return (T)&pTagAddressTable[pTagInstances[datumHandle.m_Index].m_Address >> 28][pTagInstances[datumHandle.m_Index].m_Address];
+template<typename T>
+struct DefinitionMember
+{
+	std::string m_Name;
+	size_t      m_Offset;
+	T           m_Type;
+
+	bool IsNull()
+	{
+		UINT32 valid = -1;
+		valid += !m_Name.empty() ? 1 : 0;
+		return valid == -1;
+	}
+};
+
+
+union DefinitionUnion
+{
+	DefinitionMember<real_vector3d> _real_vector3d;
+	DefinitionMember<float> _float;
+	DefinitionMember<int> _int;
 };

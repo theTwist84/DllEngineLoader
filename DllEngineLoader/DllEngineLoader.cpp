@@ -60,6 +60,7 @@ int main(int argc, LPSTR *argv)
 	// Return input for armor option coversion function
 	IPatch("HaloReach.dll", 0x18004E800, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach armor option
 
+	ITagInterface::ITagInterface();
 	ITagList::ITagList();
 
 	static IGameEngineHost gameEngineHost = IGameEngineHost();

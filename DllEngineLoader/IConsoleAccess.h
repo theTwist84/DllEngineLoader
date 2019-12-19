@@ -77,10 +77,19 @@ void IConsoleAccess::Thread()
 	}
 }
 
-template<typename T>
-struct vector3d
+struct real_vector3d
 {
-	T I, J, K;
+	float I, J, K;
+
+	void Update(LPCSTR pName)
+	{
+		printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%f %f %f", &I, &J, &K))
+		{
+			printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
+		}
+	}
 };
 
 // TODO: Support lowercase
@@ -145,44 +154,29 @@ void IConsoleAccess::Commands(std::string Commands)
 		return;
 	}
 
-	if (Commands.find("TagGet") != std::string::npos)
+	if (Commands.find("EditTag") != std::string::npos || Commands.find("edit_tag") != std::string::npos)
 	{
 		bool showHelp = true;
 		if (Commands.find("Scenario") != std::string::npos)
 		{
 			showHelp = false;
-			auto scenarioDatumHandle = CacheGlobalTagGet('scnr');
-			printf("[scnr, 0x%08X]\n", scenarioDatumHandle.m_Index);
+			auto scenarioDatumHandle = ITagInterface::GetGlobalHandle('scnr');
+			auto scenarioName = ITagList::GetName(scenarioDatumHandle);
 
-			auto pScenarioDefinition = TagGetDefinition<char *>('scnr', scenarioDatumHandle);
+			auto pScenarioDefinition = ITagInterface::GetDefinition<char *>(scenarioName);
 
 			if (Commands.find("MapID") != std::string::npos)
 			{
 				printf("[map_id, %u]\n", *reinterpret_cast<UINT32 *>(&pScenarioDefinition[0xC]));
 			}
-			CacheGlobalTagPrint('scnr');
 
 			return;
 		}
-		if (Commands.find("weap") != std::string::npos)
+
+		if (Commands.find("Weap") != std::string::npos || Commands.find("weap") != std::string::npos)
 		{
-			auto weapon_edit_fp_offset = [](LPCSTR pName)
-			{
-				char *pWeaponDefinition = TagGetDefinition<char *>(pName);
-
-				if (*reinterpret_cast<UINT32 *>(pWeaponDefinition) != 0xFFFFFFFF)
-				{
-					auto &FirstPersonWeaponOffset = *reinterpret_cast<vector3d<float> *>(pWeaponDefinition + 0x4CC);
-
-					printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
-
-					printf("[First Person Weapon Offset, Enter new values]:\n");
-					if (scanf("%f %f %f", &FirstPersonWeaponOffset.I, &FirstPersonWeaponOffset.J, &FirstPersonWeaponOffset.K))
-					{
-						printf("[First Person Weapon Offset, %.8f %.8f %.8f]\n", FirstPersonWeaponOffset.I, FirstPersonWeaponOffset.J, FirstPersonWeaponOffset.K);
-					}
-				}
-			};
+			std::vector<DefinitionUnion> definitions;
+			definitions[0]._real_vector3d = { "first_person_weapon_offset", 0x4CC };
 
 			for (auto& cmd : SplitString(Commands.c_str(), " "))
 			{
@@ -190,7 +184,26 @@ void IConsoleAccess::Commands(std::string Commands)
 				{
 					showHelp = false;
 
-					weapon_edit_fp_offset(cmd.c_str());
+					WeaponDefinition &rWeaponDefinition = ITagInterface::GetDefinition<WeaponDefinition>(cmd.c_str());
+					if (!rWeaponDefinition.IsNull())
+					{
+						printf("%s> ", cmd.c_str());
+						char input_cmd[1024] = {};
+						char input_arg[1024] = {};
+						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && (strcmp(input_cmd, "edit") == 0 && input_arg[0] != 0))
+						{
+							for (auto &definition : definitions)
+							{
+								if (!definition._real_vector3d.IsNull())
+								{
+									if (strcmp(input_arg, definition._real_vector3d.m_Name.c_str()) == 0)
+									{
+										rWeaponDefinition.Get<decltype(definition._real_vector3d.m_Type)>(definition._real_vector3d.m_Offset).Update(definition._real_vector3d.m_Name.c_str());
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 
@@ -238,7 +251,7 @@ void IConsoleAccess::Commands(std::string Commands)
 	{
 		"LaunchTitle",
 		"EngineState",
-		"TagGet"
+		"EditTag"
 	};
 	auto commandCount = static_cast<size_t>(Commands::kCount);
 
