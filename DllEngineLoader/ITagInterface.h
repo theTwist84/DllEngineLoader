@@ -300,12 +300,12 @@ public:
 	}
 };
 
-class c_float_vec3_field
+class c_int8_field
 {
 public:
 	void print_field(LPCSTR pName)
 	{
-		printf("[%s, %.8f %.8f %.8f]\n", pName, m_iValue, m_jValue, m_kValue);
+		printf("[%s, %hhi]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -313,17 +313,86 @@ public:
 		print_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%f %f %f", &m_iValue, &m_jValue, &m_kValue))
+		if (scanf("%hhi", &m_value))
 		{
 			print_field(pName);
 		}
 	}
 
 private:
-	float m_iValue, m_jValue, m_kValue;
+	char m_value;
 };
 
-class c_int_field
+class c_uint8_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %hhu]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%hhu", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	unsigned char m_value;
+};
+
+class c_int16_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %hi]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%hi", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	short m_value;
+};
+
+class c_uint16_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %hu]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%hu", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	unsigned short m_value;
+};
+
+class c_int32_field
 {
 public:
 	void print_field(LPCSTR pName)
@@ -344,6 +413,144 @@ public:
 
 private:
 	int m_value;
+};
+
+class c_uint32_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %u]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%u", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	unsigned long m_value;
+};
+
+class c_int64_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %lli]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%lli", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	long long m_value;
+};
+
+class c_uint64_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %llu]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%llu", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	unsigned long long m_value;
+};
+
+class c_float32_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %f]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%f", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	float m_value;
+};
+
+class c_float64_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %lf]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%lf", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	double m_value;
+};
+
+class c_float_vec3_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %f %f %f]\n", pName, m_iValue, m_jValue, m_kValue);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%f %f %f", &m_iValue, &m_jValue, &m_kValue))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	float m_iValue, m_jValue, m_kValue;
 };
 
 template<INT32 group, size_t size>
@@ -394,16 +601,63 @@ public:
 class c_scenario_definition : public c_tag_definition<'scnr', 0x500>
 {
 public:
+	std::vector<c_field_definition<c_int8_field>>       get_int8_fields()
+	{
+		static std::vector<c_field_definition<c_int8_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint8_field>>      get_uint8_fields()
+	{
+		static std::vector<c_field_definition<c_uint8_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int16_field>>      get_int16_fields()
+	{
+		static std::vector<c_field_definition<c_int16_field>> fields;
+		fields.push_back({ "map_type", 0x0 });
+		fields.push_back({ "campaign_level_index", 0x14 });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint16_field>>     get_uint16_fields()
+	{
+		static std::vector<c_field_definition<c_uint16_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int32_field>>      get_int32_fields()
+	{
+		static std::vector<c_field_definition<c_int32_field>> fields;
+		fields.push_back({ "campaign_id", 0x8 });
+		fields.push_back({ "map_id", 0xC });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint32_field>>     get_uint32_fields()
+	{
+		static std::vector<c_field_definition<c_uint32_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int64_field>>      get_int64_fields()
+	{
+		static std::vector<c_field_definition<c_int64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint64_field>>     get_uint64_fields()
+	{
+		static std::vector<c_field_definition<c_uint64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_float32_field>>    get_float32_fields()
+	{
+		static std::vector<c_field_definition<c_float32_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_float64_field>>    get_float64_fields()
+	{
+		static std::vector<c_field_definition<c_float64_field>> fields;
+		return fields;
+	}
 	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
 	{
 		static std::vector<c_field_definition<c_float_vec3_field>> fields;
-		return fields;
-	}
-
-	std::vector<c_field_definition<c_int_field>>        get_int_fields()
-	{
-		static std::vector<c_field_definition<c_int_field>> fields;
-		fields.push_back({ "map_id", 0xC });
 		return fields;
 	}
 
@@ -417,8 +671,17 @@ public:
 				char input_cmd[1024] = {}, input_arg[1024] = {};
 				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
 				{
+					field_accessor(input_cmd, input_arg, get_int8_fields());
+					field_accessor(input_cmd, input_arg, get_uint8_fields());
+					field_accessor(input_cmd, input_arg, get_int16_fields());
+					field_accessor(input_cmd, input_arg, get_uint16_fields());
+					field_accessor(input_cmd, input_arg, get_int32_fields());
+					field_accessor(input_cmd, input_arg, get_uint32_fields());
+					field_accessor(input_cmd, input_arg, get_int64_fields());
+					field_accessor(input_cmd, input_arg, get_uint64_fields());
+					field_accessor(input_cmd, input_arg, get_float32_fields());
+					field_accessor(input_cmd, input_arg, get_float64_fields());
 					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
-					field_accessor(input_cmd, input_arg, get_int_fields());
 				}
 
 				if (strcmp(input_cmd, "exit") == 0)
@@ -435,16 +698,60 @@ public:
 class c_weapon_definition : public c_tag_definition<'weap', 0x884>
 {
 public:
+	std::vector<c_field_definition<c_int8_field>>       get_int8_fields()
+	{
+		static std::vector<c_field_definition<c_int8_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint8_field>>      get_uint8_fields()
+	{
+		static std::vector<c_field_definition<c_uint8_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int16_field>>      get_int16_fields()
+	{
+		static std::vector<c_field_definition<c_int16_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint16_field>>     get_uint16_fields()
+	{
+		static std::vector<c_field_definition<c_uint16_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int32_field>>      get_int32_fields()
+	{
+		static std::vector<c_field_definition<c_int32_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint32_field>>     get_uint32_fields()
+	{
+		static std::vector<c_field_definition<c_uint32_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int64_field>>      get_int64_fields()
+	{
+		static std::vector<c_field_definition<c_int64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint64_field>>     get_uint64_fields()
+	{
+		static std::vector<c_field_definition<c_uint64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_float32_field>>    get_float32_fields()
+	{
+		static std::vector<c_field_definition<c_float32_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_float64_field>>    get_float64_fields()
+	{
+		static std::vector<c_field_definition<c_float64_field>> fields;
+		return fields;
+	}
 	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
 	{
 		static std::vector<c_field_definition<c_float_vec3_field>> fields;
 		fields.push_back({ "first_person_weapon_offset", 0x4CC });
-		return fields;
-	}
-
-	std::vector<c_field_definition<c_int_field>>        get_int_fields()
-	{
-		static std::vector<c_field_definition<c_int_field>> fields;
 		return fields;
 	}
 
@@ -458,8 +765,114 @@ public:
 				char input_cmd[1024] = {}, input_arg[1024] = {};
 				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
 				{
+					field_accessor(input_cmd, input_arg, get_int8_fields());
+					field_accessor(input_cmd, input_arg, get_uint8_fields());
+					field_accessor(input_cmd, input_arg, get_int16_fields());
+					field_accessor(input_cmd, input_arg, get_uint16_fields());
+					field_accessor(input_cmd, input_arg, get_int32_fields());
+					field_accessor(input_cmd, input_arg, get_uint32_fields());
+					field_accessor(input_cmd, input_arg, get_int64_fields());
+					field_accessor(input_cmd, input_arg, get_uint64_fields());
+					field_accessor(input_cmd, input_arg, get_float32_fields());
+					field_accessor(input_cmd, input_arg, get_float64_fields());
 					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
-					field_accessor(input_cmd, input_arg, get_int_fields());
+				}
+
+				if (strcmp(input_cmd, "exit") == 0)
+				{
+					break;
+				}
+			}
+		}
+
+		return false;
+	}
+};
+
+class c_user_interface_shared_globals_definition : public c_tag_definition<'wigl', 0x174>
+{
+public:
+	std::vector<c_field_definition<c_int8_field>>       get_int8_fields()
+	{
+		static std::vector<c_field_definition<c_int8_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint8_field>>      get_uint8_fields()
+	{
+		static std::vector<c_field_definition<c_uint8_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int16_field>>      get_int16_fields()
+	{
+		static std::vector<c_field_definition<c_int16_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint16_field>>     get_uint16_fields()
+	{
+		static std::vector<c_field_definition<c_uint16_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int32_field>>      get_int32_fields()
+	{
+		static std::vector<c_field_definition<c_int32_field>> fields;
+		fields.push_back({ "music_fade_time", 0x70 });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint32_field>>     get_uint32_fields()
+	{
+		static std::vector<c_field_definition<c_uint32_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_int64_field>>      get_int64_fields()
+	{
+		static std::vector<c_field_definition<c_int64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint64_field>>     get_uint64_fields()
+	{
+		static std::vector<c_field_definition<c_uint64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_float32_field>>    get_float32_fields()
+	{
+		static std::vector<c_field_definition<c_float32_field>> fields;
+		fields.push_back({ "near_clip_plane_distance", 0x4 });
+		fields.push_back({ "projection_plane_distance", 0x8 });
+		fields.push_back({ "far_clip_plane_distance", 0xC });
+		return fields;
+	}
+	std::vector<c_field_definition<c_float64_field>>    get_float64_fields()
+	{
+		static std::vector<c_field_definition<c_float64_field>> fields;
+		return fields;
+	}
+	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
+	{
+		static std::vector<c_field_definition<c_float_vec3_field>> fields;
+		return fields;
+	}
+
+	bool run_access_loop(LPCSTR pTagName)
+	{
+		while (true)
+		{
+			if (!IsNull())
+			{
+				printf("%s> ", pTagName);
+				char input_cmd[1024] = {}, input_arg[1024] = {};
+				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
+				{
+					field_accessor(input_cmd, input_arg, get_int8_fields());
+					field_accessor(input_cmd, input_arg, get_uint8_fields());
+					field_accessor(input_cmd, input_arg, get_int16_fields());
+					field_accessor(input_cmd, input_arg, get_uint16_fields());
+					field_accessor(input_cmd, input_arg, get_int32_fields());
+					field_accessor(input_cmd, input_arg, get_uint32_fields());
+					field_accessor(input_cmd, input_arg, get_int64_fields());
+					field_accessor(input_cmd, input_arg, get_uint64_fields());
+					field_accessor(input_cmd, input_arg, get_float32_fields());
+					field_accessor(input_cmd, input_arg, get_float64_fields());
+					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
 				}
 
 				if (strcmp(input_cmd, "exit") == 0)

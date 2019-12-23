@@ -220,6 +220,10 @@ void IConsoleAccess::Commands(std::string Commands)
 			{
 				showHelp = ITagInterface::GetDefinition<c_weapon_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
 			}
+			if (cmd.find(".user_interface_shared_globals_definition") != std::string::npos)
+			{
+				showHelp = ITagInterface::GetDefinition<c_user_interface_shared_globals_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
+			}
 			if (showHelp)
 			{
 				for (auto &group : tagGroups)
