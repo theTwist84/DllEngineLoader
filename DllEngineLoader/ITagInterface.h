@@ -285,8 +285,9 @@ LPCSTR ITagList::GetName(IDatumHandle handle)
 
 
 template<typename T>
-struct DefinitionMember
+class c_field_definition
 {
+public:
 	std::string m_Name;
 	size_t      m_Offset;
 	T           m_Type;
@@ -299,103 +300,127 @@ struct DefinitionMember
 	}
 };
 
-struct s_float_vec3
+class c_float_vec3_field
 {
-	float I, J, K;
-
-	void Get(LPCSTR pName)
+public:
+	void print_field(LPCSTR pName)
 	{
-		printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
+		printf("[%s, %.8f %.8f %.8f]\n", pName, m_iValue, m_jValue, m_kValue);
 	}
 
-	void Edit(LPCSTR pName)
+	void edit_field(LPCSTR pName)
 	{
-		Get(pName);
+		print_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%f %f %f", &I, &J, &K))
+		if (scanf("%f %f %f", &m_iValue, &m_jValue, &m_kValue))
 		{
-			printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
+			print_field(pName);
+		}
+	}
+
+private:
+	float m_iValue, m_jValue, m_kValue;
+};
+
+class c_int_field
+{
+public:
+	void print_field(LPCSTR pName)
+	{
+		printf("[%s, %i]\n", pName, m_value);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		print_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%i", &m_value))
+		{
+			print_field(pName);
+		}
+	}
+
+private:
+	int m_value;
+};
+
+template<INT32 group, size_t size>
+class c_tag_definition
+{
+public:
+	char   m_data[size];
+
+	bool IsNull()
+	{
+		UINT32 valid = -1;
+		for (size_t i = 0; i < sizeof(m_data); i++)
+			valid += m_data[i] != 0 ? 1 : 0;
+		return valid == -1;
+	}
+
+	template<typename T>
+	T &get_field(size_t offset)
+	{
+		return *reinterpret_cast<T *>(&m_data[offset]);
+	}
+
+	template<typename T>
+	void field_accessor(LPCSTR pCommand, LPCSTR pArg, std::vector<c_field_definition<T>> vFields)
+	{
+		for (auto &field : vFields)
+		{
+			if (!field.IsNull())
+			{
+				if (strcmp(pArg, field.m_Name.c_str()) == 0)
+				{
+					if (strcmp(pCommand, "edit") == 0)
+					{
+						get_field<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
+						break;
+					}
+					if (strcmp(pCommand, "get") == 0)
+					{
+						get_field<decltype(field.m_Type)>(field.m_Offset).print_field(field.m_Name.c_str());
+						break;
+					}
+				}
+			}
 		}
 	}
 };
 
-struct s_int
+class c_scenario_definition : public c_tag_definition<'scnr', 0x500>
 {
-	int Value;
-
-	void Get(LPCSTR pName)
+public:
+	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
 	{
-		printf("[%s, %i]\n", pName, Value);
+		static std::vector<c_field_definition<c_float_vec3_field>> fields;
+		return fields;
 	}
 
-	void Edit(LPCSTR pName)
+	std::vector<c_field_definition<c_int_field>>        get_int_fields()
 	{
-		Get(pName);
-
-		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%i", &Value))
-		{
-			printf("[%s, %i]\n", pName, Value);
-		}
+		static std::vector<c_field_definition<c_int_field>> fields;
+		fields.push_back({ "map_id", 0xC });
+		return fields;
 	}
 };
 
-
-namespace Scenario
+class c_weapon_definition : public c_tag_definition<'weap', 0x884>
 {
-	struct Definition
+public:
+	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
 	{
-		char m_data[0x884];
+		static std::vector<c_field_definition<c_float_vec3_field>> fields;
+		fields.push_back({ "first_person_weapon_offset", 0x4CC });
+		return fields;
+	}
 
-		bool IsNull()
-		{
-			UINT32 valid = -1;
-			for (size_t i = 0; i < sizeof(m_data); i++)
-				valid += m_data[i] != 0 ? 1 : 0;
-			return valid == -1;
-		}
-
-		template<typename T>
-		T &Get(size_t offset)
-		{
-			return *reinterpret_cast<T *>(&m_data[offset]);
-		}
-	};
-
-	static std::vector<DefinitionMember<s_float_vec3>> float_vec3_members = {
-	};
-
-	static std::vector<DefinitionMember<s_int>>        int_members = {
-		{ "map_id", 0xC }
-	};
-}
-
-namespace Weapon
-{
-	struct Definition
+	std::vector<c_field_definition<c_int_field>>        get_int_fields()
 	{
-		char m_data[0x500];
-
-		bool IsNull()
-		{
-			UINT32 valid = -1;
-			for (size_t i = 0; i < sizeof(m_data); i++)
-				valid += m_data[i] != 0 ? 1 : 0;
-			return valid == -1;
-		}
-
-		template<typename T>
-		T &Get(size_t offset)
-		{
-			return *reinterpret_cast<T *>(&m_data[offset]);
-		}
-	};
-
-	static std::vector<DefinitionMember<s_float_vec3>> float_vec3_members = {
-		{ "first_person_weapon_offset", 0x4CC }
-	};
-
-	static std::vector<DefinitionMember<s_int>>        int_members        = {
-	};
-}
+		static std::vector<c_field_definition<c_int_field>> fields;
+		return fields;
+	}
+};

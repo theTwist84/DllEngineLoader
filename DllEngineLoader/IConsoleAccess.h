@@ -101,7 +101,9 @@ void IConsoleAccess::Commands(std::string Commands)
 		return;
 	}
 
-	if (Commands.find("EngineState") != std::string::npos)
+	if (Commands.find("EngineState") != std::string::npos ||
+		Commands.find("enginestate") != std::string::npos ||
+		Commands.find("engine_state") != std::string::npos)
 	{
 		if (pGameInterface->GetEngine() == nullptr)
 		{
@@ -214,53 +216,22 @@ void IConsoleAccess::Commands(std::string Commands)
 			{
 				showHelp = false;
 
-				Scenario::Definition &rScenarioDefinition = ITagInterface::GetDefinition<Scenario::Definition>(cmd.c_str());
-				if (!rScenarioDefinition.IsNull())
+				auto &rDefinition = ITagInterface::GetDefinition<c_scenario_definition>(cmd.c_str());
+				if (!rDefinition.IsNull())
 				{
-					bool accessing = true;
-					while (accessing)
+					while (true)
 					{
 						printf("%s> ", cmd.c_str());
 						char input_cmd[1024] = {}, input_arg[1024] = {};
 						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
 						{
-							for (auto &definition : Scenario::float_vec3_members)
-							{
-								if (!definition.IsNull())
-								{
-									if (strcmp(input_arg, definition.m_Name.c_str()) == 0)
-									{
-										if (strcmp(input_cmd, "edit") == 0)
-										{
-											rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
-										}
-										if (strcmp(input_cmd, "get") == 0)
-										{
-											rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
-										}
-									}
-								}
-							}
-
-							for (auto &definition : Scenario::int_members)
-							{
-								if (!definition.IsNull())
-								{
-									if (strcmp(input_cmd, "edit") == 0)
-									{
-										rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
-									}
-									if (strcmp(input_cmd, "get") == 0)
-									{
-										rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
-									}
-								}
-							}
+							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_float_vec3_fields());
+							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_int_fields());
 						}
 
 						if (strcmp(input_cmd, "exit") == 0)
 						{
-							accessing = false;
+							break;
 						}
 					}
 				}
@@ -269,53 +240,22 @@ void IConsoleAccess::Commands(std::string Commands)
 			{
 				showHelp = false;
 
-				Weapon::Definition &rWeaponDefinition = ITagInterface::GetDefinition<Weapon::Definition>(cmd.c_str());
-				if (!rWeaponDefinition.IsNull())
+				auto &rDefinition = ITagInterface::GetDefinition<c_weapon_definition>(cmd.c_str());
+				if (!rDefinition.IsNull())
 				{
-					bool accessing = true;
-					while (accessing)
+					while (true)
 					{
 						printf("%s> ", cmd.c_str());
 						char input_cmd[1024] = {}, input_arg[1024] = {};
 						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
 						{
-							for (auto &definition : Weapon::float_vec3_members)
-							{
-								if (!definition.IsNull())
-								{
-									if (strcmp(input_arg, definition.m_Name.c_str()) == 0)
-									{
-										if (strcmp(input_cmd, "edit") == 0)
-										{
-											rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
-										}
-										if (strcmp(input_cmd, "get") == 0)
-										{
-											rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
-										}
-									}
-								}
-							}
-
-							for (auto &definition : Weapon::int_members)
-							{
-								if (!definition.IsNull())
-								{
-									if (strcmp(input_cmd, "edit") == 0)
-									{
-										rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
-									}
-									if (strcmp(input_cmd, "get") == 0)
-									{
-										rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
-									}
-								}
-							}
+							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_float_vec3_fields());
+							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_int_fields());
 						}
 
 						if (strcmp(input_cmd, "exit") == 0)
 						{
-							accessing = false;
+							break;
 						}
 					}
 				}
@@ -346,7 +286,7 @@ void IConsoleAccess::Commands(std::string Commands)
 	{
 		LaunchTitle,
 		EngineState,
-		TagGet,
+		EditGet,
 
 		kCount
 	};
