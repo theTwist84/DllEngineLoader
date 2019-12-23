@@ -214,51 +214,11 @@ void IConsoleAccess::Commands(std::string Commands)
 		{
 			if (cmd.find(".scenario") != std::string::npos)
 			{
-				showHelp = false;
-
-				auto &rDefinition = ITagInterface::GetDefinition<c_scenario_definition>(cmd.c_str());
-				if (!rDefinition.IsNull())
-				{
-					while (true)
-					{
-						printf("%s> ", cmd.c_str());
-						char input_cmd[1024] = {}, input_arg[1024] = {};
-						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
-						{
-							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_float_vec3_fields());
-							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_int_fields());
-						}
-
-						if (strcmp(input_cmd, "exit") == 0)
-						{
-							break;
-						}
-					}
-				}
+				showHelp = ITagInterface::GetDefinition<c_scenario_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
 			}
 			if (cmd.find(".weapon") != std::string::npos)
 			{
-				showHelp = false;
-
-				auto &rDefinition = ITagInterface::GetDefinition<c_weapon_definition>(cmd.c_str());
-				if (!rDefinition.IsNull())
-				{
-					while (true)
-					{
-						printf("%s> ", cmd.c_str());
-						char input_cmd[1024] = {}, input_arg[1024] = {};
-						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
-						{
-							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_float_vec3_fields());
-							rDefinition.field_accessor(input_cmd, input_arg, rDefinition.get_int_fields());
-						}
-
-						if (strcmp(input_cmd, "exit") == 0)
-						{
-							break;
-						}
-					}
-				}
+				showHelp = ITagInterface::GetDefinition<c_weapon_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
 			}
 			if (showHelp)
 			{

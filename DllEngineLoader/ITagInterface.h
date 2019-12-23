@@ -367,20 +367,20 @@ public:
 	}
 
 	template<typename T>
-	void field_accessor(LPCSTR pCommand, LPCSTR pArg, std::vector<c_field_definition<T>> vFields)
+	void field_accessor(LPCSTR pInputCommand, LPCSTR pInputArgument, std::vector<c_field_definition<T>> vFields)
 	{
 		for (auto &field : vFields)
 		{
 			if (!field.IsNull())
 			{
-				if (strcmp(pArg, field.m_Name.c_str()) == 0)
+				if (strcmp(pInputArgument, field.m_Name.c_str()) == 0)
 				{
-					if (strcmp(pCommand, "edit") == 0)
+					if (strcmp(pInputCommand, "edit") == 0)
 					{
 						get_field<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
 						break;
 					}
-					if (strcmp(pCommand, "get") == 0)
+					if (strcmp(pInputCommand, "get") == 0)
 					{
 						get_field<decltype(field.m_Type)>(field.m_Offset).print_field(field.m_Name.c_str());
 						break;
@@ -406,6 +406,30 @@ public:
 		fields.push_back({ "map_id", 0xC });
 		return fields;
 	}
+
+	bool run_access_loop(LPCSTR pTagName)
+	{
+		while (true)
+		{
+			if (!IsNull())
+			{
+				printf("%s> ", pTagName);
+				char input_cmd[1024] = {}, input_arg[1024] = {};
+				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
+				{
+					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
+					field_accessor(input_cmd, input_arg, get_int_fields());
+				}
+
+				if (strcmp(input_cmd, "exit") == 0)
+				{
+					break;
+				}
+			}
+		}
+
+		return false;
+	}
 };
 
 class c_weapon_definition : public c_tag_definition<'weap', 0x884>
@@ -422,5 +446,29 @@ public:
 	{
 		static std::vector<c_field_definition<c_int_field>> fields;
 		return fields;
+	}
+
+	bool run_access_loop(LPCSTR pTagName)
+	{
+		while (true)
+		{
+			if (!IsNull())
+			{
+				printf("%s> ", pTagName);
+				char input_cmd[1024] = {}, input_arg[1024] = {};
+				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
+				{
+					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
+					field_accessor(input_cmd, input_arg, get_int_fields());
+				}
+
+				if (strcmp(input_cmd, "exit") == 0)
+				{
+					break;
+				}
+			}
+		}
+
+		return false;
 	}
 };
