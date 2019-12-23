@@ -77,21 +77,6 @@ void IConsoleAccess::Thread()
 	}
 }
 
-struct real_vector3d
-{
-	float I, J, K;
-
-	void Update(LPCSTR pName)
-	{
-		printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
-		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%f %f %f", &I, &J, &K))
-		{
-			printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
-		}
-	}
-};
-
 // TODO: Support lowercase
 void IConsoleAccess::Commands(std::string Commands)
 {
@@ -154,86 +139,204 @@ void IConsoleAccess::Commands(std::string Commands)
 		return;
 	}
 
-	if (Commands.find("EditTag") != std::string::npos || Commands.find("edit_tag") != std::string::npos)
+	if (Commands.find("EditTag") != std::string::npos ||
+		Commands.find("edittag") != std::string::npos ||
+		Commands.find("edit_tag") != std::string::npos)
 	{
-		bool showHelp = true;
-		if (Commands.find("Scenario") != std::string::npos)
+		std::set<std::pair<std::string, std::string>> tagGroups;
+		for (auto &tagInfo : ITagList::Get())
 		{
-			showHelp = false;
-			auto scenarioDatumHandle = ITagInterface::GetGlobalHandle('scnr');
-			auto scenarioName = ITagList::GetName(scenarioDatumHandle);
-
-			auto pScenarioDefinition = ITagInterface::GetDefinition<char *>(scenarioName);
-
-			if (Commands.find("MapID") != std::string::npos)
-			{
-				printf("[map_id, %u]\n", *reinterpret_cast<UINT32 *>(&pScenarioDefinition[0xC]));
-			}
-
-			return;
+			tagGroups.emplace(std::make_pair(tagInfo.Group, tagInfo.GroupName));
 		}
 
-		if (Commands.find("Weap") != std::string::npos || Commands.find("weap") != std::string::npos)
+		auto list_tag_groups = [tagGroups]()
 		{
-			std::vector<DefinitionUnion> definitions;
-			definitions[0]._real_vector3d = { "first_person_weapon_offset", 0x4CC };
+			WriteLine("enum TagGroup\n{");
 
-			for (auto& cmd : SplitString(Commands.c_str(), " "))
+			for (auto &group : tagGroups)
 			{
-				if (cmd.find(".weapon") != std::string::npos)
+				if (strcmp(group.first.c_str(), (*tagGroups.rbegin()).first.c_str()) == 0)
 				{
-					showHelp = false;
+					WriteLine("\t{ %s, %s }", group.first.c_str(), group.second.c_str());
+				}
+				else
+				{
+					WriteLine("\t{ %s, %s },", group.first.c_str(), group.second.c_str());
+				}
+			}
 
-					WeaponDefinition &rWeaponDefinition = ITagInterface::GetDefinition<WeaponDefinition>(cmd.c_str());
-					if (!rWeaponDefinition.IsNull())
+			WriteLine("};");
+		};
+
+		auto list_tags_in_group = [tagGroups](LPCSTR pGroup)
+		{
+			bool valid = false;
+			for (auto &group : tagGroups)
+			{
+				if (strcmp(group.first.c_str(), pGroup) == 0 || strcmp(group.second.c_str(), pGroup) == 0)
+				{
+					valid = true;
+				}
+			}
+			if (valid)
+			{
+				WriteLine("enum %s\n{", pGroup);
+			}
+
+			for (auto &tagInfo : ITagList::Get())
+			{
+				if (valid)
+				{
+					if (strcmp(tagInfo.Group, pGroup) == 0 || strcmp(tagInfo.GroupName, pGroup) == 0)
 					{
-						printf("%s> ", cmd.c_str());
-						char input_cmd[1024] = {};
-						char input_arg[1024] = {};
-						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && (strcmp(input_cmd, "edit") == 0 && input_arg[0] != 0))
+						if (strcmp(tagInfo.Group, (*ITagList::Get().rbegin()).Group) == 0 || strcmp(tagInfo.GroupName, (*ITagList::Get().rbegin()).GroupName) == 0)
 						{
-							for (auto &definition : definitions)
-							{
-								if (!definition._real_vector3d.IsNull())
-								{
-									if (strcmp(input_arg, definition._real_vector3d.m_Name.c_str()) == 0)
-									{
-										rWeaponDefinition.Get<decltype(definition._real_vector3d.m_Type)>(definition._real_vector3d.m_Offset).Update(definition._real_vector3d.m_Name.c_str());
-									}
-								}
-							}
+							WriteLine("\t%s.%s", tagInfo.Name, tagInfo.GroupName);
+						}
+						else
+						{
+							WriteLine("\t%s.%s,", tagInfo.Name, tagInfo.GroupName);
 						}
 					}
 				}
 			}
 
-			if (showHelp)
+			if (valid)
 			{
-				WriteLine("enum Weapon\n{");
-
-				for (auto& tagInfo : ITagList::Get())
-				{
-					if (tagInfo.Name[0] && strstr(tagInfo.Name, ".weapon") != 0)
-					{
-						WriteLine("\t%s", tagInfo.Name);
-					}
-				}
-
 				WriteLine("};");
 			}
+		};
 
-			return;
+		bool showHelp = true;
+		for (auto &cmd : SplitString(Commands.c_str(), " "))
+		{
+			if (cmd.find(".scenario") != std::string::npos)
+			{
+				showHelp = false;
+
+				Scenario::Definition &rScenarioDefinition = ITagInterface::GetDefinition<Scenario::Definition>(cmd.c_str());
+				if (!rScenarioDefinition.IsNull())
+				{
+					bool accessing = true;
+					while (accessing)
+					{
+						printf("%s> ", cmd.c_str());
+						char input_cmd[1024] = {}, input_arg[1024] = {};
+						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
+						{
+							for (auto &definition : Scenario::float_vec3_members)
+							{
+								if (!definition.IsNull())
+								{
+									if (strcmp(input_arg, definition.m_Name.c_str()) == 0)
+									{
+										if (strcmp(input_cmd, "edit") == 0)
+										{
+											rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
+										}
+										if (strcmp(input_cmd, "get") == 0)
+										{
+											rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
+										}
+									}
+								}
+							}
+
+							for (auto &definition : Scenario::int_members)
+							{
+								if (!definition.IsNull())
+								{
+									if (strcmp(input_cmd, "edit") == 0)
+									{
+										rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
+									}
+									if (strcmp(input_cmd, "get") == 0)
+									{
+										rScenarioDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
+									}
+								}
+							}
+						}
+
+						if (strcmp(input_cmd, "exit") == 0)
+						{
+							accessing = false;
+						}
+					}
+				}
+			}
+			if (cmd.find(".weapon") != std::string::npos)
+			{
+				showHelp = false;
+
+				Weapon::Definition &rWeaponDefinition = ITagInterface::GetDefinition<Weapon::Definition>(cmd.c_str());
+				if (!rWeaponDefinition.IsNull())
+				{
+					bool accessing = true;
+					while (accessing)
+					{
+						printf("%s> ", cmd.c_str());
+						char input_cmd[1024] = {}, input_arg[1024] = {};
+						if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
+						{
+							for (auto &definition : Weapon::float_vec3_members)
+							{
+								if (!definition.IsNull())
+								{
+									if (strcmp(input_arg, definition.m_Name.c_str()) == 0)
+									{
+										if (strcmp(input_cmd, "edit") == 0)
+										{
+											rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
+										}
+										if (strcmp(input_cmd, "get") == 0)
+										{
+											rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
+										}
+									}
+								}
+							}
+
+							for (auto &definition : Weapon::int_members)
+							{
+								if (!definition.IsNull())
+								{
+									if (strcmp(input_cmd, "edit") == 0)
+									{
+										rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Edit(definition.m_Name.c_str());
+									}
+									if (strcmp(input_cmd, "get") == 0)
+									{
+										rWeaponDefinition.Get<decltype(definition.m_Type)>(definition.m_Offset).Get(definition.m_Name.c_str());
+									}
+								}
+							}
+						}
+
+						if (strcmp(input_cmd, "exit") == 0)
+						{
+							accessing = false;
+						}
+					}
+				}
+			}
+			if (showHelp)
+			{
+				for (auto &group : tagGroups)
+				{
+					if (strcmp(group.first.c_str(), cmd.c_str()) == 0 || strcmp(group.second.c_str(), cmd.c_str()) == 0)
+					{
+						showHelp = false;
+
+						list_tags_in_group(group.first.c_str());
+					}
+				}
+			}
 		}
-
 
 		if (showHelp)
 		{
-			WriteLine("enum TagGroup\n{");
-
-			WriteLine("\t%s", ".scnr");
-			WriteLine("\t%s", ".weap");
-
-			WriteLine("};");
+			list_tag_groups();
 		}
 
 		return;

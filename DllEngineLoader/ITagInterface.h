@@ -53,14 +53,18 @@ struct ITagInfo
 {
 	IDatumHandle Handle;
 	char         Name[MAX_PATH];
+	char         Group[5];
+	char         GroupName[65];
 
-	ITagInfo() : Handle(0xFFFFFFFF), Name("")
+	ITagInfo() : Handle(0xFFFFFFFF), Name("null_tag_name"), Group("null"), GroupName("null_tag_group")
 	{
 	}
 
-	ITagInfo(UINT32 datumIndex, LPCSTR pName) : Handle(datumIndex)
+	ITagInfo(UINT32 datumIndex, LPCSTR pName, LPCSTR pGroup, LPCSTR pGroupName) : Handle(datumIndex)
 	{
-		strcpy_s(Name, MAX_PATH, pName);
+		strcpy_s(Name, sizeof(Name), pName);
+		strcpy_s(Group, sizeof(Group), pGroup);
+		strcpy_s(GroupName, sizeof(GroupName), pGroupName);
 	}
 };
 
@@ -227,10 +231,15 @@ void ITagList::FromFile()
 						auto parts = SplitString(line, ",");
 						auto datumIndex = std::stoul(parts[0], 0, 16);
 						auto tagName = parts[1].c_str();
+						auto tagGroup = parts[2].c_str();
+						auto tagGroupName = parts[3].c_str();
 
-						if (datumIndex != ITagList::GetHandle(tagName).AsU32())
+						char tagPath[MAX_PATH] = {};
+						sprintf(tagPath, "%s.%s", tagName, tagGroupName);
+
+						if (datumIndex != ITagList::GetHandle(tagPath).AsU32())
 						{
-							Add({ datumIndex, tagName });
+							Add({ datumIndex, tagName, tagGroup, tagGroupName });
 						}
 					}
 				}
@@ -249,9 +258,10 @@ std::vector<ITagInfo> ITagList::Get()
 
 IDatumHandle ITagList::GetHandle(LPCSTR pName)
 {
+	auto parts = SplitString(pName, ".");
 	for (auto &tag : s_List)
 	{
-		if (strcmp(tag.Name, pName) == 0)
+		if (strcmp(tag.Name, parts[0].c_str()) == 0 && (strcmp(tag.Group, parts[1].c_str()) == 0 || strcmp(tag.GroupName, parts[1].c_str()) == 0))
 		{
 			return tag.Handle;
 		}
@@ -273,25 +283,6 @@ LPCSTR ITagList::GetName(IDatumHandle handle)
 	return "";
 }
 
-struct WeaponDefinition
-{
-	char m_data[0x500];
-
-	bool IsNull()
-	{
-		UINT32 valid = -1;
-		for (size_t i = 0; i < sizeof(m_data); i++)
-			valid += m_data[i] != 0 ? 1 : 0;
-		return valid == -1;
-	}
-
-	template<typename T>
-	T &Get(size_t offset)
-	{
-		return *reinterpret_cast<T *>(&m_data[offset]);
-	}
-};
-
 
 template<typename T>
 struct DefinitionMember
@@ -308,10 +299,103 @@ struct DefinitionMember
 	}
 };
 
-
-union DefinitionUnion
+struct s_float_vec3
 {
-	DefinitionMember<real_vector3d> _real_vector3d;
-	DefinitionMember<float> _float;
-	DefinitionMember<int> _int;
+	float I, J, K;
+
+	void Get(LPCSTR pName)
+	{
+		printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
+	}
+
+	void Edit(LPCSTR pName)
+	{
+		Get(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%f %f %f", &I, &J, &K))
+		{
+			printf("[%s, %.8f %.8f %.8f]\n", pName, I, J, K);
+		}
+	}
 };
+
+struct s_int
+{
+	int Value;
+
+	void Get(LPCSTR pName)
+	{
+		printf("[%s, %i]\n", pName, Value);
+	}
+
+	void Edit(LPCSTR pName)
+	{
+		Get(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%i", &Value))
+		{
+			printf("[%s, %i]\n", pName, Value);
+		}
+	}
+};
+
+
+namespace Scenario
+{
+	struct Definition
+	{
+		char m_data[0x884];
+
+		bool IsNull()
+		{
+			UINT32 valid = -1;
+			for (size_t i = 0; i < sizeof(m_data); i++)
+				valid += m_data[i] != 0 ? 1 : 0;
+			return valid == -1;
+		}
+
+		template<typename T>
+		T &Get(size_t offset)
+		{
+			return *reinterpret_cast<T *>(&m_data[offset]);
+		}
+	};
+
+	static std::vector<DefinitionMember<s_float_vec3>> float_vec3_members = {
+	};
+
+	static std::vector<DefinitionMember<s_int>>        int_members = {
+		{ "map_id", 0xC }
+	};
+}
+
+namespace Weapon
+{
+	struct Definition
+	{
+		char m_data[0x500];
+
+		bool IsNull()
+		{
+			UINT32 valid = -1;
+			for (size_t i = 0; i < sizeof(m_data); i++)
+				valid += m_data[i] != 0 ? 1 : 0;
+			return valid == -1;
+		}
+
+		template<typename T>
+		T &Get(size_t offset)
+		{
+			return *reinterpret_cast<T *>(&m_data[offset]);
+		}
+	};
+
+	static std::vector<DefinitionMember<s_float_vec3>> float_vec3_members = {
+		{ "first_person_weapon_offset", 0x4CC }
+	};
+
+	static std::vector<DefinitionMember<s_int>>        int_members        = {
+	};
+}
