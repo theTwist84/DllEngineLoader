@@ -68,10 +68,14 @@ void IConsoleAccess::Thread()
 	{
 		printf("command> ");
 		char input_cmd[1024] = {}, input_arg[1024] = {};
-		if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_cmd[0] == ':' && input_arg[0] != 0)
+		if (scanf("%s %s", &input_cmd, &input_arg) != 0 && (input_cmd[0] != 0 && input_arg[0] != 0))
 		{
-			for (size_t i = 1; i < 1024; i++)
-				input_cmd[i - 1] = input_cmd[i];
+			if (input_cmd[0] == ':')
+			{
+				for (size_t i = 1; i < 1024; i++)
+					input_cmd[i - 1] = input_cmd[i];
+			}
+
 			Commands(input_cmd, input_arg);
 		}
 	}
@@ -142,7 +146,7 @@ void IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 	if (strcmp(pInputCommand, "EditTag") == 0 ||strcmp(pInputCommand, "edittag") == 0 ||strcmp(pInputCommand, "edit_tag") == 0)
 	{
 		std::set<std::pair<std::string, std::string>> tagGroups;
-		for (auto &tagInfo : ITagList::Get())
+		for (auto &tagInfo : ITagList::GetList())
 		{
 			tagGroups.emplace(std::make_pair(tagInfo.Group, tagInfo.GroupName));
 		}
@@ -151,9 +155,11 @@ void IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		{
 			WriteLine("enum TagGroup\n{");
 
+			auto &last = (*tagGroups.rbegin());
+
 			for (auto &group : tagGroups)
 			{
-				if (strcmp(group.first.c_str(), (*tagGroups.rbegin()).first.c_str()) == 0)
+				if (strcmp(group.first.c_str(), last.first.c_str()) == 0)
 				{
 					WriteLine("\t{ %s, %s }", group.first.c_str(), group.second.c_str());
 				}
@@ -181,13 +187,15 @@ void IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 				WriteLine("enum %s\n{", pGroup);
 			}
 
-			for (auto &tagInfo : ITagList::Get())
+			if (valid)
 			{
-				if (valid)
+				auto last = *ITagList::GetList().rbegin();
+
+				for (auto &tagInfo : ITagList::GetList())
 				{
 					if (strcmp(tagInfo.Group, pGroup) == 0 || strcmp(tagInfo.GroupName, pGroup) == 0)
 					{
-						if (strcmp(tagInfo.Group, (*ITagList::Get().rbegin()).Group) == 0 || strcmp(tagInfo.GroupName, (*ITagList::Get().rbegin()).GroupName) == 0)
+						if (strcmp(tagInfo.Group, last.Group) == 0 || strcmp(tagInfo.GroupName, last.GroupName) == 0)
 						{
 							WriteLine("\t%s.%s", tagInfo.Name, tagInfo.GroupName);
 						}
@@ -206,30 +214,33 @@ void IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		};
 
 		bool showHelp = true;
-		if (strstr(pInputArgument, ".scenario") != 0)
+
+		auto groupName = strstr(pInputArgument, ".") != 0 ? SplitString(pInputArgument, ".")[1] : pInputArgument;
+		if (strcmp(groupName.c_str(), "scenario") == 0)
 		{
 			showHelp = ITagInterface::GetDefinition<c_scenario_definition>(pInputArgument).apply().edit(pInputArgument);
 		}
-		if (strstr(pInputArgument, ".weapon") != 0)
+		if (strcmp(groupName.c_str(), "weapon") == 0)
 		{
 			showHelp = ITagInterface::GetDefinition<c_weapon_definition>(pInputArgument).apply().edit(pInputArgument);
 		}
-		if (strstr(pInputArgument, ".user_interface_shared_globals_definition") != 0)
+		if (strcmp(groupName.c_str(), "user_interface_shared_globals_definition") == 0)
 		{
 			showHelp = ITagInterface::GetDefinition<c_user_interface_shared_globals_definition>(pInputArgument).apply().edit(pInputArgument);
 		}
+
 		if (showHelp)
 		{
 			for (auto &group : tagGroups)
 			{
-				if (strcmp(group.first.c_str(), pInputArgument) == 0 || strcmp(group.second.c_str(), pInputArgument) == 0)
+				if (strcmp(group.first.c_str(), groupName.c_str()) == 0 || strcmp(group.second.c_str(), groupName.c_str()) == 0)
 				{
-					showHelp = false;
-
 					list_tags_in_group(group.first.c_str());
+					showHelp = false;
 				}
 			}
 		}
+
 		if (showHelp)
 		{
 			list_tag_groups();

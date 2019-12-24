@@ -20,6 +20,16 @@ struct IDatumHandle
 
 		return *reinterpret_cast<UINT32 *>(value);
 	}
+
+	INT32 AsI32()
+	{
+		INT16 value[2];
+
+		value[0] = m_Index;
+		value[1] = m_Salt;
+
+		return *reinterpret_cast<INT32 *>(value);
+	}
 };
 
 struct IGlobalTagInstance
@@ -169,10 +179,13 @@ public:
 	static void                  Add(ITagInfo tagInfo);
 	static void                  FromFile();
 
-	static std::vector<ITagInfo> Get();
+	static std::vector<ITagInfo> GetList();
 
 	static IDatumHandle          GetHandle(LPCSTR pName);
 	static LPCSTR                GetName(IDatumHandle handle);
+
+	static ITagInfo              Get(LPCSTR pName);
+	static ITagInfo              Get(IDatumHandle handle);
 
 private:
 	static std::vector<ITagInfo> s_List;
@@ -251,7 +264,7 @@ void ITagList::FromFile()
 	}
 }
 
-std::vector<ITagInfo> ITagList::Get()
+std::vector<ITagInfo> ITagList::GetList()
 {
 	return s_List;
 }
@@ -283,6 +296,109 @@ LPCSTR ITagList::GetName(IDatumHandle handle)
 	return "";
 }
 
+ITagInfo ITagList::Get(LPCSTR pName)
+{
+	auto parts = SplitString(pName, ".");
+	for (auto &tag : s_List)
+	{
+		if (strcmp(tag.Name, parts[0].c_str()) == 0 && (strcmp(tag.Group, parts[1].c_str()) == 0 || strcmp(tag.GroupName, parts[1].c_str()) == 0))
+		{
+			return tag;
+		}
+	}
+
+	return ITagInfo();
+}
+
+ITagInfo ITagList::Get(IDatumHandle handle)
+{
+	for (auto &tag : s_List)
+	{
+		if (tag.Handle.AsU32() == handle.AsU32())
+		{
+			return tag;
+		}
+	}
+
+	return ITagInfo();
+}
+
+class c_tag_reference
+{
+public:
+	void get_field(LPCSTR pName)
+	{
+		auto tag = ITagList::Get(m_index);
+		printf("%s = %s %s.%s\n", pName, tag.Group, tag.Name, tag.GroupName);
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		get_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		char taggroup_buffer[5] = {};
+		char tagname_buffer[MAX_PATH] = {};
+		if (scanf("%s %s", &taggroup_buffer, &tagname_buffer))
+		{
+			memcpy(m_group_tag, taggroup_buffer, 4);
+			m_index = ITagList::GetHandle(tagname_buffer).AsI32();
+			get_field(pName);
+		}
+	}
+
+private:
+	char m_group_tag[4];
+	long : 32;
+	long : 32;
+	long m_index;
+};
+static_assert(sizeof(c_tag_reference) == 0x10, "sizeof(c_tag_reference) != 0x10");
+
+class c_tag_block
+{
+public:
+	void get_field(LPCSTR pName)
+	{
+		for (long i = 0; i < m_count; i++)
+		{
+			printf("%s = 0x%X 0x%X\n", pName, m_address, m_definition_address);
+		}
+	}
+
+	void edit_field(LPCSTR pName)
+	{
+		get_field(pName);
+
+		printf("[%s, Enter new values]: ", pName);
+		if (scanf("%u %u", &m_address, &m_definition_address))
+		{
+			get_field(pName);
+		}
+	}
+
+private:
+	long m_count;
+	unsigned long m_address;
+	unsigned long m_definition_address;
+};
+static_assert(sizeof(c_tag_block) == 0xC, "sizeof(c_tag_block) != 0xC");
+
+struct s_tag_data
+{
+	long size;
+	long stream_flags;
+	long stream_offset;
+	unsigned long address;
+	unsigned long definition_address;
+};
+static_assert(sizeof(s_tag_data) == 0x14, "sizeof(s_tags_tag_data_reference) != 0x14");
+
+struct s_tag_function
+{
+	s_tag_data data;
+};
+static_assert(sizeof(s_tag_function) == 0x14, "sizeof(s_tag_function) != 0x14");
 
 template<typename T>
 class c_field_definition
@@ -305,7 +421,7 @@ class c_int8_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %hhi]\n", pName, m_value);
+		printf("%s = %hhi\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -329,7 +445,7 @@ class c_uint8_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %hhu]\n", pName, m_value);
+		printf("%s = %hhu\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -353,7 +469,7 @@ class c_int16_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %hi]\n", pName, m_value);
+		printf("%s = %hi\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -377,7 +493,7 @@ class c_uint16_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %hu]\n", pName, m_value);
+		printf("%s = %hu\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -401,7 +517,7 @@ class c_int32_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %i]\n", pName, m_value);
+		printf("%s = %i\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -425,7 +541,7 @@ class c_uint32_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %u]\n", pName, m_value);
+		printf("%s = %u\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -449,7 +565,7 @@ class c_int64_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %lli]\n", pName, m_value);
+		printf("%s = %lli\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -473,7 +589,7 @@ class c_uint64_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %llu]\n", pName, m_value);
+		printf("%s = %llu\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -497,7 +613,7 @@ class c_float32_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %f]\n", pName, m_value);
+		printf("%s = %.8f\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -521,7 +637,7 @@ class c_float64_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %lf]\n", pName, m_value);
+		printf("%s = %lf\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -545,7 +661,7 @@ class c_float32_vec3_field
 public:
 	void get_field(LPCSTR pName)
 	{
-		printf("[%s, %f %f %f]\n", pName, m_iValue, m_jValue, m_kValue);
+		printf("%s = %.8f %.8f %.8f\n", pName, m_iValue, m_jValue, m_kValue);
 	}
 
 	void edit_field(LPCSTR pName)
@@ -569,6 +685,12 @@ class c_tag_definition
 {
 public:
 	char   m_data[size];
+
+	INT32 tag_group()
+	{
+		static INT32 Group = group;
+		return Group;
+	}
 
 	bool IsNull()
 	{
@@ -606,6 +728,21 @@ public:
 				}
 			}
 		}
+	}
+
+	std::vector<c_field_definition<c_tag_reference>> &tag_reference_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_tag_reference>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_tag_block>> &tag_block_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_tag_block>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
 	}
 
 	std::vector<c_field_definition<c_int8_field>> &int8_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
@@ -696,6 +833,8 @@ public:
 				char input_cmd[1024] = {}, input_arg[1024] = {};
 				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
 				{
+					fields_accessor(input_cmd, input_arg, tag_reference_field());
+					//fields_accessor(input_cmd, input_arg, tag_block_field()); // unsupported for now, more research required
 					fields_accessor(input_cmd, input_arg, int8_field());
 					fields_accessor(input_cmd, input_arg, uint8_field());
 					fields_accessor(input_cmd, input_arg, int16_field());
@@ -720,7 +859,7 @@ public:
 	}
 };
 
-class c_scenario_definition : public c_tag_definition<'scnr', 0x500>
+class c_scenario_definition : public c_tag_definition<'scnr', 0x884>
 {
 public:
 	c_scenario_definition &apply(bool force = false)
@@ -732,6 +871,8 @@ public:
 			int32_field("campaign_id", 0x8);
 			int32_field("map_id", 0xC);
 			int16_field("campaign_level_index", 0x14);
+			tag_reference_field("performance_throttle_profile", 0x3C);
+			tag_reference_field("performance_throttles", 0x750);
 
 			applied = true;
 		}
@@ -739,7 +880,7 @@ public:
 	}
 };
 
-class c_weapon_definition : public c_tag_definition<'weap', 0x884>
+class c_weapon_definition : public c_tag_definition<'weap', 0x500>
 {
 public:
 	c_weapon_definition &apply(bool force = false)
@@ -747,6 +888,8 @@ public:
 		static bool applied = false;
 		if (!applied || force)
 		{
+			tag_reference_field("Model", 0x64);
+			tag_block_field("attachments", 0x108);
 			float32_vec3_field("first_person_weapon_offset", 0x4CC);
 
 			applied = true;
