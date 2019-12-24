@@ -66,7 +66,7 @@ void IConsoleAccess::Thread()
 	auto pGameInterface = s_pGameInterface;
 	while (pGameInterface)
 	{
-		printf("tags> ");
+		printf("command> ");
 		char input_cmd[1024] = {}, input_arg[1024] = {};
 		if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_cmd[0] == ':' && input_arg[0] != 0)
 		{

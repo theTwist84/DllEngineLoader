@@ -608,77 +608,77 @@ public:
 		}
 	}
 
-	std::vector<c_field_definition<c_int8_field>> &int8_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_int8_field>> &int8_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_int8_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_uint8_field>> &uint8_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_uint8_field>> &uint8_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_uint8_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_int16_field>> &int16_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_int16_field>> &int16_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_int16_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_uint16_field>> &uint16_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_uint16_field>> &uint16_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_uint16_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_int32_field>> &int32_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_int32_field>> &int32_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_int32_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_uint32_field>> &uint32_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_uint32_field>> &uint32_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_uint32_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_int64_field>> &int64_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_int64_field>> &int64_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_int64_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_uint64_field>> &uint64_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_uint64_field>> &uint64_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_uint64_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_float32_field>> &float32_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_float32_field>> &float32_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_float32_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_float64_field>> &float64_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_float64_field>> &float64_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_float64_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
 			fields.push_back({ pFieldName, fieldOffset });
 		return fields;
 	}
-	std::vector<c_field_definition<c_float32_vec3_field>> &float32_vec3_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	std::vector<c_field_definition<c_float32_vec3_field>> &float32_vec3_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
 	{
 		static std::vector<c_field_definition<c_float32_vec3_field>> fields;
 		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
@@ -696,17 +696,17 @@ public:
 				char input_cmd[1024] = {}, input_arg[1024] = {};
 				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
 				{
-					fields_accessor(input_cmd, input_arg, int8_fields());
-					fields_accessor(input_cmd, input_arg, uint8_fields());
-					fields_accessor(input_cmd, input_arg, int16_fields());
-					fields_accessor(input_cmd, input_arg, uint16_fields());
-					fields_accessor(input_cmd, input_arg, int32_fields());
-					fields_accessor(input_cmd, input_arg, uint32_fields());
-					fields_accessor(input_cmd, input_arg, int64_fields());
-					fields_accessor(input_cmd, input_arg, uint64_fields());
-					fields_accessor(input_cmd, input_arg, float32_fields());
-					fields_accessor(input_cmd, input_arg, float64_fields());
-					fields_accessor(input_cmd, input_arg, float32_vec3_fields());
+					fields_accessor(input_cmd, input_arg, int8_field());
+					fields_accessor(input_cmd, input_arg, uint8_field());
+					fields_accessor(input_cmd, input_arg, int16_field());
+					fields_accessor(input_cmd, input_arg, uint16_field());
+					fields_accessor(input_cmd, input_arg, int32_field());
+					fields_accessor(input_cmd, input_arg, uint32_field());
+					fields_accessor(input_cmd, input_arg, int64_field());
+					fields_accessor(input_cmd, input_arg, uint64_field());
+					fields_accessor(input_cmd, input_arg, float32_field());
+					fields_accessor(input_cmd, input_arg, float64_field());
+					fields_accessor(input_cmd, input_arg, float32_vec3_field());
 				}
 
 				if (strcmp(input_cmd, "exit") == 0)
@@ -728,10 +728,10 @@ public:
 		static bool applied = false;
 		if (!applied || force)
 		{
-			int16_fields("map_type", 0x0);
-			int32_fields("campaign_id", 0x8);
-			int32_fields("map_id", 0xC);
-			int16_fields("campaign_level_index", 0x14);
+			int16_field("map_type", 0x0);
+			int32_field("campaign_id", 0x8);
+			int32_field("map_id", 0xC);
+			int16_field("campaign_level_index", 0x14);
 
 			applied = true;
 		}
@@ -747,7 +747,7 @@ public:
 		static bool applied = false;
 		if (!applied || force)
 		{
-			float32_vec3_fields("first_person_weapon_offset", 0x4CC);
+			float32_vec3_field("first_person_weapon_offset", 0x4CC);
 
 			applied = true;
 		}
@@ -763,10 +763,10 @@ public:
 		static bool applied = false;
 		if (!applied || force)
 		{
-			float32_fields("near_clip_plane_distance", 0x4);
-			float32_fields("projection_plane_distance", 0x8);
-			float32_fields("far_clip_plane_distance", 0xC);
-			int32_fields("music_fade_time", 0x70);
+			float32_field("near_clip_plane_distance", 0x4);
+			float32_field("projection_plane_distance", 0x8);
+			float32_field("far_clip_plane_distance", 0xC);
+			int32_field("music_fade_time", 0x70);
 
 			applied = true;
 		}
