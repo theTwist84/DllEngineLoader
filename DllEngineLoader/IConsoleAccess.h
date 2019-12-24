@@ -16,7 +16,7 @@ private:
 	static IGameInterface *s_pGameInterface;
 
 	static void Thread();
-	static void Commands(std::string);
+	static void Commands(LPCSTR, LPCSTR);
 };
 
 HANDLE          IConsoleAccess::s_threadHandle   = 0;
@@ -66,29 +66,29 @@ void IConsoleAccess::Thread()
 	auto pGameInterface = s_pGameInterface;
 	while (pGameInterface)
 	{
-		static std::string input = "";
-		if (std::getline(std::cin, input, '\n'))
+		printf("tags> ");
+		char input_cmd[1024] = {}, input_arg[1024] = {};
+		if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_cmd[0] == ':' && input_arg[0] != 0)
 		{
-			if (input.find_first_of(":") == 0)
-			{
-				Commands(input);
-			}
+			for (size_t i = 1; i < 1024; i++)
+				input_cmd[i - 1] = input_cmd[i];
+			Commands(input_cmd, input_arg);
 		}
 	}
 }
 
 // TODO: Support lowercase
-void IConsoleAccess::Commands(std::string Commands)
+void IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 {
 	auto pGameInterface = s_pGameInterface;
-	if (Commands.find("cls") != std::string::npos)
+	if (strcmp(pInputCommand, "ClearScreen") == 0 || strcmp(pInputCommand, "clearscreen") == 0 || strcmp(pInputCommand, "clear_screen") == 0 || strcmp(pInputCommand, "cls") == 0)
 	{
 		std::system("CLS");
 
 		return;
 	}
 
-	if (Commands.find("LaunchTitle") != std::string::npos)
+	if (strcmp(pInputCommand, "LaunchTitle") == 0 || strcmp(pInputCommand, "launchtitle") == 0 || strcmp(pInputCommand, "launch_title") == 0)
 	{
 		bool showHelp = true;
 		if (showHelp)
@@ -101,9 +101,7 @@ void IConsoleAccess::Commands(std::string Commands)
 		return;
 	}
 
-	if (Commands.find("EngineState") != std::string::npos ||
-		Commands.find("enginestate") != std::string::npos ||
-		Commands.find("engine_state") != std::string::npos)
+	if (strcmp(pInputCommand, "EngineState") == 0 || strcmp(pInputCommand, "enginestate") == 0 || strcmp(pInputCommand, "engine_state") == 0)
 	{
 		if (pGameInterface->GetEngine() == nullptr)
 		{
@@ -117,7 +115,7 @@ void IConsoleAccess::Commands(std::string Commands)
 		{
 			auto engineState = static_cast<EngineState>(i);
 			auto engineStateStr = EngineStateFromID(engineState);
-			if (Commands.find(engineStateStr) != std::string::npos)
+			if (strcmp(pInputArgument, engineStateStr) == 0)
 			{
 				showHelp = false;
 				pGameInterface->GetEngine()->UpdateEngineState(engineState);
@@ -141,9 +139,7 @@ void IConsoleAccess::Commands(std::string Commands)
 		return;
 	}
 
-	if (Commands.find("EditTag") != std::string::npos ||
-		Commands.find("edittag") != std::string::npos ||
-		Commands.find("edit_tag") != std::string::npos)
+	if (strcmp(pInputCommand, "EditTag") == 0 ||strcmp(pInputCommand, "edittag") == 0 ||strcmp(pInputCommand, "edit_tag") == 0)
 	{
 		std::set<std::pair<std::string, std::string>> tagGroups;
 		for (auto &tagInfo : ITagList::Get())
@@ -210,34 +206,30 @@ void IConsoleAccess::Commands(std::string Commands)
 		};
 
 		bool showHelp = true;
-		for (auto &cmd : SplitString(Commands.c_str(), " "))
+		if (strstr(pInputArgument, ".scenario") != 0)
 		{
-			if (cmd.find(".scenario") != std::string::npos)
+			showHelp = ITagInterface::GetDefinition<c_scenario_definition>(pInputArgument).apply().edit(pInputArgument);
+		}
+		if (strstr(pInputArgument, ".weapon") != 0)
+		{
+			showHelp = ITagInterface::GetDefinition<c_weapon_definition>(pInputArgument).apply().edit(pInputArgument);
+		}
+		if (strstr(pInputArgument, ".user_interface_shared_globals_definition") != 0)
+		{
+			showHelp = ITagInterface::GetDefinition<c_user_interface_shared_globals_definition>(pInputArgument).apply().edit(pInputArgument);
+		}
+		if (showHelp)
+		{
+			for (auto &group : tagGroups)
 			{
-				showHelp = ITagInterface::GetDefinition<c_scenario_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
-			}
-			if (cmd.find(".weapon") != std::string::npos)
-			{
-				showHelp = ITagInterface::GetDefinition<c_weapon_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
-			}
-			if (cmd.find(".user_interface_shared_globals_definition") != std::string::npos)
-			{
-				showHelp = ITagInterface::GetDefinition<c_user_interface_shared_globals_definition>(cmd.c_str()).run_access_loop(cmd.c_str());
-			}
-			if (showHelp)
-			{
-				for (auto &group : tagGroups)
+				if (strcmp(group.first.c_str(), pInputArgument) == 0 || strcmp(group.second.c_str(), pInputArgument) == 0)
 				{
-					if (strcmp(group.first.c_str(), cmd.c_str()) == 0 || strcmp(group.second.c_str(), cmd.c_str()) == 0)
-					{
-						showHelp = false;
+					showHelp = false;
 
-						list_tags_in_group(group.first.c_str());
-					}
+					list_tags_in_group(group.first.c_str());
 				}
 			}
 		}
-
 		if (showHelp)
 		{
 			list_tag_groups();

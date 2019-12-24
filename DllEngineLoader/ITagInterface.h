@@ -303,255 +303,266 @@ public:
 class c_int8_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %hhi]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%hhi", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	char m_value;
 };
+static_assert(sizeof(c_int8_field) == 0x1, "sizeof(c_int8_field) != 0x1");
 
 class c_uint8_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %hhu]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%hhu", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	unsigned char m_value;
 };
+static_assert(sizeof(c_uint8_field) == 0x1, "sizeof(c_uint8_field) != 0x1");
 
 class c_int16_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %hi]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%hi", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	short m_value;
 };
+static_assert(sizeof(c_int16_field) == 0x2, "sizeof(c_int16_field) != 0x2");
 
 class c_uint16_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %hu]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%hu", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	unsigned short m_value;
 };
+static_assert(sizeof(c_uint16_field) == 0x2, "sizeof(c_uint16_field) != 0x2");
 
 class c_int32_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %i]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%i", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	int m_value;
 };
+static_assert(sizeof(c_int32_field) == 0x4, "sizeof(c_int32_field) != 0x4");
 
 class c_uint32_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %u]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%u", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	unsigned long m_value;
 };
+static_assert(sizeof(c_uint32_field) == 0x4, "sizeof(c_uint32_field) != 0x4");
 
 class c_int64_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %lli]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%lli", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	long long m_value;
 };
+static_assert(sizeof(c_int64_field) == 0x8, "sizeof(c_int64_field) != 0x8");
 
 class c_uint64_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %llu]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%llu", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	unsigned long long m_value;
 };
+static_assert(sizeof(c_uint64_field) == 0x8, "sizeof(c_uint64_field) != 0x8");
 
 class c_float32_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %f]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%f", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	float m_value;
 };
+static_assert(sizeof(c_float32_field) == 0x4, "sizeof(c_float32_field) != 0x4");
 
 class c_float64_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %lf]\n", pName, m_value);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%lf", &m_value))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	double m_value;
 };
+static_assert(sizeof(c_float64_field) == 0x8, "sizeof(c_float64_field) != 0x8");
 
-class c_float_vec3_field
+class c_float32_vec3_field
 {
 public:
-	void print_field(LPCSTR pName)
+	void get_field(LPCSTR pName)
 	{
 		printf("[%s, %f %f %f]\n", pName, m_iValue, m_jValue, m_kValue);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
-		print_field(pName);
+		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		if (scanf("%f %f %f", &m_iValue, &m_jValue, &m_kValue))
 		{
-			print_field(pName);
+			get_field(pName);
 		}
 	}
 
 private:
 	float m_iValue, m_jValue, m_kValue;
 };
+static_assert(sizeof(c_float32_vec3_field) == 0xC, "sizeof(c_float32_vec3_field) != 0xC");
 
 template<INT32 group, size_t size>
 class c_tag_definition
@@ -568,13 +579,13 @@ public:
 	}
 
 	template<typename T>
-	T &get_field(size_t offset)
+	T &field_accessor(size_t offset)
 	{
 		return *reinterpret_cast<T *>(&m_data[offset]);
 	}
 
 	template<typename T>
-	void field_accessor(LPCSTR pInputCommand, LPCSTR pInputArgument, std::vector<c_field_definition<T>> vFields)
+	void fields_accessor(LPCSTR pInputCommand, LPCSTR pInputArgument, std::vector<c_field_definition<T>> vFields)
 	{
 		for (auto &field : vFields)
 		{
@@ -584,304 +595,181 @@ public:
 				{
 					if (strcmp(pInputCommand, "edit") == 0)
 					{
-						get_field<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
+						field_accessor<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
 						break;
 					}
 					if (strcmp(pInputCommand, "get") == 0)
 					{
-						get_field<decltype(field.m_Type)>(field.m_Offset).print_field(field.m_Name.c_str());
+						field_accessor<decltype(field.m_Type)>(field.m_Offset).get_field(field.m_Name.c_str());
 						break;
 					}
 				}
 			}
 		}
+	}
+
+	std::vector<c_field_definition<c_int8_field>> &int8_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_int8_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint8_field>> &uint8_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_uint8_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_int16_field>> &int16_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_int16_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint16_field>> &uint16_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_uint16_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_int32_field>> &int32_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_int32_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint32_field>> &uint32_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_uint32_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_int64_field>> &int64_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_int64_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_uint64_field>> &uint64_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_uint64_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_float32_field>> &float32_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_float32_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_float64_field>> &float64_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_float64_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+	std::vector<c_field_definition<c_float32_vec3_field>> &float32_vec3_fields(LPCSTR pFieldName = "", size_t fieldOffset = -1)
+	{
+		static std::vector<c_field_definition<c_float32_vec3_field>> fields;
+		if (fieldOffset >= 0 && fieldOffset < sizeof(m_data))
+			fields.push_back({ pFieldName, fieldOffset });
+		return fields;
+	}
+
+	bool edit(LPCSTR pTagName)
+	{
+		while (true)
+		{
+			if (!IsNull())
+			{
+				printf("%s> ", pTagName);
+				char input_cmd[1024] = {}, input_arg[1024] = {};
+				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
+				{
+					fields_accessor(input_cmd, input_arg, int8_fields());
+					fields_accessor(input_cmd, input_arg, uint8_fields());
+					fields_accessor(input_cmd, input_arg, int16_fields());
+					fields_accessor(input_cmd, input_arg, uint16_fields());
+					fields_accessor(input_cmd, input_arg, int32_fields());
+					fields_accessor(input_cmd, input_arg, uint32_fields());
+					fields_accessor(input_cmd, input_arg, int64_fields());
+					fields_accessor(input_cmd, input_arg, uint64_fields());
+					fields_accessor(input_cmd, input_arg, float32_fields());
+					fields_accessor(input_cmd, input_arg, float64_fields());
+					fields_accessor(input_cmd, input_arg, float32_vec3_fields());
+				}
+
+				if (strcmp(input_cmd, "exit") == 0)
+				{
+					break;
+				}
+			}
+		}
+
+		return false;
 	}
 };
 
 class c_scenario_definition : public c_tag_definition<'scnr', 0x500>
 {
 public:
-	std::vector<c_field_definition<c_int8_field>>       get_int8_fields()
+	c_scenario_definition &apply(bool force = false)
 	{
-		static std::vector<c_field_definition<c_int8_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint8_field>>      get_uint8_fields()
-	{
-		static std::vector<c_field_definition<c_uint8_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int16_field>>      get_int16_fields()
-	{
-		static std::vector<c_field_definition<c_int16_field>> fields;
-		fields.push_back({ "map_type", 0x0 });
-		fields.push_back({ "campaign_level_index", 0x14 });
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint16_field>>     get_uint16_fields()
-	{
-		static std::vector<c_field_definition<c_uint16_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int32_field>>      get_int32_fields()
-	{
-		static std::vector<c_field_definition<c_int32_field>> fields;
-		fields.push_back({ "campaign_id", 0x8 });
-		fields.push_back({ "map_id", 0xC });
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint32_field>>     get_uint32_fields()
-	{
-		static std::vector<c_field_definition<c_uint32_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int64_field>>      get_int64_fields()
-	{
-		static std::vector<c_field_definition<c_int64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint64_field>>     get_uint64_fields()
-	{
-		static std::vector<c_field_definition<c_uint64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float32_field>>    get_float32_fields()
-	{
-		static std::vector<c_field_definition<c_float32_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float64_field>>    get_float64_fields()
-	{
-		static std::vector<c_field_definition<c_float64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
-	{
-		static std::vector<c_field_definition<c_float_vec3_field>> fields;
-		return fields;
-	}
-
-	bool run_access_loop(LPCSTR pTagName)
-	{
-		while (true)
+		static bool applied = false;
+		if (!applied || force)
 		{
-			if (!IsNull())
-			{
-				printf("%s> ", pTagName);
-				char input_cmd[1024] = {}, input_arg[1024] = {};
-				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
-				{
-					field_accessor(input_cmd, input_arg, get_int8_fields());
-					field_accessor(input_cmd, input_arg, get_uint8_fields());
-					field_accessor(input_cmd, input_arg, get_int16_fields());
-					field_accessor(input_cmd, input_arg, get_uint16_fields());
-					field_accessor(input_cmd, input_arg, get_int32_fields());
-					field_accessor(input_cmd, input_arg, get_uint32_fields());
-					field_accessor(input_cmd, input_arg, get_int64_fields());
-					field_accessor(input_cmd, input_arg, get_uint64_fields());
-					field_accessor(input_cmd, input_arg, get_float32_fields());
-					field_accessor(input_cmd, input_arg, get_float64_fields());
-					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
-				}
+			int16_fields("map_type", 0x0);
+			int32_fields("campaign_id", 0x8);
+			int32_fields("map_id", 0xC);
+			int16_fields("campaign_level_index", 0x14);
 
-				if (strcmp(input_cmd, "exit") == 0)
-				{
-					break;
-				}
-			}
+			applied = true;
 		}
-
-		return false;
+		return *this;
 	}
 };
 
 class c_weapon_definition : public c_tag_definition<'weap', 0x884>
 {
 public:
-	std::vector<c_field_definition<c_int8_field>>       get_int8_fields()
+	c_weapon_definition &apply(bool force = false)
 	{
-		static std::vector<c_field_definition<c_int8_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint8_field>>      get_uint8_fields()
-	{
-		static std::vector<c_field_definition<c_uint8_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int16_field>>      get_int16_fields()
-	{
-		static std::vector<c_field_definition<c_int16_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint16_field>>     get_uint16_fields()
-	{
-		static std::vector<c_field_definition<c_uint16_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int32_field>>      get_int32_fields()
-	{
-		static std::vector<c_field_definition<c_int32_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint32_field>>     get_uint32_fields()
-	{
-		static std::vector<c_field_definition<c_uint32_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int64_field>>      get_int64_fields()
-	{
-		static std::vector<c_field_definition<c_int64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint64_field>>     get_uint64_fields()
-	{
-		static std::vector<c_field_definition<c_uint64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float32_field>>    get_float32_fields()
-	{
-		static std::vector<c_field_definition<c_float32_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float64_field>>    get_float64_fields()
-	{
-		static std::vector<c_field_definition<c_float64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
-	{
-		static std::vector<c_field_definition<c_float_vec3_field>> fields;
-		fields.push_back({ "first_person_weapon_offset", 0x4CC });
-		return fields;
-	}
-
-	bool run_access_loop(LPCSTR pTagName)
-	{
-		while (true)
+		static bool applied = false;
+		if (!applied || force)
 		{
-			if (!IsNull())
-			{
-				printf("%s> ", pTagName);
-				char input_cmd[1024] = {}, input_arg[1024] = {};
-				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
-				{
-					field_accessor(input_cmd, input_arg, get_int8_fields());
-					field_accessor(input_cmd, input_arg, get_uint8_fields());
-					field_accessor(input_cmd, input_arg, get_int16_fields());
-					field_accessor(input_cmd, input_arg, get_uint16_fields());
-					field_accessor(input_cmd, input_arg, get_int32_fields());
-					field_accessor(input_cmd, input_arg, get_uint32_fields());
-					field_accessor(input_cmd, input_arg, get_int64_fields());
-					field_accessor(input_cmd, input_arg, get_uint64_fields());
-					field_accessor(input_cmd, input_arg, get_float32_fields());
-					field_accessor(input_cmd, input_arg, get_float64_fields());
-					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
-				}
+			float32_vec3_fields("first_person_weapon_offset", 0x4CC);
 
-				if (strcmp(input_cmd, "exit") == 0)
-				{
-					break;
-				}
-			}
+			applied = true;
 		}
-
-		return false;
+		return *this;
 	}
 };
 
 class c_user_interface_shared_globals_definition : public c_tag_definition<'wigl', 0x174>
 {
 public:
-	std::vector<c_field_definition<c_int8_field>>       get_int8_fields()
+	c_user_interface_shared_globals_definition &apply(bool force = false)
 	{
-		static std::vector<c_field_definition<c_int8_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint8_field>>      get_uint8_fields()
-	{
-		static std::vector<c_field_definition<c_uint8_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int16_field>>      get_int16_fields()
-	{
-		static std::vector<c_field_definition<c_int16_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint16_field>>     get_uint16_fields()
-	{
-		static std::vector<c_field_definition<c_uint16_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int32_field>>      get_int32_fields()
-	{
-		static std::vector<c_field_definition<c_int32_field>> fields;
-		fields.push_back({ "music_fade_time", 0x70 });
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint32_field>>     get_uint32_fields()
-	{
-		static std::vector<c_field_definition<c_uint32_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_int64_field>>      get_int64_fields()
-	{
-		static std::vector<c_field_definition<c_int64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_uint64_field>>     get_uint64_fields()
-	{
-		static std::vector<c_field_definition<c_uint64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float32_field>>    get_float32_fields()
-	{
-		static std::vector<c_field_definition<c_float32_field>> fields;
-		fields.push_back({ "near_clip_plane_distance", 0x4 });
-		fields.push_back({ "projection_plane_distance", 0x8 });
-		fields.push_back({ "far_clip_plane_distance", 0xC });
-		return fields;
-	}
-	std::vector<c_field_definition<c_float64_field>>    get_float64_fields()
-	{
-		static std::vector<c_field_definition<c_float64_field>> fields;
-		return fields;
-	}
-	std::vector<c_field_definition<c_float_vec3_field>> get_float_vec3_fields()
-	{
-		static std::vector<c_field_definition<c_float_vec3_field>> fields;
-		return fields;
-	}
-
-	bool run_access_loop(LPCSTR pTagName)
-	{
-		while (true)
+		static bool applied = false;
+		if (!applied || force)
 		{
-			if (!IsNull())
-			{
-				printf("%s> ", pTagName);
-				char input_cmd[1024] = {}, input_arg[1024] = {};
-				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
-				{
-					field_accessor(input_cmd, input_arg, get_int8_fields());
-					field_accessor(input_cmd, input_arg, get_uint8_fields());
-					field_accessor(input_cmd, input_arg, get_int16_fields());
-					field_accessor(input_cmd, input_arg, get_uint16_fields());
-					field_accessor(input_cmd, input_arg, get_int32_fields());
-					field_accessor(input_cmd, input_arg, get_uint32_fields());
-					field_accessor(input_cmd, input_arg, get_int64_fields());
-					field_accessor(input_cmd, input_arg, get_uint64_fields());
-					field_accessor(input_cmd, input_arg, get_float32_fields());
-					field_accessor(input_cmd, input_arg, get_float64_fields());
-					field_accessor(input_cmd, input_arg, get_float_vec3_fields());
-				}
+			float32_fields("near_clip_plane_distance", 0x4);
+			float32_fields("projection_plane_distance", 0x8);
+			float32_fields("far_clip_plane_distance", 0xC);
+			int32_fields("music_fade_time", 0x70);
 
-				if (strcmp(input_cmd, "exit") == 0)
-				{
-					break;
-				}
-			}
+			applied = true;
 		}
-
-		return false;
+		return *this;
 	}
 };
