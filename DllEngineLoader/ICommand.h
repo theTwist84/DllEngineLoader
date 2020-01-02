@@ -10,7 +10,7 @@ public:
 	bool Match(std::string Command)
 	{
 		for (const std::string &name : Names)
-			if (strcmp(Command.c_str(), name.c_str()) == 0)
+			if (strcmp(StringToLower(Command).c_str(), StringToLower(name).c_str()) == 0)
 				return true;
 		return false;
 	}

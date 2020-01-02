@@ -1,8 +1,10 @@
 #pragma once
 
 #include <windows.h>
+#include <algorithm>
 #include <atomic>
 #include <cassert>
+#include <cctype>
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
@@ -94,6 +96,23 @@ std::vector<std::string> SplitString(std::string phrase, LPCSTR delimiter)
 	}
 	list.push_back(s.c_str());
 	return list;
+}
+
+std::string StringToLower(std::string string)
+{
+	std::string str(1, tolower(string[0]));
+
+	for (auto it = string.begin() + 1; it != string.end(); ++it)
+	{
+		if (isupper(*it) && *(it - 1) != '_' && islower(*(it - 1))) {
+			str += "_";
+		}
+		str += *it;
+	}
+
+	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+
+	return str;
 }
 
 bool g_running = false;

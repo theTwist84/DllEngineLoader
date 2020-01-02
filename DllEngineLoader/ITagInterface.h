@@ -1072,17 +1072,17 @@ public:
 			{
 				if (strcmp(pInputArgument, field.m_Name.c_str()) == 0)
 				{
-					if (ICommand({ "Get", "get" }).Match(pInputCommand))
+					if (ICommand({ "Get" }).Match(pInputCommand))
 					{
 						field_accessor<decltype(field.m_Type)>(field.m_Offset).get_field(field.m_Name.c_str());
 						break;
 					}
-					if (ICommand({ "Edit", "edit" }).Match(pInputCommand))
+					if (ICommand({ "Edit" }).Match(pInputCommand))
 					{
 						field_accessor<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
 						break;
 					}
-					if (ICommand({ "Reset", "reset" }).Match(pInputCommand))
+					if (ICommand({ "Reset" }).Match(pInputCommand))
 					{
 						field_accessor<decltype(field.m_Type)>(field.m_Offset).reset_field(field.m_Name.c_str());
 						break;
@@ -1120,21 +1120,49 @@ public:
 				LPCSTR pInputCommand = inputs.size() >= 1 ? inputs[0].c_str() : "\0";
 				LPCSTR pInputArgument = inputs.size() >= 2 ? inputs[1].c_str() : "\0";
 
-				if (ICommand({ "Exit", "exit" }).Match(pInputCommand))
+				if (ICommand({ "Exit" }).Match(pInputCommand))
 					break;
 
-				fields_accessor(pInputCommand, pInputArgument, tag_reference_field());
-				fields_accessor(pInputCommand, pInputArgument, int8_field());
-				fields_accessor(pInputCommand, pInputArgument, uint8_field());
-				fields_accessor(pInputCommand, pInputArgument, int16_field());
-				fields_accessor(pInputCommand, pInputArgument, uint16_field());
-				fields_accessor(pInputCommand, pInputArgument, int32_field());
-				fields_accessor(pInputCommand, pInputArgument, uint32_field());
-				fields_accessor(pInputCommand, pInputArgument, int64_field());
-				fields_accessor(pInputCommand, pInputArgument, uint64_field());
-				fields_accessor(pInputCommand, pInputArgument, float32_field());
-				fields_accessor(pInputCommand, pInputArgument, float64_field());
-				fields_accessor(pInputCommand, pInputArgument, float32_vec3_field());
+				if (ICommand({ "Get", "Edit", "Reset" }).Match(pInputCommand))
+				{
+					fields_accessor(pInputCommand, pInputArgument, tag_reference_field());
+					fields_accessor(pInputCommand, pInputArgument, int8_field());
+					fields_accessor(pInputCommand, pInputArgument, uint8_field());
+					fields_accessor(pInputCommand, pInputArgument, int16_field());
+					fields_accessor(pInputCommand, pInputArgument, uint16_field());
+					fields_accessor(pInputCommand, pInputArgument, int32_field());
+					fields_accessor(pInputCommand, pInputArgument, uint32_field());
+					fields_accessor(pInputCommand, pInputArgument, int64_field());
+					fields_accessor(pInputCommand, pInputArgument, uint64_field());
+					fields_accessor(pInputCommand, pInputArgument, float32_field());
+					fields_accessor(pInputCommand, pInputArgument, float64_field());
+					fields_accessor(pInputCommand, pInputArgument, float32_vec3_field());
+
+					continue;
+				}
+
+				enum class TagCommand : int
+				{
+					Get,
+					Edit,
+					Reset,
+
+					kCount
+				};
+				LPCSTR commands[static_cast<int>(TagCommand::kCount)] =
+				{
+					"Get",
+					"Edit",
+					"Reset"
+				};
+				size_t commandCount = static_cast<size_t>(TagCommand::kCount);
+
+				printf("enum TagCommand\n{\n");
+				for (size_t i = 0; i < commandCount; i++)
+				{
+					printf((i == commandCount - 1 ? "\t%s\n" : "\t%s,\n"), commands[i]);
+				}
+				printf("};\n");
 			}
 		}
 

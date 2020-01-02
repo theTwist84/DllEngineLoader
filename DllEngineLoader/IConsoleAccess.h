@@ -81,25 +81,24 @@ void IConsoleAccess::Thread()
 		LPCSTR pInputCommand = inputs.size() >= 1 ? inputs[0].c_str() : "\0";
 		LPCSTR pInputArgument = inputs.size() >= 2 ? inputs[1].c_str() : "\0";
 
-		if (ICommand({ "Exit", "exit" }).Match(pInputCommand))
+		if (ICommand({ "Exit" }).Match(pInputCommand))
 			exit(0);
 
 		Commands(pInputCommand, pInputArgument);
 	}
 }
 
-// TODO: Support lowercase
 bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 {
 	IGameInterface *pGameInterface = s_pGameInterface;
 
-	if (ICommand({ "ClearScreen", "clearscreen", "clear_screen", "cls" }).Match(pInputCommand))
+	if (ICommand({ "ClearScreen", "cls" }).Match(pInputCommand))
 	{
 		std::system("CLS");
 		return true;
 	}
 
-	if (ICommand({ "LaunchTitle", "launchtitle", "launch_title" }).Match(pInputCommand))
+	if (ICommand({ "LaunchTitle" }).Match(pInputCommand))
 	{
 		bool showHelp = true;
 		if (showHelp)
@@ -111,7 +110,7 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		return false;
 	}
 
-	if (ICommand({ "EngineState", "enginestate", "engine_state" }).Match(pInputCommand))
+	if (ICommand({ "EngineState" }).Match(pInputCommand))
 	{
 		if (pGameInterface->GetEngine() == nullptr)
 		{
@@ -125,7 +124,7 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		{
 			EngineState engineState = static_cast<EngineState>(i);
 			LPCSTR engineStateStr = EngineStateFromID(engineState);
-			if (strcmp(pInputArgument, engineStateStr) == 0)
+			if (ICommand({ engineStateStr }).Match(pInputArgument))
 			{
 				showHelp = false;
 				pGameInterface->GetEngine()->UpdateEngineState(engineState);
@@ -148,10 +147,10 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		return true;
 	}
 
-	if (ICommand({ "EditTag", "edittag", "edit_tag" }).Match(pInputCommand))
+	if (ICommand({ "EditTag" }).Match(pInputCommand))
 		return EditTag(pInputArgument);
 
-	enum class Commands : int
+	enum class Command : int
 	{
 		LaunchTitle,
 		EngineState,
@@ -159,13 +158,13 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 
 		kCount
 	};
-	LPCSTR commands[static_cast<int>(Commands::kCount)] =
+	LPCSTR commands[static_cast<int>(Command::kCount)] =
 	{
 		"LaunchTitle",
 		"EngineState",
 		"EditTag"
 	};
-	size_t commandCount = static_cast<size_t>(Commands::kCount);
+	size_t commandCount = static_cast<size_t>(Command::kCount);
 
 	WriteLine("enum Command\n{");
 	for (size_t i = 0; i < commandCount; i++)
