@@ -136,8 +136,8 @@ public:
 	/* 125 */	virtual void ZanzibarSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID);
 	/* 126 */	virtual void FirefightGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade, UINT64 TimePlayedMS, UINT32 Kills, UINT32 MostKillsInARow, UINT32 SetsCompleted, UINT32 WavesCompleted, UINT32 GeneratorsDestroyed);
 	/* 127 */	virtual void EnemyDefeated_0(); // probably zombie defeated as these are in alphabetical order
-	/* 128 */	virtual void Member128();
-	/* 129 */	virtual void Member129();
+	/* 128 */	virtual void CinematicStarted();
+	/* 129 */	virtual void CinematicStopped();
 	/* 130 */	virtual void Member130();
 	/* 131 */	virtual void Member131();
 	/* 132 */	virtual void Member132();
@@ -172,7 +172,7 @@ public:
 
 IGameEvents::IGameEvents()
 {
-	auto CoCreateGuidResult = CoCreateGuid(&playerSessionID);
+	HRESULT CoCreateGuidResult = CoCreateGuid(&playerSessionID);
 #ifdef _DEBUG
 	printf("IGameEvents();\n");
 #endif
@@ -185,7 +185,7 @@ IGameEvents::~IGameEvents()
 void IGameEvents::AchievementEarned(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 AchievementID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::AchievementEarned(\"%S\", %S, \"%S\", %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, AchievementID);
 
@@ -195,7 +195,7 @@ void IGameEvents::AchievementEarned(LPWSTR UserID, GUID PlayerSessionID, LPWSTR 
 void IGameEvents::AshesToAshes(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::AshesToAshes(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -205,7 +205,7 @@ void IGameEvents::AshesToAshes(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::Assist(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -215,7 +215,7 @@ void IGameEvents::Assist(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, L
 void IGameEvents::AudioLogClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 AudioLogID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::AudioLogClaimed(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, AudioLogID);
 
@@ -225,7 +225,7 @@ void IGameEvents::AudioLogClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 Aud
 void IGameEvents::Base(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::Base(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -235,7 +235,7 @@ void IGameEvents::Base(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::Betrayal(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -245,7 +245,7 @@ void IGameEvents::Betrayal(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID,
 void IGameEvents::BIFactControllerSettings(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 ControllerConfigurationID, bool LookInverted)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BIFactControllerSettings(\"%S\", %S, %s, \"%S\", %i, %i, %s)\n", UserID, PlayerSessionIDStr, IsGuest ? "true" : "false", HaloTitleID, GameCategoryID, ControllerConfigurationID, LookInverted ? "true" : "false");
 
@@ -255,7 +255,7 @@ void IGameEvents::BIFactControllerSettings(LPWSTR UserID, GUID PlayerSessionID, 
 void IGameEvents::BIFactDeepLink(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BIFactDeepLink(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -265,7 +265,7 @@ void IGameEvents::BIFactDeepLink(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::BIFactDeepLinkRecieve(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DeepLinkCorrelationID, LPWSTR DeepLinkURL)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BIFactDeepLinkRecieve(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, DeepLinkCorrelationID, DeepLinkURL);
 
@@ -275,7 +275,7 @@ void IGameEvents::BIFactDeepLinkRecieve(LPWSTR UserID, GUID PlayerSessionID, LPW
 void IGameEvents::BIFactDeepLinkSend(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DeepLinkCorrelationID, LPWSTR DeepLinkURL)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BIFactDeepLinkSend(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, DeepLinkCorrelationID, DeepLinkURL);
 
@@ -285,7 +285,7 @@ void IGameEvents::BIFactDeepLinkSend(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::BIFactDualWield(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 LeftWeaponID, INT32 RightWeaponID, FILETIME DualWieldTimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME DualWieldTimeStampUTC;
 	::FileTimeToSystemTime(&DualWieldTimeStamp, &DualWieldTimeStampUTC);
@@ -298,7 +298,7 @@ void IGameEvents::BIFactDualWield(LPWSTR UserID, GUID PlayerSessionID, bool IsGu
 void IGameEvents::BIFactGameSession(LPWSTR UserID, GUID PlayerSessionID, FILETIME SessionStartTimeStamp, FILETIME SessionEndTimeStamp, LPWSTR HaloTitleID, FILETIME SubTitleStartTimeStamp, FILETIME SubTitleEndTimeStamp, INT32 GameCategoryID, LPWSTR LocaleID, INT32 MapID, INT32 ArmorID, UINT64 SkullsUsed, LPWSTR HopperID, INT32 PlayerCount, bool Matchmade, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, bool Won, UINT64 Score, UINT64 TeamScore, INT32 Standing, bool FirstPlace, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 Betrayals, INT32 Suicides)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -308,7 +308,7 @@ void IGameEvents::BIFactGameSession(LPWSTR UserID, GUID PlayerSessionID, FILETIM
 void IGameEvents::BIFactLoadout(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 PrimaryWeaponID, INT32 SecondaryWeaponID, INT32 GrenadeID, INT32 ShieldID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BIFactLoadout(\"%S\", %S, %s, \"%S\", %i, %i, %i, %i, %i)\n", UserID, PlayerSessionIDStr, IsGuest ? "true" : "false", HaloTitleID, GameCategoryID, PrimaryWeaponID, SecondaryWeaponID, GrenadeID, ShieldID);
 
@@ -318,7 +318,7 @@ void IGameEvents::BIFactLoadout(LPWSTR UserID, GUID PlayerSessionID, bool IsGues
 void IGameEvents::BIFactMatchmaking(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR LobbyID, FILETIME LobbyEntryTimeStamp, bool JoinedMatch, FILETIME JoinMatchTimeStamp, INT32 MatchmakingRank, double MatchmakingRating, INT32 MatchmakingXP, INT32 PartySize, GUID PartyID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 	OLECHAR *PartyIDStr;
 	StringFromCLSIDResult = StringFromCLSID(PartyID, &PartyIDStr);
 
@@ -336,7 +336,7 @@ void IGameEvents::BIFactMatchmaking(LPWSTR UserID, GUID PlayerSessionID, bool Is
 void IGameEvents::BIFactMatchmakingDetails(LPWSTR UserID, GUID PlayerSessionID, INT32 NumPlayersInParty, bool GSRFired, bool BecameActiveInSession, bool ConnectedToPeerGameHost, bool GameStarted, FILETIME LobbyEntryTimeStamp, FILETIME LobbyExitTimeStamp, INT32 ExitReason, LPWSTR GameUniqiueID, bool IsArbiter, bool IsThunderheadGame, INT32 NumPlayers, INT32 NumPreserveSessionTicketsCreated)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -346,7 +346,7 @@ void IGameEvents::BIFactMatchmakingDetails(LPWSTR UserID, GUID PlayerSessionID, 
 void IGameEvents::BIFactMedia(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest, LPWSTR HaloTitleID, FILETIME MediaStartTimeStamp, bool WasSkipped, FILETIME MediaSkipTimeStamp, LPWSTR MediaID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME MediaStartTimeStampUTC;
 	::FileTimeToSystemTime(&MediaStartTimeStamp, &MediaStartTimeStampUTC);
@@ -361,7 +361,7 @@ void IGameEvents::BIFactMedia(LPWSTR UserID, GUID PlayerSessionID, bool IsGuest,
 void IGameEvents::BirdOfPrey(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BirdOfPrey(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -371,7 +371,7 @@ void IGameEvents::BirdOfPrey(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::BitsAndPiecesDestroyed(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BitsAndPiecesDestroyed(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -381,7 +381,7 @@ void IGameEvents::BitsAndPiecesDestroyed(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::BroadcastingAssist(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 CurrentAssists)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -394,7 +394,7 @@ void IGameEvents::BroadcastingAssist(LPWSTR UserID, GUID PlayerSessionID, FILETI
 void IGameEvents::BroadcastingDeath(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, LPWSTR VictimXuid, UINT32 VictimTeamID, LPWSTR KillerXuid, UINT32 KillerTeamID, LPWSTR AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentDeaths)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -404,7 +404,7 @@ void IGameEvents::BroadcastingDeath(LPWSTR UserID, GUID PlayerSessionID, FILETIM
 void IGameEvents::BroadcastingHeartbeat(LPWSTR UserID, GUID PlayerSessionID, INT64 Heartbeat)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::BroadcastingHeartbeat(\"%S\", %S, %lli)\n", UserID, PlayerSessionIDStr, Heartbeat);
 
@@ -414,7 +414,7 @@ void IGameEvents::BroadcastingHeartbeat(LPWSTR UserID, GUID PlayerSessionID, INT
 void IGameEvents::BroadcastingKill(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, LPWSTR VictimXuid, UINT32 VictimTeamID, LPWSTR KillerXuid, UINT32 KillerTeamID, LPWSTR AssistantXuids, UINT32 DamageReportingModifier, INT32 StockID, INT32 AttachmentIDs, INT32 DamageTypeID, INT32 CurrentKills)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -424,7 +424,7 @@ void IGameEvents::BroadcastingKill(LPWSTR UserID, GUID PlayerSessionID, FILETIME
 void IGameEvents::BroadcastingMatchEnd(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -437,7 +437,7 @@ void IGameEvents::BroadcastingMatchEnd(LPWSTR UserID, GUID PlayerSessionID, FILE
 void IGameEvents::BroadcastingMatchRoundEnd(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -450,7 +450,7 @@ void IGameEvents::BroadcastingMatchRoundEnd(LPWSTR UserID, GUID PlayerSessionID,
 void IGameEvents::BroadcastingMatchRoundStart(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 RoundNumber)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -463,7 +463,7 @@ void IGameEvents::BroadcastingMatchRoundStart(LPWSTR UserID, GUID PlayerSessionI
 void IGameEvents::BroadcastingMatchStart(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MapVariantID, INT32 GameVariantID, LPWSTR PlaylistID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -476,7 +476,7 @@ void IGameEvents::BroadcastingMatchStart(LPWSTR UserID, GUID PlayerSessionID, FI
 void IGameEvents::BroadcastingMedal(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 MedalID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -489,7 +489,7 @@ void IGameEvents::BroadcastingMedal(LPWSTR UserID, GUID PlayerSessionID, FILETIM
 void IGameEvents::BroadcastingPlayerJoined(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -502,7 +502,7 @@ void IGameEvents::BroadcastingPlayerJoined(LPWSTR UserID, GUID PlayerSessionID, 
 void IGameEvents::BroadcastingPlayerLeft(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -514,7 +514,7 @@ void IGameEvents::BroadcastingPlayerLeft(LPWSTR UserID, GUID PlayerSessionID, FI
 void IGameEvents::BroadcastingPlayerSpawn(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -527,7 +527,7 @@ void IGameEvents::BroadcastingPlayerSpawn(LPWSTR UserID, GUID PlayerSessionID, F
 void IGameEvents::BroadcastingPlayerSwitchedTeams(LPWSTR UserID, GUID PlayerSessionID, FILETIME TimeStamp, INT32 TeamID, LPWSTR WebColor)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&TimeStamp, &TimeStampUTC);
@@ -540,7 +540,7 @@ void IGameEvents::BroadcastingPlayerSwitchedTeams(LPWSTR UserID, GUID PlayerSess
 void IGameEvents::BroadcastingScore(LPWSTR UserID, GUID PlayerSessionID, INT32 ControllerIndex, FILETIME Timestamp, INT32 CurrentRoundScore, INT32 CurrentTotalScore, INT32 CurrentRoundTeamScore, INT32 CurrentTotalTeamScore)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	SYSTEMTIME TimeStampUTC;
 	::FileTimeToSystemTime(&Timestamp, &TimeStampUTC);
@@ -553,7 +553,7 @@ void IGameEvents::BroadcastingScore(LPWSTR UserID, GUID PlayerSessionID, INT32 C
 void IGameEvents::BroadcastingStart(LPWSTR UserID, GUID PlayerSessionID, UINT32 GameType, UINT32 Map, UINT32 TopPlayerRank, LPWSTR PlayerIDs, GUID MatchID, bool PlayerIsCaster, INT64 MatchStartTime)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 	OLECHAR *MatchIDStr;
 	StringFromCLSIDResult = StringFromCLSID(MatchID, &MatchIDStr);
 
@@ -566,7 +566,7 @@ void IGameEvents::BroadcastingStart(LPWSTR UserID, GUID PlayerSessionID, UINT32 
 void IGameEvents::CampaignDifficulty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR CampaignDifficulty)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::CampaignDifficulty(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, CampaignDifficulty);
 
@@ -576,7 +576,7 @@ void IGameEvents::CampaignDifficulty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::ChallengeCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 ChallengeID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ChallengeCompleted(\"%S\", %S, \"%S\", %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, ChallengeID);
 
@@ -586,7 +586,7 @@ void IGameEvents::ChallengeCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::ClassicModeSwitched(LPWSTR UserID, GUID PlayerSessionID, INT32 MapID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ClassicModeSwitched(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, MapID);
 
@@ -596,7 +596,7 @@ void IGameEvents::ClassicModeSwitched(LPWSTR UserID, GUID PlayerSessionID, INT32
 void IGameEvents::CleverGirl(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::CleverGirl(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -606,7 +606,7 @@ void IGameEvents::CleverGirl(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::ClueClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 ClueID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ClueClaimed(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, ClueID);
 
@@ -616,7 +616,7 @@ void IGameEvents::ClueClaimed(LPWSTR UserID, GUID PlayerSessionID, INT32 ClueID)
 void IGameEvents::CoopMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MissionID, INT32 MapID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -626,7 +626,7 @@ void IGameEvents::CoopMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWS
 void IGameEvents::CoopSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::CoopSpartanOpsMissionCompleted(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, MapID, DifficultyID);
 
@@ -636,7 +636,7 @@ void IGameEvents::CoopSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessi
 void IGameEvents::CompletionCount(LPWSTR UserID, GUID PlayerSessionID, INT32 Count)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::CompletionCount(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, Count);
 
@@ -646,7 +646,7 @@ void IGameEvents::CompletionCount(LPWSTR UserID, GUID PlayerSessionID, INT32 Cou
 void IGameEvents::Customization(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2, LPWSTR ServiceID, LPWSTR ClanID, INT32 AvatarID, INT32 NameplateID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::Customization(\"%S\", %S, %i, %i, %i, %i, %i, \"%S\", \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, Texture0, Texture1, Color0, Color1, Color2, ServiceID, ClanID, AvatarID, NameplateID);
 
@@ -656,7 +656,7 @@ void IGameEvents::Customization(LPWSTR UserID, GUID PlayerSessionID, INT32 Textu
 void IGameEvents::DashboardContext(LPWSTR UserID, GUID PlayerSessionID, LPWSTR DashboardContext)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::DashboardContext(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, DashboardContext);
 
@@ -666,7 +666,7 @@ void IGameEvents::DashboardContext(LPWSTR UserID, GUID PlayerSessionID, LPWSTR D
 void IGameEvents::Death(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -676,7 +676,7 @@ void IGameEvents::Death(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LP
 void IGameEvents::DollFound(LPWSTR UserID, GUID PlayerSessionID, INT32 DollID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::DollFound(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, DollID);
 
@@ -686,7 +686,7 @@ void IGameEvents::DollFound(LPWSTR UserID, GUID PlayerSessionID, INT32 DollID)
 void IGameEvents::EliteWin(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::EliteWin(\"%S\", %S, \"%S\", %s)\n", UserID, PlayerSessionIDStr, HaloTitleID, MatchMade ? "true" : "false");
 
@@ -696,7 +696,7 @@ void IGameEvents::EliteWin(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitle
 void IGameEvents::Emblem(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, INT32 Texture1, INT32 Color0, INT32 Color1, INT32 Color2)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::Emblem(\"%S\", %S, %i, %i, %i, %i, %i)\n", UserID, PlayerSessionIDStr, Texture0, Texture1, Color0, Color1, Color2);
 
@@ -706,7 +706,7 @@ void IGameEvents::Emblem(LPWSTR UserID, GUID PlayerSessionID, INT32 Texture0, IN
 void IGameEvents::EnemyDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, LPWSTR HaloTitleID, INT32 MapID, INT32 EnemyClassID, INT32 GameCategoryID, bool MatchMade, bool HeadShot)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -716,7 +716,7 @@ void IGameEvents::EnemyDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessi
 void IGameEvents::FriendsBestedOnHeroLeaderboard(LPWSTR UserID, GUID PlayerSessionID, INT32 LeaderboardID, INT32 LeaderboardRows)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::FriendsBestedOnHeroLeaderboard(\"%S\", %S, %i, %i)\n", UserID, PlayerSessionIDStr, LeaderboardID, LeaderboardRows);
 
@@ -726,7 +726,7 @@ void IGameEvents::FriendsBestedOnHeroLeaderboard(LPWSTR UserID, GUID PlayerSessi
 void IGameEvents::GameProgress(LPWSTR UserID, GUID PlayerSessionID, float CompletionPercent)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::GameProgress(\"%S\", %S, %f)\n", UserID, PlayerSessionIDStr, CompletionPercent);
 
@@ -736,7 +736,7 @@ void IGameEvents::GameProgress(LPWSTR UserID, GUID PlayerSessionID, float Comple
 void IGameEvents::GameVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 BaseGameCategory, LPWSTR GameVarName)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::GameVarSaved(\"%S\", %S, \"%S\", %i, \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, BaseGameCategory, GameVarName);
 
@@ -746,7 +746,7 @@ void IGameEvents::GameVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloT
 void IGameEvents::GrenadeStick(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -756,7 +756,7 @@ void IGameEvents::GrenadeStick(LPWSTR UserID, INT32 SectionID, GUID PlayerSessio
 void IGameEvents::HelloNurse(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::HelloNurse(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -766,7 +766,7 @@ void IGameEvents::HelloNurse(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::InGamePresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitle, INT32 CampaignDifficulty, INT32 MultiplayerMap)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::InGamePresence(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitle, CampaignDifficulty, MultiplayerMap);
 
@@ -776,7 +776,7 @@ void IGameEvents::InGamePresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Hal
 void IGameEvents::ISeeYou(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ISeeYou(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -786,7 +786,7 @@ void IGameEvents::ISeeYou(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::Joinability(LPWSTR UserID, GUID PlayerSessionID, bool InGame)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::Joinability(\"%S\", %S, %s)\n", UserID, PlayerSessionIDStr, InGame ? "true" : "false");
 
@@ -796,7 +796,7 @@ void IGameEvents::Joinability(LPWSTR UserID, GUID PlayerSessionID, bool InGame)
 void IGameEvents::Lobby(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR Lobby)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::Lobby(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, Lobby);
 
@@ -806,7 +806,7 @@ void IGameEvents::Lobby(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID,
 void IGameEvents::MainMenuPresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MainMenuPresence)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MainMenuPresence(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, MainMenuPresence);
 
@@ -816,7 +816,7 @@ void IGameEvents::MainMenuPresence(LPWSTR UserID, GUID PlayerSessionID, LPWSTR M
 void IGameEvents::MapVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 BaseMapID, LPWSTR MapVarName)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MapVarSaved(\"%S\", %S, \"%S\", %i, \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, BaseMapID, MapVarName);
 
@@ -826,7 +826,7 @@ void IGameEvents::MapVarSaved(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTi
 void IGameEvents::MatchmakingHopper(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MatchmakingHopper)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MatchmakingHopper(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, MatchmakingHopper);
 
@@ -836,7 +836,7 @@ void IGameEvents::MatchmakingHopper(LPWSTR UserID, GUID PlayerSessionID, LPWSTR 
 void IGameEvents::MediaUsage(LPWSTR AppSessionID, LPWSTR AppSessionStartDateTime, UINT32 UserIDType, LPWSTR UserID, LPWSTR SubscriptionTierType, LPWSTR SubscriptionTier, LPWSTR MediaType, LPWSTR ProviderID, LPWSTR ProviderMediaID, LPWSTR ProviderMediaInstanceID, GUID BingID, UINT64 MediaLengthMs, UINT32 MediaControlAction, float PlaybackSpeed, UINT64 MediaPositionMs, UINT64 PlaybackDurationMs, LPWSTR AcquisitionType, LPWSTR AcquisitionContext, LPWSTR AcquisitionContextType, LPWSTR AcquisitionContextID, INT32 PlaybackIsStream, INT32 PlaybackIsTethered, LPWSTR MarketplaceLocation, LPWSTR ContentLocale, float TimeZoneOffset, UINT32 ScreenState)
 {
 	OLECHAR *BingIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(BingID, &BingIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(BingID, &BingIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, BingIDStr);
 
@@ -846,7 +846,7 @@ void IGameEvents::MediaUsage(LPWSTR AppSessionID, LPWSTR AppSessionStartDateTime
 void IGameEvents::MeldOfferPresented(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, LPWSTR Page, INT32 SourceTileIndex)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 	OLECHAR *OfferGuidStr;
 	StringFromCLSIDResult = StringFromCLSID(OfferGuid, &OfferGuidStr);
 	OLECHAR *ProductGuidStr;
@@ -862,7 +862,7 @@ void IGameEvents::MeldOfferPresented(LPWSTR UserID, GUID PlayerSessionID, GUID O
 void IGameEvents::MeldOfferResponded(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid, INT32 UpsellOutcome)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 	OLECHAR *OfferGuidStr;
 	StringFromCLSIDResult = StringFromCLSID(OfferGuid, &OfferGuidStr);
 	OLECHAR *ProductGuidStr;
@@ -878,7 +878,7 @@ void IGameEvents::MeldOfferResponded(LPWSTR UserID, GUID PlayerSessionID, GUID O
 void IGameEvents::MeldPageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, LPWSTR Page, LPWSTR TemplateID, LPWSTR DestinationPage, LPWSTR Content, INT32 SourceTileIndex, INT32 SourceTileX, INT32 SourceTileY, INT32 SourceTileWidth, INT32 SourceTileHeight)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -888,7 +888,7 @@ void IGameEvents::MeldPageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 Acti
 void IGameEvents::MeldPageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPWSTR RefererPage, INT32 PageTypeID, LPWSTR PageTags, LPWSTR TemplateID, LPWSTR Content, LPWSTR FilterContext, INT32 FilterDirection)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MeldPageView(\"%S\", %S, \"%S\", \"%S\", %i, \"%S\", \"%S\", \"%S\", \"%S\", %i)\n", UserID, PlayerSessionIDStr, Page, RefererPage, PageTypeID, PageTags, TemplateID, Content, FilterContext, FilterDirection);
 
@@ -898,7 +898,7 @@ void IGameEvents::MeldPageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page,
 void IGameEvents::MissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 GameCategoryID, bool Coop, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, INT32 DifficultyID, UINT64 MissionScore64, UINT64 SkullUsedFlags, INT32 NumPlayers, LPWSTR PlayerSectionStats, INT32 Kills, float Multiplier, INT32 Penalties, float SkullMultiplier, INT32 TotalSoloMissionsComplete, INT32 TotalCoopMissionsComplete)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -908,7 +908,7 @@ void IGameEvents::MissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR H
 void IGameEvents::MortardomWraithsKilled(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MortardomWraithsKilled(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -918,7 +918,7 @@ void IGameEvents::MortardomWraithsKilled(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::MultiplayerGameEngine(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MultiplayerGameEngine)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MultiplayerGameEngine(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, MultiplayerGameEngine);
 
@@ -928,7 +928,7 @@ void IGameEvents::MultiplayerGameEngine(LPWSTR UserID, GUID PlayerSessionID, LPW
 void IGameEvents::MultiplayerMap(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR MultiplayerMap)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::MultiplayerMap(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, MultiplayerMap);
 
@@ -938,7 +938,7 @@ void IGameEvents::MultiplayerMap(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Hal
 void IGameEvents::MultiplayerRoundEnd(LPWSTR UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID, float TimeInSeconds, INT32 ExitStatusID)
 {
 	OLECHAR *RoundIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
 	OLECHAR *PlayerSessionIDStr;
 	StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
@@ -951,7 +951,7 @@ void IGameEvents::MultiplayerRoundEnd(LPWSTR UserID, GUID RoundID, INT32 Section
 void IGameEvents::MultiplayerRoundStart(LPWSTR UserID, GUID RoundID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 MatchTypeID, INT32 DifficultyLevelID)
 {
 	OLECHAR *RoundIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
 	OLECHAR *PlayerSessionIDStr;
 	StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
@@ -964,7 +964,7 @@ void IGameEvents::MultiplayerRoundStart(LPWSTR UserID, GUID RoundID, INT32 Secti
 void IGameEvents::NappersCaught(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::NappersCaught(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -974,7 +974,7 @@ void IGameEvents::NappersCaught(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::NewsStoryRead(LPWSTR UserID, GUID PlayerSessionID, LPWSTR StoryID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::NewsStoryRead(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, StoryID);
 
@@ -984,7 +984,7 @@ void IGameEvents::NewsStoryRead(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Stor
 void IGameEvents::ObjectiveEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID, INT32 ExitStatusID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ObjectiveEnd(\"%S\", %i, %S, \"%S\", %i, %i, %i, %i)\n", UserID, SectionID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID, ObjectiveID, ExitStatusID);
 
@@ -994,7 +994,7 @@ void IGameEvents::ObjectiveEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessio
 void IGameEvents::ObjectiveStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ObjectiveID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ObjectiveStart(\"%S\", %i, %S, \"%S\", %i, %i, %i)\n", UserID, SectionID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID, ObjectiveID);
 
@@ -1004,7 +1004,7 @@ void IGameEvents::ObjectiveStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSess
 void IGameEvents::PageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTypeID, INT32 ActionInputMethodID, LPWSTR Page, LPWSTR TemplateID, LPWSTR DestinationPage, LPWSTR Content)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PageAction(\"%S\", %S, %i, %i, \"%S\", \"%S\", \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, ActionTypeID, ActionInputMethodID, Page, TemplateID, DestinationPage, Content);
 
@@ -1014,7 +1014,7 @@ void IGameEvents::PageAction(LPWSTR UserID, GUID PlayerSessionID, INT32 ActionTy
 void IGameEvents::PageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPWSTR RefererPage, INT32 PageTypeID, LPWSTR PageTags, LPWSTR TemplateID, LPWSTR Content)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PageView(\"%S\", %S, \"%S\", \"%S\", %i, \"%S\", \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, Page, RefererPage, PageTypeID, PageTags, TemplateID, Content);
 
@@ -1024,7 +1024,7 @@ void IGameEvents::PageView(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Page, LPW
 void IGameEvents::PhantomHunter(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PhantomHunter(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1034,7 +1034,7 @@ void IGameEvents::PhantomHunter(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::PigsCanFly(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PigsCanFly(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1044,7 +1044,7 @@ void IGameEvents::PigsCanFly(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::PlayerCheckedInToday(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerCheckedInToday(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID);
 
@@ -1054,7 +1054,7 @@ void IGameEvents::PlayerCheckedInToday(LPWSTR UserID, GUID PlayerSessionID, LPWS
 void IGameEvents::PlayerDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 EnemyWeaponID, float LocationX, float LocationY, float LocationZ)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1064,7 +1064,7 @@ void IGameEvents::PlayerDefeated(LPWSTR UserID, INT32 SectionID, GUID PlayerSess
 void IGameEvents::PlayerGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 GameIndexByCategory, INT32 GameIndexByTitle, INT32 GameIndexByTitleCategory, INT32 MapID, INT32 GameCategoryID, bool MatchMade, bool Won, UINT64 TimePlayedMS, UINT64 DatePlayedUTC, UINT64 Score64, INT32 Standing, bool FirstPlace, INT32 MedalCount, INT32 Kills, INT32 Deaths, INT32 Assists, INT32 HeadShots, INT32 MostKillsInARow, LPWSTR CustomStat1ID, INT32 CustomStat1, LPWSTR CustomStat2ID, INT32 CustomStat2, LPWSTR CustomStat3ID, INT32 CustomStat3, LPWSTR CustomStat4ID, INT32 CustomStat4, GUID MatchID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1074,7 +1074,7 @@ void IGameEvents::PlayerGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR 
 void IGameEvents::PlayerGameResultsDamageStat(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 DamageReportingType, INT32 DamageStatisticType, INT32 DamageCount, INT32 GameCategoryID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerGameResultsDamageStat(\"%S\", %S, \"%S\", %i, %i, %s, %i, %i, %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, GameIndex, MapID, MatchMade ? "true" : "false", DamageReportingType, DamageStatisticType, DamageCount, GameCategoryID);
 
@@ -1084,7 +1084,7 @@ void IGameEvents::PlayerGameResultsDamageStat(LPWSTR UserID, GUID PlayerSessionI
 void IGameEvents::PlayerGameResultsGriefingStat(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1094,7 +1094,7 @@ void IGameEvents::PlayerGameResultsGriefingStat(LPWSTR UserID, GUID PlayerSessio
 void IGameEvents::PlayerGameResultsGriefingStats(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, float Betrayals, float ShieldDamage, float BodyDamage, float BetrayalPenalty, float ShieldDamagePenalty, float BodyDamagePenalty)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1104,7 +1104,7 @@ void IGameEvents::PlayerGameResultsGriefingStats(LPWSTR UserID, GUID PlayerSessi
 void IGameEvents::PlayerGameResultsInterestStats(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameCategoryID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 OrdnanceDrops, INT32 OrdnanceStrikes, UINT64 TimeMSDriven, INT32 UnitsDriven, UINT64 TimeMSPiloted, INT32 UnitsPiloted, UINT64 TimeMSPassenger, INT32 UnitsMovedPassenger, UINT64 TimeMSOnFoot, INT32 UnitsMovedOnFoot, INT32 DriverAssists, INT32 ArmorAbilityUseJetpack, INT32 ArmorAbilityUseHologram, INT32 ArmorAbilityUseReflectiveShield, INT32 ArmorAbilityUseActiveCamo, INT32 ArmorAbilityUseThrusterPack, INT32 ArmorAbilityUseAutoTurret, INT32 ArmorAbilityUseXRay)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1114,7 +1114,7 @@ void IGameEvents::PlayerGameResultsInterestStats(LPWSTR UserID, GUID PlayerSessi
 void IGameEvents::PlayerGameResultsMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 GameIndex, INT32 MapID, bool MatchMade, INT32 MedalType, INT32 MedalCount)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerGameResultsMedal(\"%S\", %S, \"%S\", %i, %i, %s, %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, GameIndex, MapID, MatchMade ? "true" : "false", MedalType, MedalCount);
 
@@ -1124,7 +1124,7 @@ void IGameEvents::PlayerGameResultsMedal(LPWSTR UserID, GUID PlayerSessionID, LP
 void IGameEvents::PlayerSessionEnd(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerSessionEnd(\"%S\", %S, \"%S\", %i, %i, %i)\n", UserID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID, ExitStatusID);
 
@@ -1134,7 +1134,7 @@ void IGameEvents::PlayerSessionEnd(LPWSTR UserID, GUID PlayerSessionID, LPWSTR M
 void IGameEvents::PlayerSessionPause(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerSessionPause(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, MultiplayerCorrelationID);
 
@@ -1144,7 +1144,7 @@ void IGameEvents::PlayerSessionPause(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::PlayerSessionResume(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerSessionResume(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID);
 
@@ -1154,7 +1154,7 @@ void IGameEvents::PlayerSessionResume(LPWSTR UserID, GUID PlayerSessionID, LPWST
 void IGameEvents::PlayerSessionStart(LPWSTR UserID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlayerSessionStart(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID);
 
@@ -1164,7 +1164,7 @@ void IGameEvents::PlayerSessionStart(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::PlayerSpawned(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, float LocationX, float LocationY, float LocationZ)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 	OLECHAR *RoundIDStr;
 	StringFromCLSIDResult = StringFromCLSID(RoundID, &RoundIDStr);
 
@@ -1177,7 +1177,7 @@ void IGameEvents::PlayerSpawned(LPWSTR UserID, INT32 SectionID, GUID PlayerSessi
 void IGameEvents::PlaylistCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, UINT32 PlaylistID, UINT64 Score64, UINT64 TimeMS, INT32 Penalties, LPWSTR MissionStats, bool IsCoop)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlaylistCompleted(\"%S\", %S, \"%S\", %u, %llu, %llu, %i, \"%S\", %s)\n", UserID, PlayerSessionIDStr, HaloTitleID, PlaylistID, Score64, TimeMS, Penalties, MissionStats, IsCoop ? "true" : "false");
 
@@ -1187,7 +1187,7 @@ void IGameEvents::PlaylistCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR 
 void IGameEvents::PlaylistProgress(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 PlaylistID, INT32 NumMapsCompleted, UINT64 Score64, bool IsCoop, INT32 NumPlayers, bool ShouldPostTime, UINT64 TotalPlayListTimeMS)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::PlaylistProgress(\"%S\", %S, \"%S\", %i, %i, %llu, %s, %i, %s, %llu)\n", UserID, PlayerSessionIDStr, HaloTitleID, PlaylistID, NumMapsCompleted, Score64, IsCoop ? "true" : "false", NumPlayers, ShouldPostTime ? "true" : "false", TotalPlayListTimeMS);
 
@@ -1197,7 +1197,7 @@ void IGameEvents::PlaylistProgress(LPWSTR UserID, GUID PlayerSessionID, LPWSTR H
 void IGameEvents::RankedStatsDNFInfo(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double FinishesOverStarts, INT32 FinishesMinusStarts, INT32 FinishesPlusPenaltiesMinusStarts, double FinishesPlusPenaltiesOverStarts)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RankedStatsDNFInfo(\"%S\", %S, \"%S\", %lf, %i, %i, %lf)\n", UserID, PlayerSessionIDStr, HopperName, FinishesOverStarts, FinishesMinusStarts, FinishesPlusPenaltiesMinusStarts, FinishesPlusPenaltiesOverStarts);
 
@@ -1207,7 +1207,7 @@ void IGameEvents::RankedStatsDNFInfo(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::RankedStatsOverride(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RankedStatsOverride(\"%S\", %S, \"%S\", %lf, %lf, %i, %i, %s)\n", UserID, PlayerSessionIDStr, HopperName, Rating, Variance, Halo2Level, Halo2XP, IsRanked ? "true" : "false");
 
@@ -1217,7 +1217,7 @@ void IGameEvents::RankedStatsOverride(LPWSTR UserID, GUID PlayerSessionID, LPWST
 void IGameEvents::RankedStatsPenalty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, INT32 NumPenaltiesApplied)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RankedStatsPenalty(\"%S\", %S, \"%S\", %i)\n", UserID, PlayerSessionIDStr, HopperName, NumPenaltiesApplied);
 
@@ -1227,7 +1227,7 @@ void IGameEvents::RankedStatsPenalty(LPWSTR UserID, GUID PlayerSessionID, LPWSTR
 void IGameEvents::RankedStatsUpdate(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HopperName, double Rating, double Variance, INT32 Halo2Level, INT32 Halo2XP, bool IsRanked, bool PenaltyApplied)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RankedStatsUpdate(\"%S\", %S, \"%S\", %lf, %lf, %i, %i, %s, %s)\n", UserID, PlayerSessionIDStr, HopperName, Rating, Variance, Halo2Level, Halo2XP, IsRanked ? "true" : "false", PenaltyApplied ? "true" : "false");
 
@@ -1237,7 +1237,7 @@ void IGameEvents::RankedStatsUpdate(LPWSTR UserID, GUID PlayerSessionID, LPWSTR 
 void IGameEvents::RankedUpSpartanIv(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SpartanIvRank, INT32 SpecialisationType)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RankedUpSpartanIv(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, SpartanIvRank, SpecialisationType);
 
@@ -1247,7 +1247,7 @@ void IGameEvents::RankedUpSpartanIv(LPWSTR UserID, GUID PlayerSessionID, LPWSTR 
 void IGameEvents::RealtimeFlagCaptured(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, bool MatchMade)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RealtimeFlagCaptured(\"%S\", %S, \"%S\", %i, %s)\n", UserID, PlayerSessionIDStr, HaloTitleID, MapID, MatchMade ? "true" : "false");
 
@@ -1257,7 +1257,7 @@ void IGameEvents::RealtimeFlagCaptured(LPWSTR UserID, GUID PlayerSessionID, LPWS
 void IGameEvents::RealtimeMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 GameCategoryID, INT32 GameMode, bool MatchMade, INT32 MedalType, INT32 MedalCount)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RealtimeMedal(\"%S\", %S, \"%S\", %i, %i, %i, %s, %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, MapID, GameCategoryID, GameMode, MatchMade ? "true" : "false", MedalType, MedalCount);
 
@@ -1267,7 +1267,7 @@ void IGameEvents::RealtimeMedal(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Halo
 void IGameEvents::RealtimePilotedVehicle(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, bool MatchMade, INT32 VehicleID, UINT64 TimeMS, INT32 Distance)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RealtimePilotedVehicle(\"%S\", %S, \"%S\", %i, %s, %i, %lli, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, MapID, MatchMade ? "true" : "false", VehicleID, TimeMS, Distance);
 
@@ -1277,7 +1277,7 @@ void IGameEvents::RealtimePilotedVehicle(LPWSTR UserID, GUID PlayerSessionID, LP
 void IGameEvents::RivalID(LPWSTR UserID, GUID PlayerSessionID, INT64 RivalID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::RivalID(\"%S\", %S, %lli)\n", UserID, PlayerSessionIDStr, RivalID);
 
@@ -1287,7 +1287,7 @@ void IGameEvents::RivalID(LPWSTR UserID, GUID PlayerSessionID, INT64 RivalID)
 void IGameEvents::SectionEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 ExitStatusID, INT32 MissionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SectionEnd(\"%S\", %S, \"%S\", %i, %i, %i, %i)\n", UserID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID, ExitStatusID, MissionID);
 
@@ -1297,7 +1297,7 @@ void IGameEvents::SectionEnd(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionI
 void IGameEvents::SectionStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, INT32 MissionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SectionStart(\"%S\", %i, %S, \"%S\", %i, %i, %i)\n", UserID, SectionID, PlayerSessionIDStr, MultiplayerCorrelationID, GameplayModeID, DifficultyLevelID, MissionID);
 
@@ -1307,7 +1307,7 @@ void IGameEvents::SectionStart(LPWSTR UserID, INT32 SectionID, GUID PlayerSessio
 void IGameEvents::SectionStats(LPWSTR UserID, GUID PlayerSessionID, INT32 MissionID, INT32 SectionID, INT32 SectionOrdinal, float ScoreWithoutTimeBonus, float ScoreWithTimeBonus, float TimeInSeconds)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SectionStats(\"%S\", %S, %i, %i, %i, %f, %f, %f)\n", UserID, PlayerSessionIDStr, MissionID, SectionID, SectionOrdinal, ScoreWithoutTimeBonus, ScoreWithTimeBonus, TimeInSeconds);
 
@@ -1317,7 +1317,7 @@ void IGameEvents::SectionStats(LPWSTR UserID, GUID PlayerSessionID, INT32 Missio
 void IGameEvents::SessionSizeUpdate(LPWSTR UserID, GUID PlayerSessionID, INT32 SessionSize, INT32 SessionSizeMax)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SessionSizeUpdate(\"%S\", %S, %i, %i)\n", UserID, PlayerSessionIDStr, SessionSize, SessionSizeMax);
 
@@ -1327,7 +1327,7 @@ void IGameEvents::SessionSizeUpdate(LPWSTR UserID, GUID PlayerSessionID, INT32 S
 void IGameEvents::SizeIsEverything(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SizeIsEverything(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1337,7 +1337,7 @@ void IGameEvents::SizeIsEverything(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::SkeetShooter(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SkeetShooter(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1347,7 +1347,7 @@ void IGameEvents::SkeetShooter(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::SkullClaimed(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SkullID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SkullClaimed(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, SkullID, DifficultyID);
 
@@ -1357,7 +1357,7 @@ void IGameEvents::SkullClaimed(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloT
 void IGameEvents::SoloMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID, INT32 MissionScore, bool IronSkullUsed, bool BlackEyeSkullUsed, bool ToughLuckSkullUsed, bool CatchSkullUsed, bool CloudSkullUsed, bool FamineSkullUsed, bool ThunderstormSkullUsed, bool TiltSkullUsed, bool MythicSkullUsed, bool BlindSkullUsed)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1367,7 +1367,7 @@ void IGameEvents::SoloMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWS
 void IGameEvents::SoloSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SoloSpartanOpsMissionCompleted(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, MapID, DifficultyID);
 
@@ -1377,7 +1377,7 @@ void IGameEvents::SoloSpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessi
 void IGameEvents::SpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 MapID, INT32 MissionID, INT32 DifficultyID, bool IsCoop)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SpartanOpsMissionCompleted(\"%S\", %S, \"%S\", %i, %i, %i, %s)\n", UserID, PlayerSessionIDStr, HaloTitleID, MapID, MissionID, DifficultyID, IsCoop ? "true" : "false");
 
@@ -1387,7 +1387,7 @@ void IGameEvents::SpartanOpsMissionCompleted(LPWSTR UserID, GUID PlayerSessionID
 void IGameEvents::Supercombine(LPWSTR UserID, INT32 SectionID, GUID PlayerSessionID, LPWSTR MultiplayerCorrelationID, INT32 GameplayModeID, INT32 DifficultyLevelID, GUID RoundID, INT32 PlayerRoleID, INT32 PlayerWeaponID, INT32 EnemyRoleID, INT32 KillTypeID, float LocationX, float LocationY, float LocationZ, INT32 EnemyWeaponID, INT32 EnemyClassID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	//printf("IGameEvents::(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1397,7 +1397,7 @@ void IGameEvents::Supercombine(LPWSTR UserID, INT32 SectionID, GUID PlayerSessio
 void IGameEvents::SurvivalSpace(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, LPWSTR SurvivalSpace)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SurvivalSpace(\"%S\", %S, \"%S\", \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID, SurvivalSpace);
 
@@ -1407,7 +1407,7 @@ void IGameEvents::SurvivalSpace(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Halo
 void IGameEvents::TerminalFound(LPWSTR UserID, GUID PlayerSessionID, INT32 TerminalID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::TerminalFound(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, TerminalID);
 
@@ -1417,7 +1417,7 @@ void IGameEvents::TerminalFound(LPWSTR UserID, GUID PlayerSessionID, INT32 Termi
 void IGameEvents::TerminalID(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, INT32 SkullID, INT32 DifficultyID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::TerminalID(\"%S\", %S, \"%S\", %i, %i)\n", UserID, PlayerSessionIDStr, HaloTitleID, SkullID, DifficultyID);
 
@@ -1427,7 +1427,7 @@ void IGameEvents::TerminalID(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTit
 void IGameEvents::TicketsEarned(LPWSTR UserID, GUID PlayerSessionID, INT32 TicketCount)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::TicketsEarned(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, TicketCount);
 
@@ -1437,7 +1437,7 @@ void IGameEvents::TicketsEarned(LPWSTR UserID, GUID PlayerSessionID, INT32 Ticke
 void IGameEvents::TitleCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::TitleCompleted(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID);
 
@@ -1447,7 +1447,7 @@ void IGameEvents::TitleCompleted(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Hal
 void IGameEvents::TitleLaunched(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::TitleLaunched(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID);
 
@@ -1457,7 +1457,7 @@ void IGameEvents::TitleLaunched(LPWSTR UserID, GUID PlayerSessionID, LPWSTR Halo
 void IGameEvents::ValhallaSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ValhallaSign(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, SignID);
 
@@ -1467,7 +1467,7 @@ void IGameEvents::ValhallaSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID
 void IGameEvents::ViewOffer(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid, GUID ProductGuid)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 	OLECHAR *OfferGuidStr;
 	StringFromCLSIDResult = StringFromCLSID(OfferGuid, &OfferGuidStr);
 	OLECHAR *ProductGuidStr;
@@ -1483,7 +1483,7 @@ void IGameEvents::ViewOffer(LPWSTR UserID, GUID PlayerSessionID, GUID OfferGuid,
 void IGameEvents::VIPStatusEarned(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::VIPStatusEarned(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1493,7 +1493,7 @@ void IGameEvents::VIPStatusEarned(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::WhatAboutTanksDestroyed(LPWSTR UserID, GUID PlayerSessionID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::WhatAboutTanksDestroyed(\"%S\", %S)\n", UserID, PlayerSessionIDStr);
 
@@ -1503,7 +1503,7 @@ void IGameEvents::WhatAboutTanksDestroyed(LPWSTR UserID, GUID PlayerSessionID)
 void IGameEvents::WonWarGame(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::SurvivalSpace(\"%S\", %S, \"%S\")\n", UserID, PlayerSessionIDStr, HaloTitleID);
 
@@ -1513,7 +1513,7 @@ void IGameEvents::WonWarGame(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTit
 void IGameEvents::ZanzibarSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::ZanzibarSign(\"%S\", %S, %i)\n", UserID, PlayerSessionIDStr, SignID);
 
@@ -1523,7 +1523,7 @@ void IGameEvents::ZanzibarSign(LPWSTR UserID, GUID PlayerSessionID, INT32 SignID
 void IGameEvents::FirefightGameResults(LPWSTR UserID, GUID PlayerSessionID, LPWSTR HaloTitleID, bool MatchMade, UINT64 TimePlayedMS, UINT32 Kills, UINT32 MostKillsInARow, UINT32 SetsCompleted, UINT32 WavesCompleted, UINT32 GeneratorsDestroyed)
 {
 	OLECHAR *PlayerSessionIDStr;
-	auto StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
+	HRESULT StringFromCLSIDResult = StringFromCLSID(PlayerSessionID, &PlayerSessionIDStr);
 
 	printf("IGameEvents::FirefightGameResults(\"%S\", %S, \"%S\", %s, %llu, %u, %u, %u, %u, %u)\n", UserID, PlayerSessionIDStr, HaloTitleID, MatchMade ? "true" : "false", TimePlayedMS, Kills, MostKillsInARow, SetsCompleted, WavesCompleted, GeneratorsDestroyed);
 
@@ -1534,11 +1534,11 @@ void IGameEvents::EnemyDefeated_0()
 {
 }
 
-void IGameEvents::Member128()
+void IGameEvents::CinematicStarted()
 {
 }
 
-void IGameEvents::Member129()
+void IGameEvents::CinematicStopped()
 {
 }
 

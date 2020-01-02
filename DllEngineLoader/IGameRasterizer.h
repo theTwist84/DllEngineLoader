@@ -240,7 +240,7 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 
 	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &s_deviceMode);
 
-	auto CreateDXGIFactory1Result = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&s_pFactory);
+	HRESULT CreateDXGIFactory1Result = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&s_pFactory);
 	assert(CreateDXGIFactory1Result == S_OK);
 	assert(s_pFactory);
 
@@ -248,7 +248,7 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 #ifdef _DEBUG
 	//createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-	auto D3D11CreateDeviceResult = D3D11CreateDevice(
+	HRESULT D3D11CreateDeviceResult = D3D11CreateDevice(
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
@@ -282,7 +282,7 @@ void IGameRasterizer::InitializeDevice(bool createSwapchain)
 		s_SwapchainDesc.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
 		s_SwapchainDesc.Flags                              = 0;
 
-		auto CreateSwapChainResult = s_pFactory->CreateSwapChain(s_pDevice, &s_SwapchainDesc, &s_pSwapChain);
+		HRESULT CreateSwapChainResult = s_pFactory->CreateSwapChain(s_pDevice, &s_SwapchainDesc, &s_pSwapChain);
 		assert(CreateSwapChainResult == S_OK);
 		assert(s_pSwapChain);
 	}

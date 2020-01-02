@@ -51,6 +51,13 @@ struct ITagInstance
 	UINT32 m_Address;
 };
 
+struct ITagBlock
+{
+	INT32  m_Count;
+	UINT32 m_Address;
+	UINT32 m_DefinitionAddress;
+};
+
 template<typename T>
 struct ITagSection
 {
@@ -94,7 +101,9 @@ public:
 	static IDatumHandle GetGlobalHandle(UINT32 groupTag);
 
 	template<typename T = LPVOID>
-	static T           &GetDefinition(LPCSTR pName);
+	static T           &GetTagDefinition(LPCSTR pName);
+	template<typename T = LPVOID>
+	static T           &GetBlockDefinition(ITagBlock &block, size_t index);
 
 private:
 	static size_t       s_CacheFilePointerOffset;
@@ -135,7 +144,7 @@ void ITagInterface::SetTagAddressTableOffset(size_t tagAddressTableOffset)
 std::string ITagInterface::GetCacheName()
 {
 	static std::string name = "";
-	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
+	char *pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
 	if (pCacheFile)
 	{
 		name = &pCacheFile[0x10 + 0x198];
@@ -147,7 +156,7 @@ std::string ITagInterface::GetCacheName()
 template<typename T>
 T ITagInterface::GetHeader(size_t offset)
 {
-	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
+	char *pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
 	if (pCacheFile)
 	{
 		return *reinterpret_cast<T *>(&pCacheFile[0x10 + offset]);
@@ -157,8 +166,8 @@ T ITagInterface::GetHeader(size_t offset)
 
 IDatumHandle ITagInterface::GetGlobalHandle(UINT32 groupTag)
 {
-	auto pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
-	auto globalTagSection = *reinterpret_cast<ITagSection<IGlobalTagInstance> *>(&pCacheFile[0xA028]);
+	char *pCacheFile = IModuleInterface::Read<char *>(IGameInterface::s_modulePath, s_CacheFilePointerOffset);
+	ITagSection<IGlobalTagInstance> globalTagSection = *reinterpret_cast<ITagSection<IGlobalTagInstance> *>(&pCacheFile[0xA028]);
 
 	for (size_t i = 0; i < globalTagSection.m_Count; ++i)
 	{
@@ -176,16 +185,17 @@ public:
 	ITagList();
 	~ITagList();
 
-	static void                  Add(ITagInfo tagInfo);
-	static void                  FromFile();
+	static void                                          Add(ITagInfo tagInfo);
+	static void                                          FromFile();
 
-	static std::vector<ITagInfo> GetList();
+	static std::vector<ITagInfo>                         GetList();
+	static std::set<std::pair<std::string, std::string>> GetSet();
 
-	static IDatumHandle          GetHandle(LPCSTR pName);
-	static LPCSTR                GetName(IDatumHandle handle);
+	static IDatumHandle                                  GetHandle(LPCSTR pName);
+	static LPCSTR                                        GetName(IDatumHandle handle);
 
-	static ITagInfo              Get(LPCSTR pName);
-	static ITagInfo              Get(IDatumHandle handle);
+	static ITagInfo                                      Get(LPCSTR pName);
+	static ITagInfo                                      Get(IDatumHandle handle);
 
 private:
 	static std::vector<ITagInfo> s_List;
@@ -194,14 +204,22 @@ private:
 std::vector<ITagInfo> ITagList::s_List;
 
 template<typename T>
-T &ITagInterface::GetDefinition(LPCSTR pName)
+T &ITagInterface::GetTagDefinition(LPCSTR pName)
 {
-	auto pTagInstances = IModuleInterface::Read<ITagInstance *>(IGameInterface::s_modulePath, s_TagInstancesOffset);
-	auto pTagAddressTable = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
+	ITagInstance *pTagInstances = IModuleInterface::Read<ITagInstance *>(IGameInterface::s_modulePath, s_TagInstancesOffset);
+	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
 
 	IDatumHandle datumHandle = ITagList::GetHandle(pName);
-	return *reinterpret_cast<T *>(&pTagAddressTable[pTagInstances[datumHandle.m_Index].m_Address >> 28][pTagInstances[datumHandle.m_Index].m_Address]);
-};
+	return *reinterpret_cast<T *>(&rTagAddressTable[pTagInstances[datumHandle.m_Index].m_Address >> 28][pTagInstances[datumHandle.m_Index].m_Address]);
+}
+
+template<typename T>
+T &ITagInterface::GetBlockDefinition(ITagBlock &block, size_t index)
+{
+	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
+
+	return *reinterpret_cast<T *>(&rTagAddressTable[block.m_Address >> 28][block.m_Address + sizeof(T) * index]);
+}
 
 ITagList::ITagList()
 {
@@ -222,8 +240,8 @@ void ITagList::FromFile()
 
 	if (!once)
 	{
-		auto engineName = SplitString(GetFileName(IGameInterface::s_modulePath), ".")[0];
-		auto cacheName = ITagInterface::GetCacheName();
+		std::string engineName = SplitString(GetFileName(IGameInterface::s_modulePath), ".")[0];
+		std::string cacheName = ITagInterface::GetCacheName();
 
 		if (cacheName.c_str()[0])
 		{
@@ -241,11 +259,11 @@ void ITagList::FromFile()
 
 					if (line[0])
 					{
-						auto parts = SplitString(line, ",");
-						auto datumIndex = std::stoul(parts[0], 0, 16);
-						auto tagName = parts[1].c_str();
-						auto tagGroup = parts[2].c_str();
-						auto tagGroupName = parts[3].c_str();
+						std::vector<std::string> parts = SplitString(line, ",");
+						UINT32 datumIndex = std::stoul(parts[0], 0, 16);
+						LPCSTR tagName = parts[1].c_str();
+						LPCSTR tagGroup = parts[2].c_str();
+						LPCSTR tagGroupName = parts[3].c_str();
 
 						char tagPath[MAX_PATH] = {};
 						sprintf(tagPath, "%s.%s", tagName, tagGroupName);
@@ -269,10 +287,21 @@ std::vector<ITagInfo> ITagList::GetList()
 	return s_List;
 }
 
+std::set<std::pair<std::string, std::string>> ITagList::GetSet()
+{
+	std::set<std::pair<std::string, std::string>> groups;
+	for (ITagInfo &tagInfo : ITagList::GetList())
+	{
+		groups.emplace(std::make_pair(tagInfo.Group, tagInfo.GroupName));
+	}
+
+	return groups;
+}
+
 IDatumHandle ITagList::GetHandle(LPCSTR pName)
 {
-	auto parts = SplitString(pName, ".");
-	for (auto &tag : s_List)
+	std::vector<std::string> parts = SplitString(pName, ".");
+	for (ITagInfo &tag : s_List)
 	{
 		if (strcmp(tag.Name, parts[0].c_str()) == 0 && (strcmp(tag.Group, parts[1].c_str()) == 0 || strcmp(tag.GroupName, parts[1].c_str()) == 0))
 		{
@@ -285,7 +314,7 @@ IDatumHandle ITagList::GetHandle(LPCSTR pName)
 
 LPCSTR ITagList::GetName(IDatumHandle handle)
 {
-	for (auto &tag : s_List)
+	for (ITagInfo &tag : s_List)
 	{
 		if (tag.Handle.AsU32() == handle.AsU32())
 		{
@@ -298,8 +327,8 @@ LPCSTR ITagList::GetName(IDatumHandle handle)
 
 ITagInfo ITagList::Get(LPCSTR pName)
 {
-	auto parts = SplitString(pName, ".");
-	for (auto &tag : s_List)
+	std::vector<std::string> parts = SplitString(pName, ".");
+	for (ITagInfo &tag : s_List)
 	{
 		if (strcmp(tag.Name, parts[0].c_str()) == 0 && (strcmp(tag.Group, parts[1].c_str()) == 0 || strcmp(tag.GroupName, parts[1].c_str()) == 0))
 		{
@@ -312,7 +341,7 @@ ITagInfo ITagList::Get(LPCSTR pName)
 
 ITagInfo ITagList::Get(IDatumHandle handle)
 {
-	for (auto &tag : s_List)
+	for (ITagInfo &tag : s_List)
 	{
 		if (tag.Handle.AsU32() == handle.AsU32())
 		{
@@ -325,26 +354,45 @@ ITagInfo ITagList::Get(IDatumHandle handle)
 
 class c_tag_reference
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
-		auto tag = ITagList::Get(m_index);
+		ITagInfo tag = ITagList::Get(m_index);
 		printf("%s = %s %s.%s\n", pName, tag.Group, tag.Name, tag.GroupName);
 	}
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
 		char taggroup_buffer[5] = {};
 		char tagname_buffer[MAX_PATH] = {};
-		if (scanf("%s %s", &taggroup_buffer, &tagname_buffer))
+		if (scanf("%s %s\n", &taggroup_buffer, &tagname_buffer))
 		{
 			memcpy(m_group_tag, taggroup_buffer, 4);
 			m_index = ITagList::GetHandle(tagname_buffer).AsI32();
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -357,24 +405,44 @@ static_assert(sizeof(c_tag_reference) == 0x10, "sizeof(c_tag_reference) != 0x10"
 
 class c_tag_block
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
 		for (long i = 0; i < m_count; i++)
 		{
-			printf("%s = 0x%X 0x%X\n", pName, m_address, m_definition_address);
+			//auto &block_definition = ITagInterface::GetBlockDefinition(, i);
+			printf("%s[%i] = 0x%X 0x%X\n", pName, i, m_address, m_definition_address);
 		}
 	}
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%u %u", &m_address, &m_definition_address))
+		if (scanf("%u %u\n", &m_address, &m_definition_address))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -384,22 +452,6 @@ private:
 };
 static_assert(sizeof(c_tag_block) == 0xC, "sizeof(c_tag_block) != 0xC");
 
-struct s_tag_data
-{
-	long size;
-	long stream_flags;
-	long stream_offset;
-	unsigned long address;
-	unsigned long definition_address;
-};
-static_assert(sizeof(s_tag_data) == 0x14, "sizeof(s_tags_tag_data_reference) != 0x14");
-
-struct s_tag_function
-{
-	s_tag_data data;
-};
-static_assert(sizeof(s_tag_function) == 0x14, "sizeof(s_tag_function) != 0x14");
-
 template<typename T>
 class c_field_definition
 {
@@ -408,16 +460,28 @@ public:
 	size_t      m_Offset;
 	T           m_Type;
 
-	bool IsNull()
+	bool is_valid()
 	{
 		UINT32 valid = -1;
 		valid += !m_Name.empty() ? 1 : 0;
-		return valid == -1;
+		return valid >= 0;
 	}
 };
 
 class c_int8_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -426,13 +490,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%hhi", &m_value))
+		if (scanf("%hhi\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -442,6 +513,18 @@ static_assert(sizeof(c_int8_field) == 0x1, "sizeof(c_int8_field) != 0x1");
 
 class c_uint8_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -450,13 +533,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%hhu", &m_value))
+		if (scanf("%hhu\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -466,6 +556,18 @@ static_assert(sizeof(c_uint8_field) == 0x1, "sizeof(c_uint8_field) != 0x1");
 
 class c_int16_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -474,13 +576,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%hi", &m_value))
+		if (scanf("%hi\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -490,6 +599,18 @@ static_assert(sizeof(c_int16_field) == 0x2, "sizeof(c_int16_field) != 0x2");
 
 class c_uint16_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -498,13 +619,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%hu", &m_value))
+		if (scanf("%hu\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -514,6 +642,18 @@ static_assert(sizeof(c_uint16_field) == 0x2, "sizeof(c_uint16_field) != 0x2");
 
 class c_int32_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -522,13 +662,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%i", &m_value))
+		if (scanf("%i\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -538,6 +685,18 @@ static_assert(sizeof(c_int32_field) == 0x4, "sizeof(c_int32_field) != 0x4");
 
 class c_uint32_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -546,13 +705,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%u", &m_value))
+		if (scanf("%u\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -562,6 +728,18 @@ static_assert(sizeof(c_uint32_field) == 0x4, "sizeof(c_uint32_field) != 0x4");
 
 class c_int64_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -570,13 +748,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%lli", &m_value))
+		if (scanf("%lli\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -586,6 +771,18 @@ static_assert(sizeof(c_int64_field) == 0x8, "sizeof(c_int64_field) != 0x8");
 
 class c_uint64_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -594,13 +791,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%llu", &m_value))
+		if (scanf("%llu\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -610,6 +814,18 @@ static_assert(sizeof(c_uint64_field) == 0x8, "sizeof(c_uint64_field) != 0x8");
 
 class c_float32_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -618,13 +834,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%f", &m_value))
+		if (scanf("%f\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -634,6 +857,18 @@ static_assert(sizeof(c_float32_field) == 0x4, "sizeof(c_float32_field) != 0x4");
 
 class c_float64_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -642,13 +877,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%lf", &m_value))
+		if (scanf("%lf\n", &m_value))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -658,6 +900,18 @@ static_assert(sizeof(c_float64_field) == 0x8, "sizeof(c_float64_field) != 0x8");
 
 class c_float32_vec3_field
 {
+private:
+	template<typename T>
+	T default_value(T &value, bool reset = false)
+	{
+		static T s_value = value;
+
+		if (reset)
+			value = s_value;
+
+		return s_value;
+	}
+
 public:
 	void get_field(LPCSTR pName)
 	{
@@ -666,13 +920,20 @@ public:
 
 	void edit_field(LPCSTR pName)
 	{
+		default_value(*this);
 		get_field(pName);
 
 		printf("[%s, Enter new values]: ", pName);
-		if (scanf("%f %f %f", &m_iValue, &m_jValue, &m_kValue))
+		if (scanf("%f %f %f\n", &m_iValue, &m_jValue, &m_kValue))
 		{
 			get_field(pName);
 		}
+	}
+
+	void reset_field(LPCSTR pName)
+	{
+		default_value(*this, true);
+		get_field(pName);
 	}
 
 private:
@@ -686,48 +947,21 @@ class c_tag_definition
 public:
 	char   m_data[size];
 
-	INT32 tag_group()
-	{
-		static INT32 Group = group;
-		return Group;
-	}
-
-	bool IsNull()
+	bool is_valid()
 	{
 		UINT32 valid = -1;
-		for (size_t i = 0; i < sizeof(m_data); i++)
-			valid += m_data[i] != 0 ? 1 : 0;
-		return valid == -1;
-	}
 
-	template<typename T>
-	T &field_accessor(size_t offset)
-	{
-		return *reinterpret_cast<T *>(&m_data[offset]);
-	}
-
-	template<typename T>
-	void fields_accessor(LPCSTR pInputCommand, LPCSTR pInputArgument, std::vector<c_field_definition<T>> vFields)
-	{
-		for (auto &field : vFields)
+		try
 		{
-			if (!field.IsNull())
-			{
-				if (strcmp(pInputArgument, field.m_Name.c_str()) == 0)
-				{
-					if (strcmp(pInputCommand, "edit") == 0)
-					{
-						field_accessor<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
-						break;
-					}
-					if (strcmp(pInputCommand, "get") == 0)
-					{
-						field_accessor<decltype(field.m_Type)>(field.m_Offset).get_field(field.m_Name.c_str());
-						break;
-					}
-				}
-			}
+			for (size_t i = 0; i < sizeof(m_data); i++)
+				valid += m_data[i] != 0 ? 1 : 0;
 		}
+		catch (const std::exception &e)
+		{
+			printf("%s\n", e.what());
+		}
+
+		return valid >= 0;
 	}
 
 	std::vector<c_field_definition<c_tag_reference>> &tag_reference_field(LPCSTR pFieldName = "", size_t fieldOffset = -1)
@@ -823,39 +1057,109 @@ public:
 		return fields;
 	}
 
+	template<typename T>
+	T &field_accessor(size_t offset)
+	{
+		return *reinterpret_cast<T *>(&m_data[offset]);
+	}
+
+	template<typename T>
+	void fields_accessor(LPCSTR pInputCommand, LPCSTR pInputArgument, std::vector<c_field_definition<T>> vFields)
+	{
+		for (c_field_definition<T> &field : vFields)
+		{
+			if (field.is_valid())
+			{
+				if (strcmp(pInputArgument, field.m_Name.c_str()) == 0)
+				{
+					if (ICommand({ "Get", "get" }).Match(pInputCommand))
+					{
+						field_accessor<decltype(field.m_Type)>(field.m_Offset).get_field(field.m_Name.c_str());
+						break;
+					}
+					if (ICommand({ "Edit", "edit" }).Match(pInputCommand))
+					{
+						field_accessor<decltype(field.m_Type)>(field.m_Offset).edit_field(field.m_Name.c_str());
+						break;
+					}
+					if (ICommand({ "Reset", "reset" }).Match(pInputCommand))
+					{
+						field_accessor<decltype(field.m_Type)>(field.m_Offset).reset_field(field.m_Name.c_str());
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	INT32 tag_group()
+	{
+		static INT32 Group = group;
+		return Group;
+	}
+
 	bool edit(LPCSTR pTagName)
 	{
-		while (true)
+		if (is_valid())
 		{
-			if (!IsNull())
+			static char input_buffer[1024] = {};
+			while (true)
 			{
 				printf("%s> ", pTagName);
-				char input_cmd[1024] = {}, input_arg[1024] = {};
-				if (scanf("%s %s", &input_cmd, &input_arg) != 0 && input_arg[0] != 0)
-				{
-					fields_accessor(input_cmd, input_arg, tag_reference_field());
-					//fields_accessor(input_cmd, input_arg, tag_block_field()); // unsupported for now, more research required
-					fields_accessor(input_cmd, input_arg, int8_field());
-					fields_accessor(input_cmd, input_arg, uint8_field());
-					fields_accessor(input_cmd, input_arg, int16_field());
-					fields_accessor(input_cmd, input_arg, uint16_field());
-					fields_accessor(input_cmd, input_arg, int32_field());
-					fields_accessor(input_cmd, input_arg, uint32_field());
-					fields_accessor(input_cmd, input_arg, int64_field());
-					fields_accessor(input_cmd, input_arg, uint64_field());
-					fields_accessor(input_cmd, input_arg, float32_field());
-					fields_accessor(input_cmd, input_arg, float64_field());
-					fields_accessor(input_cmd, input_arg, float32_vec3_field());
-				}
 
-				if (strcmp(input_cmd, "exit") == 0)
-				{
+				memset(input_buffer, 0, 1024);
+				fgets(input_buffer, 1024, stdin);
+
+				char *newline = strchr(input_buffer, '\n');
+				if (newline) *newline = '\0';
+
+				if (strlen(input_buffer) == 0)
+					continue;
+
+				std::vector<std::string> inputs = SplitString(input_buffer, " ");
+				LPCSTR pInputCommand = inputs.size() >= 1 ? inputs[0].c_str() : "\0";
+				LPCSTR pInputArgument = inputs.size() >= 2 ? inputs[1].c_str() : "\0";
+
+				if (ICommand({ "Exit", "exit" }).Match(pInputCommand))
 					break;
-				}
+
+				fields_accessor(pInputCommand, pInputArgument, tag_reference_field());
+				fields_accessor(pInputCommand, pInputArgument, int8_field());
+				fields_accessor(pInputCommand, pInputArgument, uint8_field());
+				fields_accessor(pInputCommand, pInputArgument, int16_field());
+				fields_accessor(pInputCommand, pInputArgument, uint16_field());
+				fields_accessor(pInputCommand, pInputArgument, int32_field());
+				fields_accessor(pInputCommand, pInputArgument, uint32_field());
+				fields_accessor(pInputCommand, pInputArgument, int64_field());
+				fields_accessor(pInputCommand, pInputArgument, uint64_field());
+				fields_accessor(pInputCommand, pInputArgument, float32_field());
+				fields_accessor(pInputCommand, pInputArgument, float64_field());
+				fields_accessor(pInputCommand, pInputArgument, float32_vec3_field());
 			}
 		}
 
 		return false;
+	}
+};
+
+class c_weapon_attachments_block_definition : public c_tag_definition<'null', 0x20>
+{
+public:
+	c_weapon_attachments_block_definition &apply(bool force = false)
+	{
+		static bool applied = false;
+		if (!applied || force)
+		{
+			tag_reference_field("attachment", 0x0);
+			int32_field("marker", 0x10);
+			int16_field("change_color", 0x14);
+			int16_field("unknown16", 0x16);
+			int32_field("primary_scale", 0x18);
+			int32_field("secondary_scale", 0x1C);
+
+			applied = true;
+		}
+		return *this;
 	}
 };
 
@@ -915,4 +1219,72 @@ public:
 		}
 		return *this;
 	}
+};
+
+bool EditTag(LPCSTR pInput)
+{
+	auto list_tag_groups = []()
+	{
+		std::set<std::pair<std::string, std::string>> tagGroups = ITagList::GetSet();
+		auto &last = (*tagGroups.rbegin());
+
+		printf("enum TagGroup\n{\n");
+		for (auto &group : tagGroups)
+		{
+			if (strcmp(group.first.c_str(), last.first.c_str()) == 0)
+				printf("\t{ %s, %s }\n", group.first.c_str(), group.second.c_str());
+			else
+				printf("\t{ %s, %s },\n", group.first.c_str(), group.second.c_str());
+		}
+		printf("};\n");
+
+		return false;
+	};
+
+	auto list_tags_in_group = [](LPCSTR pGroup)
+	{
+		std::set<std::pair<std::string, std::string>> tagGroups = ITagList::GetSet();
+		for (auto &group : tagGroups)
+		{
+			if (strcmp(group.first.c_str(), pGroup) == 0 || strcmp(group.second.c_str(), pGroup) == 0)
+			{
+				ITagInfo last = *ITagList::GetList().rbegin();
+
+				printf("enum %s\n{\n", pGroup);
+				for (ITagInfo &tagInfo : ITagList::GetList())
+				{
+					if (strcmp(tagInfo.Group, pGroup) == 0 || strcmp(tagInfo.GroupName, pGroup) == 0)
+					{
+						if (strcmp(tagInfo.Group, last.Group) == 0 || strcmp(tagInfo.GroupName, last.GroupName) == 0)
+							printf("\t%s.%s\n", tagInfo.Name, tagInfo.GroupName);
+						else
+							printf("\t%s.%s,\n", tagInfo.Name, tagInfo.GroupName);
+					}
+				}
+				printf("};\n");
+			}
+		}
+
+		return false;
+	};
+
+	if (strcmp(pInput, "") == 0)
+		return list_tag_groups();
+
+	std::string groupName = strstr(pInput, ".") != 0 ? SplitString(pInput, ".")[1] : pInput;
+
+	if (strcmp(groupName.c_str(), "scenario") == 0)
+		return ITagInterface::GetTagDefinition<c_scenario_definition>(pInput).apply().edit(pInput);
+
+	if (strcmp(groupName.c_str(), "weapon") == 0)
+		return ITagInterface::GetTagDefinition<c_weapon_definition>(pInput).apply().edit(pInput);
+
+	if (strcmp(groupName.c_str(), "user_interface_shared_globals_definition") == 0)
+		return ITagInterface::GetTagDefinition<c_user_interface_shared_globals_definition>(pInput).apply().edit(pInput);
+
+	for (const std::pair<std::string, std::string> &group : ITagList::GetSet())
+		if (strcmp(group.first.c_str(), groupName.c_str()) == 0 || strcmp(group.second.c_str(), groupName.c_str()) == 0)
+			list_tags_in_group(group.first.c_str());
+
+	return false;
 };

@@ -42,12 +42,12 @@ IGameInterface::IGameInterface(LPCSTR pEngine)
 	{
 		if (!s_pEngine)
 		{
-			auto pCreateGameEngine = (int(*)(IGameEngine **))GetProcAddress(s_hLibModule, "CreateGameEngine");
+			int(*pCreateGameEngine)(IGameEngine **) = (int(*)(IGameEngine **))GetProcAddress(s_hLibModule, "CreateGameEngine");
 			pCreateGameEngine(&s_pEngine);
 		}
 		if (!s_pDataAccess)
 		{
-			auto pCreateDataAccess = (int(*)(IDataAccess **))GetProcAddress(s_hLibModule, "CreateDataAccess");
+			int(*pCreateDataAccess)(IDataAccess **) = (int(*)(IDataAccess **))GetProcAddress(s_hLibModule, "CreateDataAccess");
 			pCreateDataAccess(&s_pDataAccess);
 		}
 	}
@@ -78,8 +78,8 @@ void IGameInterface::LaunchTitle(class IGameEngineHost &rGameEngineHost, IGameRa
 	printf("IGameInterface::LaunchTitle(0x%08llX, 0x%08llX, 0x%08llX, %s, 0x%08llX);\n", (UINT64)&rGameEngineHost, (UINT64)&rGameRasterizer, (UINT64)&rGameContext, rRunning ? "true" : "false", (UINT64)pCallback);
 #endif
 
-	auto pEngine     = GetEngine();
-	auto pDataAccess = GetDataAccess();
+	IGameEngine *pEngine     = GetEngine();
+	IDataAccess *pDataAccess = GetDataAccess();
 
 	pEngine->InitGraphics(rGameRasterizer.GetDevice(), rGameRasterizer.GetDeviceContext(), rGameRasterizer.GetSwapChain(), 0);
 	HANDLE hGameThread = pEngine->InitThread(&rGameEngineHost, &rGameContext);

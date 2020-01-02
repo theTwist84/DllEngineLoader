@@ -245,7 +245,7 @@ IGameEvents *__fastcall IGameEngineHost::GetGameEvents()
 
 void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 {
-	auto name = pGameVariant->GetName();
+	LPCWSTR name = pGameVariant->GetName();
 	if (!name[0])
 	{
 		pGameVariant->SetName(L"Temp");
@@ -255,7 +255,7 @@ void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 	char *buffer; size_t size = 0;
 	if (pGameVariant->CreateFileFromBuffer(&buffer, &size))
 	{
-		auto file = IFileAccess("%s%S.bin", GetFilePath(GetCommandLineArg(0)).c_str(), name);
+		IFileAccess file = IFileAccess("%s%S.bin", GetFilePath(GetCommandLineArg(0)).c_str(), name);
 		if (file.FileOpen(FileAccessType::Write))
 		{
 			file.FileWrite(buffer, size);
@@ -266,7 +266,7 @@ void IGameEngineHost::GameVariantWrite(IGameVariant *pGameVariant)
 
 void IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 {
-	auto name = pMapVariant->GetName();
+	LPCWSTR name = pMapVariant->GetName();
 	if (!name[0])
 	{
 		pMapVariant->SetName(L"Temp");
@@ -276,7 +276,7 @@ void IGameEngineHost::MapVariantWrite(IMapVariant *pMapVariant)
 	char *buffer; size_t size = 0;
 	if (pMapVariant->CreateFileFromBuffer(&buffer, &size))
 	{
-		auto file = IFileAccess("%s%S.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), name);
+		IFileAccess file = IFileAccess("%s%S.mvar", GetFilePath(GetCommandLineArg(0)).c_str(), name);
 		if (file.FileOpen(FileAccessType::Write))
 		{
 			file.FileWrite(buffer, size);
@@ -391,10 +391,10 @@ bool IGameEngineHost::UpdateGraphics(char *buffer)
 {
 	printf("IGameEngineHost::UpdateGraphics(0x%08llX);\n", (UINT64)buffer);
 
-	auto &width     = *(INT32  *)&buffer[000];
-	auto &height    = *(INT32  *)&buffer[004];
-	auto &fps_limit = *(UINT16 *)&buffer[041];
-	auto &settings  = *(float  *)&buffer[208];
+	INT32  &width     = *(INT32  *)&buffer[000];
+	INT32  &height    = *(INT32  *)&buffer[004];
+	UINT16 &fps_limit = *(UINT16 *)&buffer[041];
+	float  &settings  = *(float  *)&buffer[208];
 
 	width     = 3840;
 	height    = 2160;
@@ -676,8 +676,8 @@ BOOL IGameEngineHost::Member43(INT64 a1, INT64 a2)
 
 bool IGameEngineHost::GetPathByType(int pathType, LPSTR buffer, size_t bufferlength)
 {
-	auto pModule = std::string(IGameInterface::s_modulePath).substr(std::string(IGameInterface::s_modulePath).find_last_of("/\\") + 1);
-	auto pEngine = pModule.erase(pModule.find_last_of("."), std::string::npos).c_str();
+	std::string pModule = std::string(IGameInterface::s_modulePath).substr(std::string(IGameInterface::s_modulePath).find_last_of("/\\") + 1);
+	LPCSTR      pEngine = pModule.erase(pModule.find_last_of("."), std::string::npos).c_str();
 
 	// this this should be in its function
 	switch (pathType)

@@ -34,7 +34,7 @@ int main(int argc, LPSTR *argv)
 	default:
 		pEngine = "HaloReach";
 		pGame   = "slayer_054";
-		pMap    = "hang_em_high_cl_031";
+		pMap    = "cex_prisoner";
 		//pFilm   = "asq_m30_EF0E4721";
 		break;
 	}
@@ -66,6 +66,8 @@ int main(int argc, LPSTR *argv)
 	static IGameEngineHost gameEngineHost = IGameEngineHost();
 	static IGameRasterizer gameRasterizer = IGameRasterizer(1280, 720, true);
 	static IGameContext    gameContext    = IGameContext(gameInterface.GetDataAccess(), pEngine, pGame, pMap, pFilm);
+
+	//gameContext.SetMapInsertionPoint(0);
 
 	IConsoleAccess::IConsoleAccess().SetGameInterface(gameInterface);
 

@@ -119,7 +119,7 @@ LPCSTR IModuleInterface::GetPath(int index)
 
 LPCSTR IModuleInterface::GetPath(LPCSTR pModule)
 {
-	auto index = GetIndex(pModule);
+	int index = GetIndex(pModule);
 	LPCSTR result = m_modules[index].m_path;
 	return result;
 }
@@ -132,7 +132,7 @@ size_t IModuleInterface::GetBase(int index, bool isFile)
 
 size_t IModuleInterface::GetBase(LPCSTR pModule, bool isFile)
 {
-	auto index = GetIndex(pModule);
+	int index = GetIndex(pModule);
 	size_t result = isFile ? m_modules[index].m_base : m_modules[index].m_addr;
 	return result;
 }
@@ -145,7 +145,7 @@ size_t IModuleInterface::GetTop(int index, bool isFile)
 
 size_t IModuleInterface::GetTop(LPCSTR pModule, bool isFile)
 {
-	auto index = GetIndex(pModule);
+	int index = GetIndex(pModule);
 	size_t result = GetBase(index, isFile) + GetSize(index);
 	return result;
 }
@@ -158,7 +158,7 @@ size_t IModuleInterface::GetSize(int index)
 
 size_t IModuleInterface::GetSize(LPCSTR pModule)
 {
-	auto index = GetIndex(pModule);
+	int index = GetIndex(pModule);
 	size_t result = m_modules[index].m_size;
 	return result;
 }
@@ -176,7 +176,7 @@ size_t IModuleInterface::GetOffset(int index, size_t addr, bool isFile)
 size_t IModuleInterface::GetOffset(LPCSTR pModule, size_t addr, bool isFile)
 {
 	size_t result = size_t();
-	auto index = GetIndex(pModule);
+	int index = GetIndex(pModule);
 	if (IsInModule(index, addr, isFile))
 	{
 		result = addr - GetBase(index, isFile);
@@ -199,7 +199,7 @@ template<typename T>
 T IModuleInterface::GetAddress(LPCSTR pModule, size_t offset)
 {
 	size_t result = size_t();
-	auto index = GetIndex(pModule);
+	int index = GetIndex(pModule);
 	if (IsInModule(index, GetBase(index, true) + GetOffset(index, offset, true), true))
 	{
 		result = GetBase(index) + GetOffset(index, offset, true);
@@ -222,7 +222,7 @@ T &IModuleInterface::Read(LPCSTR pModule, size_t offset)
 template<typename T>
 void IModuleInterface::Write(int index, size_t offset, T data)
 {
-	auto addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
+	LPVOID addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
 	DWORD old;
 	VirtualProtect(addr, sizeof(T), PAGE_READWRITE, &old);
 	memcpy(addr, data, sizeof(T));
@@ -232,8 +232,8 @@ void IModuleInterface::Write(int index, size_t offset, T data)
 template<typename T>
 void IModuleInterface::Write(LPCSTR pModule, size_t offset, T data)
 {
-	auto index = GetIndex(pModule);
-	auto addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
+	int index = GetIndex(pModule);
+	LPVOID addr = IModuleInterface::GetAddress<LPVOID>(index, offset);
 	DWORD old;
 	VirtualProtect(addr, sizeof(T), PAGE_READWRITE, &old);
 	memcpy(addr, &data, sizeof(T));
@@ -242,7 +242,7 @@ void IModuleInterface::Write(LPCSTR pModule, size_t offset, T data)
 
 void IModuleInterface::Update()
 {
-	auto hProcess = GetCurrentProcess();
+	HANDLE hProcess = GetCurrentProcess();
 	HMODULE m_hModules[1024]; DWORD cbNeeded;
 	if (EnumProcessModules(hProcess, m_hModules, sizeof(m_hModules), &cbNeeded))
 	{
@@ -265,7 +265,7 @@ void IModuleInterface::Update()
 							LPVOID lpFileBase = MapViewOfFile(hFileMapping, FILE_MAP_READ, 0, 0, 0);
 							if (lpFileBase != 0)
 							{
-								auto dosHeader = (PIMAGE_DOS_HEADER)lpFileBase;
+								PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)lpFileBase;
 								if (dosHeader->e_magic == IMAGE_DOS_SIGNATURE)
 								{
 									m_modules[i].m_base = ((PIMAGE_NT_HEADERS)((UINT64)dosHeader + (UINT64)dosHeader->e_lfanew))->OptionalHeader.ImageBase;
@@ -282,7 +282,7 @@ void IModuleInterface::Update()
 	}
 }
 
-auto WriteStackTrace = [=](LPCSTR pCallingFunction = "")
+void WriteStackTrace(LPCSTR pCallingFunction = "")
 {
 	IModuleInterface::Update();
 
@@ -296,14 +296,14 @@ auto WriteStackTrace = [=](LPCSTR pCallingFunction = "")
 		{
 			if (IModuleInterface::IsInModule(i, traces[traceIndex]))
 			{
-				auto offset = IModuleInterface::GetOffset(i, traces[traceIndex]);
+				size_t offset = IModuleInterface::GetOffset(i, traces[traceIndex]);
 				printf("\t0x%016llX, %s+0x%08llX\n", IModuleInterface::GetOffset(i, traces[traceIndex], true), GetFileName(IModuleInterface::GetPath(i)).c_str(), offset);
 			}
 		}
 	}
 
 	printf("}\n");
-};
+}
 
 
 class IPatch
@@ -352,7 +352,7 @@ IPatch::~IPatch()
 
 void IPatch::Apply(bool revert)
 {
-	auto bytes = revert ? OrigBytes : PatchBytes;
+	std::vector<UINT8> bytes = revert ? OrigBytes : PatchBytes;
 	for (size_t i = 0; i < PatchBytes.size(); i++)
 	{
 		IModuleInterface::Write(Module, Offset + i, bytes[i]);

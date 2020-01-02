@@ -20,15 +20,15 @@ public:
 
 		if (pFile = new IFileAccess("%s\\game_variants\\%s.bin", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pGameVariant = GameVariantCreateFromFile(pFile->FileRead(file_size), file_size);
+			pGameVariant = GameVariantCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\hopper_game_variants\\%s.bin", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pGameVariant = GameVariantCreateFromFile(pFile->FileRead(file_size), file_size);
+			pGameVariant = GameVariantCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\GameType\\%s.bin", GetUserprofileVariable(), pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pGameVariant = GameVariantCreateFromFile(pFile->FileRead(file_size), file_size);
+			pGameVariant = GameVariantCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 
 		pFile->FileClose();
@@ -43,19 +43,19 @@ public:
 
 		if (pFile = new IFileAccess("%s\\map_variants\\%s.mvar", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
+			pMapVariant = MapVariantCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\hopper_map_variants\\%s.mvar", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
+			pMapVariant = MapVariantCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Map\\%s.bin", GetUserprofileVariable(), pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pMapVariant = MapVariantCreateFromFile(pFile->FileRead(file_size), file_size);
+			pMapVariant = MapVariantCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\maps\\info\\%s.mapinfo", pEngine, pName), pFile->FileOpen(FileAccessType::Read))
 		{
-			auto map_id = *(INT32 *)&pFile->FileRead(file_size)[0x3C];
+			INT32 &map_id = pFile->FileRead<INT32>(file_size, 0x3C);
 			map_id = ((map_id >> 24) & 0xff) | ((map_id << 8) & 0xff0000) | ((map_id >> 8) & 0xff00) | ((map_id << 24) & 0xff000000);
 
 			pMapVariant = MapVariantCreateFromMapID(map_id);
@@ -74,15 +74,15 @@ public:
 
 		if (pFile = new IFileAccess("%s\\Temporary\\autosave\\%s.film", pEngine, rpName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
+			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\%s\\autosave\\%s.film", GetUserprofileVariable(), pEngine, rpName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
+			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		else if (pFile = new IFileAccess("%s\\AppData\\LocalLow\\MCC\\Temporary\\UserContent\\%s\\Movie\\%s.mov", GetUserprofileVariable(), pEngine, rpName), pFile->FileOpen(FileAccessType::Read))
 		{
-			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead(file_size), file_size);
+			pSaveFilmMetadata = SaveFilmMetadataCreateFromFile(pFile->FileRead<char *>(file_size), file_size);
 		}
 		strcpy(path, pFile->GetFilePath());
 		rpName = path;

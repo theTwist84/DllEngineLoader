@@ -267,6 +267,14 @@ public:
 
 		m_MapID = static_cast<MapID>(mapID);
 	}
+	void SetMapInsertionPoint(UINT16 mapInsertionPoint)
+	{
+#ifdef _DEBUG
+		printf("IGameContext::SetMapInsertionPoint(\"%hu\");\n", mapInsertionPoint);
+#endif
+
+		m_MapInsertionPoint = mapInsertionPoint;
+	}
 	void SetSavedFilmPath(LPCSTR pSavedFilmPath)
 	{
 #ifdef _DEBUG
@@ -349,7 +357,7 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 			if (file.FileOpen(FileAccessType::Read))
 			{
 				size_t size = 0;
-				pGameVariant = pDataAccess->GameVariantCreateDefault(file.FileRead(size));
+				pGameVariant = pDataAccess->GameVariantCreateDefault(file.FileRead<char *>(size));
 			}
 			file.FileClose();
 
@@ -386,7 +394,7 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 				if (file.FileOpen(FileAccessType::Read))
 				{
 					size_t size = 0;
-					pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead(size));
+					pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead<char *>(size));
 				}
 				file.FileClose();
 			}
@@ -399,7 +407,7 @@ IGameContext::IGameContext(IDataAccess *pDataAccess, LPCSTR pEngine, LPCSTR pGam
 					if (file.FileOpen(FileAccessType::Read))
 					{
 						size_t size = 0;
-						pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead(size));
+						pMapVariant = pDataAccess->MapVariantCreateDefault(file.FileRead<char *>(size));
 					}
 					file.FileClose();
 

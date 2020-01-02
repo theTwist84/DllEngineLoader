@@ -18,7 +18,8 @@ public:
 	bool   FileOpen(FileAccessType);
 	void   FileClose();
 
-	char  *FileRead(size_t &);
+	template<typename T>
+	T     &FileRead(size_t &, size_t offset = 0);
 
 	void   FileWrite(char *, size_t);
 
@@ -86,7 +87,8 @@ void IFileAccess::FileClose()
 	memset(s_filePath, 0, sizeof(s_filePath));
 }
 
-char *IFileAccess::FileRead(size_t &rBufferSize)
+template<typename T>
+T &IFileAccess::FileRead(size_t &rBufferSize, size_t offset)
 {
 	if (s_pFile)
 	{
@@ -102,7 +104,9 @@ char *IFileAccess::FileRead(size_t &rBufferSize)
 	}
 
 	rBufferSize = s_size;
-	return s_pBuffer;
+	if (offset > 0)
+		return *reinterpret_cast<T *>(&s_pBuffer[offset]);
+	return *reinterpret_cast<T *>(&s_pBuffer);
 }
 
 void IFileAccess::FileWrite(char *buffer, size_t size)
