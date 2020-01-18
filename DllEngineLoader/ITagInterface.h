@@ -1727,28 +1727,6 @@ hs_script_op *hs_function_get(__int16 opcode)
 	return hs_function_table[opcode];
 }
 
-__int64 hs_evaluate_arguments(unsigned __int16 expression_index, __int16 parameter_count, __int16 *parameter_types, bool execute)
-{
-	UINT64 addr = IModuleInterface::GetAddress<UINT64>(IGameInterface::s_modulePath, 0x1801EF690);
-	return ((__int64(__fastcall *)(unsigned __int16, __int16, __int16 *, bool))(addr))(expression_index, parameter_count, parameter_types, execute);
-}
-
-__int64 hs_return(unsigned __int16 expression_index, unsigned int handle)
-{
-	UINT64 addr = IModuleInterface::GetAddress<UINT64>(IGameInterface::s_modulePath, 0x1801EEE00);
-	return ((__int64(__fastcall *)(unsigned __int16, unsigned int))(addr))(expression_index, handle);
-}
-
-struct s_data_reference
-{
-	char m_data[0x14];
-};
-
-void hs_print_evaluate(__int16 opcode, unsigned __int16 expression_index, char execute)
-{
-	hs_function_get(0x509)->evaluate(opcode, expression_index, execute);
-}
-
 struct halo_script
 {
 	enum : int
@@ -3769,6 +3747,16 @@ struct halo_script
 		return value == _undefined ? "undefined" : names[value];
 	}
 
+	halo_script(LPCSTR str)
+	{
+		value = decltype(value)::_undefined;
+		for (int i = 0; i <= _last; i++)
+		{
+			if (i >= _first && i < _last && strcmp(str, halo_script(i).c_str()) == 0)
+				value = static_cast<decltype(value)>(i);
+		}
+	}
+
 	void generate_csv()
 	{
 		static UINT64 hs_null_evaluate_addrs[1] = { 0x1802A6130 };
@@ -3981,3 +3969,13 @@ struct halo_script
 		return;
 	}
 };
+
+hs_script_op *hs_function_get(LPCSTR opname)
+{
+	return hs_function_get(halo_script(opname).value);
+}
+
+void hs_print_evaluate(__int16 opcode, unsigned __int16 expression_index, char execute)
+{ 
+	hs_function_get("chud_post_message")->evaluate(opcode, expression_index, execute);
+}
