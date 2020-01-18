@@ -81,13 +81,15 @@ int main(int argc, LPSTR *argv)
 	gameContext.SetupSession(true, 0x7F7F86B0EE577202, 0x29EF835E2A9E63DE/*, 0x7F7F86B0EE577202, { 0x7F7F86B0EE577202 }, { 0x0009000002D75AC8 }*/);
 	gameContext.SetMapInsertionPoint(1);
 
-	hs_function_get("print")->replace_evaluate(hs_print_evaluate);
+	static c_halo_script hs = c_halo_script();
 
 	//halo_script().generate_csv();
 	//halo_script().generate_idc();
 
 	//printf("Sleep(-1);\n");
 	//Sleep(-1);
+
+	hs_function_get("print")->replace_evaluate(hs_print_evaluate);
 
 	auto updateCallBack = [](IGameEngine *pEngine)
 	{

@@ -115,6 +115,14 @@ std::string StringToLower(std::string string)
 	return str;
 }
 
+void virtual_memcpy(void *_Dst, const void *_Src, size_t _Size)
+{
+	DWORD old;
+	VirtualProtect(_Dst, _Size, PAGE_READWRITE, &old);
+	memcpy(_Dst, _Src, _Size);
+	VirtualProtect(_Dst, _Size, old, &old);
+}
+
 bool g_running = false;
 
 #include "ICommand.h"
@@ -137,6 +145,14 @@ bool g_running = false;
 #include "IGameContext.h"
 #include "IGameEvents.h"
 #include "IGameEngineHost.h"
+
+UINT64 get_file_addr(UINT64 offset)
+{
+	static UINT64 base = IModuleInterface::GetBase(IGameInterface::s_modulePath, true);
+	UINT64 addr = base + IModuleInterface::GetOffset(IGameInterface::s_modulePath, offset, false);
+
+	return addr;
+}
 
 #include "ITagInterface.h"
 
