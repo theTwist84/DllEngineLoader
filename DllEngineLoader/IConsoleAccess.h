@@ -150,11 +150,17 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 	if (ICommand({ "EditTag" }).Match(pInputCommand))
 		return EditTag(pInputArgument);
 
+	if (ICommand({ "PrintScenarioScripts" }).Match(pInputCommand))
+	{
+		return print_scenario_scripts();
+	}
+
 	enum class Command : int
 	{
 		LaunchTitle,
 		EngineState,
-		EditGet,
+		EditTag,
+		PrintScenarioScripts,
 
 		kCount
 	};
@@ -162,7 +168,8 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 	{
 		"LaunchTitle",
 		"EngineState",
-		"EditTag"
+		"EditTag",
+		"PrintScenarioScripts"
 	};
 	size_t commandCount = static_cast<size_t>(Command::kCount);
 

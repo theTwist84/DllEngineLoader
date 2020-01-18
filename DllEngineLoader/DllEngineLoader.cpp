@@ -33,8 +33,8 @@ int main(int argc, LPSTR *argv)
 		break;
 	default:
 		pEngine = "HaloReach";
-		pGame   = "slayer_054";
-		pMap    = "cex_prisoner";
+		pGame   = "campaign_default_054";
+		pMap    = "m10";
 		//pFilm   = "asq_m30_EF0E4721";
 		break;
 	}
@@ -60,6 +60,13 @@ int main(int argc, LPSTR *argv)
 	// Return input for armor option coversion function
 	IPatch("HaloReach.dll", 0x18004E800, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach armor option
 
+	// Enable changing crosshair location
+	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x1805DFA64, { 0xE9, 0x88, 0x00, 0x00, 0x00, 0x90 }).Apply();
+
+	// Enable debug hud coordinates
+	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x1800DC9DA, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x1800DC9E7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+
 	ITagInterface::ITagInterface();
 	ITagList::ITagList();
 
@@ -72,6 +79,15 @@ int main(int argc, LPSTR *argv)
 	IConsoleAccess::IConsoleAccess().SetGameInterface(gameInterface);
 
 	gameContext.SetupSession(true, 0x7F7F86B0EE577202, 0x29EF835E2A9E63DE/*, 0x7F7F86B0EE577202, { 0x7F7F86B0EE577202 }, { 0x0009000002D75AC8 }*/);
+	gameContext.SetMapInsertionPoint(1);
+
+	hs_function_get(0x028)->replace_evaluate(hs_print_evaluate);
+
+	//halo_script().generate_csv();
+	//halo_script().generate_idc();
+
+	//printf("Sleep(-1);\n");
+	//Sleep(-1);
 
 	auto updateCallBack = [](IGameEngine *pEngine)
 	{
@@ -108,4 +124,7 @@ int main(int argc, LPSTR *argv)
 
 	//gameInterface.SetLocale("ko-KR", "ja-JP", "en-US");
 	gameInterface.LaunchTitle(gameEngineHost, gameRasterizer, gameContext, g_running, updateCallBack);
+
+	printf("Sleep(-1);\n");
+	Sleep(-1);
 }

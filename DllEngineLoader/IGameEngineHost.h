@@ -38,7 +38,9 @@ class IGameEngineHost
 	struct s_player_configuration
 	{
 		INT32   option0;
-		char    padding4[12];
+		INT32   is_centered_crosshair;
+		INT32   option8;
+		INT32   optionC;
 		char    unknown10;
 		char    padding11;
 		char    option12;
@@ -49,7 +51,9 @@ class IGameEngineHost
 		char    crouch_lock_option;
 		char    padding18;
 		char    clench_protection_option;
-		char    unknown1A[14];
+		char    unknown1A;
+		char    option1B;
+		char    unknown1C[12];
 		bool    is_elite;
 		char    padding29[7];
 		INT32   armor_helmet_option;
@@ -75,15 +79,16 @@ class IGameEngineHost
 		INT32   option84;
 		float   option88;
 		float   option8C;
-		char    padding90[8];
-		INT32   controller_layout_option;
+		INT32   option90;
+		INT32   option94;
+		INT32   controller_button_preset_option;
 		INT32   option9C;
 		INT32   optionA0;
 		char    paddingA4[16];
-		INT32   look_sensitivity_option;
-		INT32   optionB8;
-		INT32   optionBC;
-		INT32   optionC0;
+		INT32   camera_look_sensitivity_option;
+		INT32   camera_panning_option;
+		INT32   camera_flying_movement_option;
+		INT32   camera_flying_thrust_option;
 		char    optionC4;
 		char    optionC5;
 		char    unknownC6;
@@ -418,6 +423,7 @@ INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configu
 	// sub_18004E800 applies customization conversion from MCC to Reach
 	// TODO: get conversion table from sub_18004E800
 	// sub_18004E800 converts customization from MCC to Reach
+	rPlayerConfiguration.is_centered_crosshair          = false;
 	rPlayerConfiguration.is_elite 	                    = true;
 	rPlayerConfiguration.armor_helmet_option            = 0;
 	rPlayerConfiguration.armor_left_shoulder_option     = 0;
@@ -436,6 +442,8 @@ INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configu
 	rPlayerConfiguration.crouch_lock_option             = true;
 
 	_snwprintf(rPlayerConfiguration.service_tag, 5, L"%S\0", "UNSC");
+
+	WriteStackTrace("IGameEngineHost::UpdatePlayerConfiguration");
 
 	return INT64(1);
 }
