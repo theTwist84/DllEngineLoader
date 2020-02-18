@@ -1,5 +1,56 @@
 #pragma once
 
+template<size_t count>
+class c_static_buffer
+{
+public:
+	char m_elements[count];
+
+	inline size_t get_count()
+	{
+		return count;
+	}
+};
+
+template<typename t_element, size_t count>
+class c_static_array
+{
+public:
+	t_element m_elements[count];
+
+	inline c_static_array<const char *, count> &get_element_names()
+	{
+		static c_static_array<const char *, count> names;
+
+		return names;
+	}
+
+	inline t_element *operator->()
+	{
+		return m_elements;
+	}
+	inline t_element &operator[](const size_t index)
+	{
+		return m_elements[index];
+	}
+	inline t_element *begin()
+	{
+		return m_elements;
+	}
+	inline t_element *end()
+	{
+		return &m_elements[count];
+	}
+	inline explicit operator bool()
+	{
+		return m_elements != nullptr;
+	}
+	inline size_t get_count()
+	{
+		return count;
+	}
+};
+
 struct IDatumHandle
 {
 	UINT16 m_Index;
@@ -58,12 +109,21 @@ struct ITagBlock
 	UINT32 m_DefinitionAddress;
 };
 
+struct ITagData
+{
+	INT32 m_Size;
+	INT32 m_StreamFlags;
+	INT32 m_StreamOffset;
+	UINT32 m_Address;
+	UINT32 m_DefinitionAddress;
+};
+
 template<typename T>
 struct ITagSection
 {
 	INT32  m_Count;
 	UINT32 m_PostCountSignature;
-	T     *m_Instances;
+	T *m_Instances;
 };
 
 struct ITagInfo
@@ -101,9 +161,11 @@ public:
 	static IDatumHandle GetGlobalHandle(UINT32 groupTag);
 
 	template<typename T = LPVOID>
-	static T           &GetTagDefinition(LPCSTR pName);
+	static T &GetTagDefinition(LPCSTR pName);
 	template<typename T>
-	static T           &GetBlockDefinition(ITagBlock &block, size_t index);
+	static T &GetBlockDefinition(ITagBlock &block, size_t index);
+
+	static const char *GetString(size_t index);
 
 	static size_t       s_CacheFilePointerOffset;
 	static size_t       s_TagInstancesOffset;
@@ -112,8 +174,8 @@ private:
 };
 
 size_t ITagInterface::s_CacheFilePointerOffset = 0;
-size_t ITagInterface::s_TagInstancesOffset     = 0;
-size_t ITagInterface::s_TagAddressTableOffset  = 0;
+size_t ITagInterface::s_TagInstancesOffset = 0;
+size_t ITagInterface::s_TagAddressTableOffset = 0;
 
 ITagInterface::ITagInterface()
 {
@@ -207,7 +269,7 @@ template<typename T>
 T &ITagInterface::GetTagDefinition(LPCSTR pName)
 {
 	ITagInstance *pTagInstances = IModuleInterface::Read<ITagInstance *>(IGameInterface::s_modulePath, s_TagInstancesOffset);
-	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 *[]>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
+	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
 
 	IDatumHandle datumHandle = ITagList::GetHandle(pName);
 	return *reinterpret_cast<T *>(&rTagAddressTable[pTagInstances[datumHandle.m_Index].m_Address >> 28][pTagInstances[datumHandle.m_Index].m_Address]);
@@ -216,7 +278,7 @@ T &ITagInterface::GetTagDefinition(LPCSTR pName)
 template<typename T>
 T &ITagInterface::GetBlockDefinition(ITagBlock &block, size_t index)
 {
-	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 *[]>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
+	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
 
 	T *block_definition = reinterpret_cast<T *>(&rTagAddressTable[block.m_Address >> 28][block.m_Address]);
 
@@ -437,7 +499,7 @@ public:
 	template<typename T>
 	T &get_definition(size_t index = 0)
 	{
-		return ITagInterface::GetBlockDefinition<T>(*reinterpret_cast<ITagBlock*>(this), index);
+		return ITagInterface::GetBlockDefinition<T>(*reinterpret_cast<ITagBlock *>(this), index);
 	}
 
 	void get_field(LPCSTR pName, size_t index = -1)
@@ -469,7 +531,7 @@ public:
 		get_field(pName);
 	}
 
-//private:
+	//private:
 	long m_count;
 	unsigned long m_address;
 	unsigned long m_definition_address;
@@ -1000,7 +1062,7 @@ public:
 			for (size_t i = 0; i < sizeof(m_data); i++)
 				valid += m_data[i] != 0 ? 1 : 0;
 		}
-		catch (const std::exception &e)
+		catch (const std::exception & e)
 		{
 			printf("%s\n", e.what());
 		}
@@ -1298,6 +1360,33 @@ public:
 		return *this;
 	}
 };
+
+const char *ITagInterface::GetString(size_t index)
+{
+	UINT32 *(&rTagAddressTable)[] = IModuleInterface::Read<UINT32 * []>(IGameInterface::s_modulePath, s_TagAddressTableOffset);
+	c_scenario_definition *pScenario = IModuleInterface::Read<c_scenario_definition *>(IGameInterface::s_modulePath, 0x180D495B0);
+	ITagData &rScriptSringsData = *reinterpret_cast<ITagData *>(&pScenario->m_data[0x43C]);
+	char *pScriptSrings = (char *)&rTagAddressTable[rScriptSringsData.m_Address >> 28][rScriptSringsData.m_Address];
+
+	static std::vector<std::string> vector;
+	if (vector.empty())
+	{
+		size_t i = 1;
+		while (i < rScriptSringsData.m_Size)
+		{
+			const char *str = &pScriptSrings[i];
+
+			vector.push_back(str);
+
+			size_t len = strlen(str) + 1;
+			i += len;
+		}
+	}
+	if (vector.empty())
+		return "";
+
+	return vector[index].c_str();
+}
 
 bool EditTag(LPCSTR pInput)
 {
@@ -1622,7 +1711,7 @@ bool print_scenario_scripts()
 
 	printf("Scenario =\n");
 	printf("{\n");
-	c_tag_block &rScripts = *(c_tag_block*)&pScenario->m_data[0x450];
+	c_tag_block &rScripts = *(c_tag_block *)&pScenario->m_data[0x450];
 	for (int scriptIndex = 0; scriptIndex < rScripts.m_count; scriptIndex++)
 	{
 		c_tag_definition<'null', 0x18> &rScript = rScripts.get_definition<c_tag_definition<'null', 0x18>>(scriptIndex);
@@ -1645,7 +1734,7 @@ bool print_scenario_scripts()
 		for (int parameterIndex = 0; parameterIndex < rParameters.m_count; parameterIndex++)
 		{
 			c_tag_definition<'null', 0x24> &rParameter = rParameters.get_definition<c_tag_definition<'null', 0x24>>(parameterIndex);
-			c_static_string<32> &rScriptName = *(c_static_string<32> *)&rParameter.m_data[0x0];
+			c_static_string<32> &rScriptName = *(c_static_string<32> *) & rParameter.m_data[0x0];
 			INT16 &rType = *(INT16 *)&rParameter.m_data[0x20];
 			INT16 &rUnknown = *(INT16 *)&rParameter.m_data[0x22];
 
@@ -1680,7 +1769,7 @@ struct hs_script_op
 	__int16 return_type;
 	__int16 flags;
 	__int32 __unused4;
-	void(__fastcall *evaluate)(INT64 function_index, UINT64 expression_index, bool execute);
+	void(__fastcall *evaluate)(__int16 opcode, unsigned __int16 expression_index, char execute);
 	const char *parameter_info;
 	__int16 parameter_count;
 	__int16 parameter_types;
@@ -1701,45 +1790,6 @@ struct hs_script_op
 };
 #pragma pack(pop)
 
-template<typename t_element, size_t count>
-class c_static_array
-{
-public:
-	t_element m_elements[count];
-
-	inline c_static_array<const char *, count> &get_element_names()
-	{
-		static c_static_array<const char *, count> names;
-
-		return names;
-	}
-
-	inline t_element *operator->()
-	{
-		return m_elements;
-	}
-	inline t_element &operator[](const size_t index)
-	{
-		return m_elements[index];
-	}
-	inline t_element *begin()
-	{
-		return m_elements;
-	}
-	inline t_element *end()
-	{
-		return &m_elements[count];
-	}
-	inline explicit operator bool()
-	{
-		return m_elements != nullptr;
-	}
-	inline size_t get_count()
-	{
-		return count;
-	}
-};
-
 class c_halo_script
 {
 public:
@@ -1749,8 +1799,8 @@ public:
 	static const char *&get_function_name(const size_t index);
 	static void generate_csv();
 	static void generate_idc();
-private:
 
+private:
 };
 
 inline c_halo_script::c_halo_script()
@@ -3755,9 +3805,13 @@ inline c_halo_script::c_halo_script()
 	};
 }
 
+/*
+flighting: 1.0887.0.0 0x180D89480, 1.1035.0.0 0x180AB2910, 1.1186.0.0 0x180ABF520, 1.1211.0.0 0x180ABF4B0
+release:   1.1246.0.0 0x180ABC220, 1.1270.0.0 0x180ABC230, 1.1305.0.0 0x180AA76C0, 1.????.0.0 0x?????????
+*/
 inline c_static_array<hs_script_op *, 1995> &c_halo_script::get_function_table()
 {
-	static c_static_array<hs_script_op *, 1995> &result = IModuleInterface::Read<c_static_array<hs_script_op *, 1995>>(IGameInterface::s_modulePath, 0x180ABC230);
+	static c_static_array<hs_script_op *, 1995> &result = IModuleInterface::Read<c_static_array<hs_script_op *, 1995>>(IGameInterface::s_modulePath, 0x180AA76C0);
 
 	return result;
 }
@@ -3769,8 +3823,8 @@ inline const char *&c_halo_script::get_function_name(const size_t index)
 }
 inline void c_halo_script::generate_csv()
 {
-	static c_static_array<UINT64, 1> hs_null_evaluates = { 0x1802A6130 };
-	static c_static_array<UINT64, 2> hs_return_evaluates = { 0x1802A6140, 0x1802AB750 };
+	static c_static_array<UINT64, 3> hs_null_evaluates = { 0x1802A6220, 0x1802A6230, 0x1802AB840 };
+	static c_static_array<UINT64, 1> hs_convert_to_evaluates = { 0x1801ED260 };
 
 	//printf("%i, hs_script_op *hs_script_ops[%i] // 0x%08llX\n", _count, 0x180ABC230);
 
@@ -3813,30 +3867,30 @@ inline void c_halo_script::generate_csv()
 		if (is_null)
 			continue;
 
-		bool is_return = false;
-		for (int j = 0; j < hs_return_evaluates.get_count(); j++)
+		bool is_convert_to = false;
+		for (int j = 0; j < hs_convert_to_evaluates.get_count(); j++)
 		{
-			if (hs_function_table[i]->evaluate_match(hs_return_evaluates[j]))
+			if (hs_function_table[i]->evaluate_match(hs_convert_to_evaluates[j]))
 			{
-				if (hs_return_evaluates.get_count() > 1)
+				if (hs_convert_to_evaluates.get_count() > 1)
 				{
 					if (is_unknown)
 						printf("0x%03X, 0x%09llX, hs_unknown%X_op, 0x%09llX, hs_null%i_evaluate\n", i, hs_function_op, i, hs_function_evaluate, j);
 					else
-						printf("0x%03X, 0x%09llX, hs_%s_op, 0x%09llX, hs_return%i_evaluate\n", i, hs_function_op, hs_function_name, hs_function_evaluate, j);
+						printf("0x%03X, 0x%09llX, hs_%s_op, 0x%09llX, hs_convert_to%i_evaluate\n", i, hs_function_op, hs_function_name, hs_function_evaluate, j);
 				}
 				else
 				{
 					if (is_unknown)
 						printf("0x%03X, 0x%09llX, hs_unknown%X_op, 0x%09llX, hs_null_evaluate\n", i, hs_function_op, i, hs_function_evaluate);
 					else
-						printf("0x%03X, 0x%09llX, hs_%s_op, 0x%09llX, hs_return_evaluate\n", i, hs_function_op, hs_function_name, hs_function_evaluate);
+						printf("0x%03X, 0x%09llX, hs_%s_op, 0x%09llX, hs_convert_to_evaluate\n", i, hs_function_op, hs_function_name, hs_function_evaluate);
 				}
-				is_return = true;
+				is_convert_to = true;
 			}
 		}
 
-		if (is_return)
+		if (is_convert_to)
 			continue;
 
 		bool is_base = false;
@@ -3860,8 +3914,8 @@ inline void c_halo_script::generate_csv()
 }
 inline void c_halo_script::generate_idc()
 {
-	static c_static_array<UINT64, 1> hs_null_evaluates = { 0x1802A6130 };
-	static c_static_array<UINT64, 2> hs_return_evaluates = { 0x1802A6140, 0x1802AB750 };
+	static c_static_array<UINT64, 3> hs_null_evaluates = { 0x1802A6220, 0x1802A6230, 0x1802AB840 };
+	static c_static_array<UINT64, 1> hs_convert_to_evaluates = { 0x1801ED260 };
 
 	printf("#include <idc.idc>\n\n");
 
@@ -3872,7 +3926,7 @@ inline void c_halo_script::generate_idc()
 	printf("\t__int16 return_type;\n");
 	printf("\t__int16 flags;\n");
 	printf("\t__int32 __unused4;\n");
-	printf("\tvoid (__fastcall *evaluate)(INT64 function_index, UINT64 expression_index, bool execute);\n");
+	printf("\tvoid (__fastcall *evaluate)(__int16 opcode, unsigned __int16 expression_index, char execute);\n");
 	printf("\tconst char *parameter_info;\n");
 	printf("\t__int16 parameter_count;\n");
 	printf("\t__int16 parameter_types;\n");
@@ -3886,6 +3940,10 @@ inline void c_halo_script::generate_idc()
 	decltype(c_halo_script::get_function_table()) &hs_function_table = c_halo_script::get_function_table();
 	decltype(hs_function_table.get_element_names()) &hs_function_names = hs_function_table.get_element_names();
 
+	printf("\t// function_table\n");
+	printf("\tMakeName(0x%08llX, \"hs_function_table\");\n", get_file_addr((UINT64)&hs_function_table));
+	//printf("\tSetType(0x%08llX, \"hs_script_op *[%zi]\");\n", get_file_addr((UINT64)&hs_function_table), hs_function_table.get_count());
+
 	for (int i = 0; i < hs_function_table.get_count(); i++)
 	{
 		UINT64 hs_function_op = get_file_addr((UINT64)hs_function_table[i]);
@@ -3894,8 +3952,10 @@ inline void c_halo_script::generate_idc()
 
 		bool is_unknown = (strcmp(hs_function_name, "") == 0);
 
-		printf("\t// 0x%03X, %s\n", i, is_unknown ? "unknown" : hs_function_name);
-		printf("\tSetType(0x%08llX, \"hs_script_op\");\n", hs_function_op);
+		printf("\n\t// 0x%03X, %s\n", i, is_unknown ? "unknown" : hs_function_name);
+		printf("\tMakeCode(0x%08llX);", hs_function_evaluate);
+		printf("\tSetType(0x%08llX, \"hs_script_op\");", hs_function_op);
+		printf("\tSetType(0x%08llX, \"hs_script_op *\");\n", get_file_addr((UINT64)&hs_function_table[i]));
 
 		bool is_null = false;
 		for (int j = 0; j < hs_null_evaluates.get_count(); j++)
@@ -3905,18 +3965,18 @@ inline void c_halo_script::generate_idc()
 				if (hs_null_evaluates.get_count() > 1)
 				{
 					if (is_unknown)
-						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");\n", hs_function_op, i);
+						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");", hs_function_op, i);
 					else
-						printf("\tMakeName(0x%08llX, \"hs_%s_op\");\n", hs_function_op, hs_function_name);
-					printf("\tMakeName(0x%08llX, \"hs_null%i_evaluate\");\n", hs_function_evaluate, j);
+						printf("\tMakeName(0x%08llX, \"hs_%s_op\");", hs_function_op, hs_function_name);
+					printf("\tMakeName(0x%08llX, \"hs_null%i_evaluate\");", hs_function_evaluate, j);
 				}
 				else
 				{
 					if (is_unknown)
-						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");\n", hs_function_op, i);
+						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");", hs_function_op, i);
 					else
-						printf("\tMakeName(0x%08llX, \"hs_%s_op\");\n", hs_function_op, hs_function_name);
-					printf("\tMakeName(0x%08llX, \"hs_null_evaluate\");\n", hs_function_evaluate);
+						printf("\tMakeName(0x%08llX, \"hs_%s_op\");", hs_function_op, hs_function_name);
+					printf("\tMakeName(0x%08llX, \"hs_null_evaluate\");", hs_function_evaluate);
 				}
 				is_null = true;
 			}
@@ -3925,41 +3985,41 @@ inline void c_halo_script::generate_idc()
 		if (is_null)
 			continue;
 
-		bool is_return = false;
-		for (int j = 0; j < hs_return_evaluates.get_count(); j++)
+		bool is_convert_to = false;
+		for (int j = 0; j < hs_convert_to_evaluates.get_count(); j++)
 		{
-			if (hs_function_table[i]->evaluate_match(hs_return_evaluates[j]))
+			if (hs_function_table[i]->evaluate_match(hs_convert_to_evaluates[j]))
 			{
-				if (hs_return_evaluates.get_count() > 1)
+				if (hs_convert_to_evaluates.get_count() > 1)
 				{
 					if (is_unknown)
-						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");\n", hs_function_op, i);
+						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");", hs_function_op, i);
 					else
-						printf("\tMakeName(0x%08llX, \"hs_%s_op\");\n", hs_function_op, hs_function_name);
-					printf("\tMakeName(0x%08llX, \"hs_return%i_evaluate\");\n", hs_function_evaluate, j);
+						printf("\tMakeName(0x%08llX, \"hs_%s_op\");", hs_function_op, hs_function_name);
+					printf("\tMakeName(0x%08llX, \"hs_convert_to%i_evaluate\");", hs_function_evaluate, j);
 				}
 				else
 				{
 					if (is_unknown)
-						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");\n", hs_function_op, i);
+						printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");", hs_function_op, i);
 					else
-						printf("\tMakeName(0x%08llX, \"hs_%s_op\");\n", hs_function_op, hs_function_name);
-					printf("\tMakeName(0x%08llX, \"hs_return_evaluate\");\n", hs_function_evaluate);
+						printf("\tMakeName(0x%08llX, \"hs_%s_op\");", hs_function_op, hs_function_name);
+					printf("\tMakeName(0x%08llX, \"hs_convert_to_evaluate\");", hs_function_evaluate);
 				}
-				is_return = true;
+				is_convert_to = true;
 			}
 		}
 
-		if (is_return)
+		if (is_convert_to)
 			continue;
 
 		bool is_base = false;
 		if (hs_function_table[i]->evaluate_match(IModuleInterface::GetBase(IGameInterface::s_modulePath, false)))
 		{
 			if (is_unknown)
-				printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");\n", hs_function_op, i);
+				printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");", hs_function_op, i);
 			else
-				printf("\tMakeName(0x%08llX, \"hs_%s_op\");\n", hs_function_op, hs_function_name);;
+				printf("\tMakeName(0x%08llX, \"hs_%s_op\");", hs_function_op, hs_function_name);;
 			is_base = true;
 		}
 
@@ -3968,17 +4028,17 @@ inline void c_halo_script::generate_idc()
 
 		if (is_unknown)
 		{
-			printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");\n", hs_function_op, i);
-			printf("\tMakeName(0x%08llX, \"hs_unknown%03X_evaluate\");\n", hs_function_evaluate, i);
+			printf("\tMakeName(0x%08llX, \"hs_unknown%03X_op\");", hs_function_op, i);
+			printf("\tMakeName(0x%08llX, \"hs_unknown%03X_evaluate\");", hs_function_evaluate, i);
 		}
 		else
 		{
-			printf("\tMakeName(0x%08llX, \"hs_%s_op\");\n", hs_function_op, hs_function_name);
-			printf("\tMakeName(0x%08llX, \"hs_%s_evaluate\");\n", hs_function_evaluate, hs_function_name);
+			printf("\tMakeName(0x%08llX, \"hs_%s_op\");", hs_function_op, hs_function_name);
+			printf("\tMakeName(0x%08llX, \"hs_%s_evaluate\");", hs_function_evaluate, hs_function_name);
 		}
 	}
 
-	printf("}\n");
+	printf("\n}\n");
 	return;
 }
 
@@ -4009,6 +4069,337 @@ hs_script_op *hs_function_get(LPCSTR opname)
 }
 
 void hs_print_evaluate(__int16 opcode, unsigned __int16 expression_index, char execute)
-{ 
+{
 	hs_function_get("chud_post_message")->evaluate(opcode, expression_index, execute);
+
+	s_thread_local_storage *tls = c_thread_local_storage::get();
+	if (tls)
+	{
+		if (tls->director_globals)
+		{
+			c_director &director = tls->director_globals->directors[0];
+
+			director.m_camera.position[0] += 20.f;
+			director.m_camera.position[1] += 20.f;
+			director.m_camera.position[2] += 20.f;
+
+			director.m_observer.position[0] += 20.f;
+			director.m_observer.position[1] += 20.f;
+			director.m_observer.position[2] += 20.f;
+
+			director.m_position[0] += 20.f;
+			director.m_position[1] += 20.f;
+			director.m_position[2] += 20.f;
+		}
+
+		const char *thread_name = tls->thread_name;
+		printf("Accessing TLS on thread: %s\n", thread_name);
+	}
+}
+
+class c_restricted_region
+{
+public:
+	c_restricted_region();
+
+	static void generate_structures();
+
+	struct s_global { size_t size; const char *name; };
+	struct s_data { size_t size, count; const char *name; };
+private:
+
+	static std::vector<s_global> s_globals;
+	static std::vector<s_data> s_data_arrays;
+};
+
+std::vector<c_restricted_region::s_global> c_restricted_region::s_globals = {};
+std::vector<c_restricted_region::s_data> c_restricted_region::s_data_arrays = {};
+
+
+
+struct lock_hierarchy_nodes;
+struct lock_hierarchy_links;
+struct campaigns;
+struct campaign_levels;
+struct campaign_insertions;
+struct multiplayer_levels;
+struct firefight_levels;
+struct xbox_sound;
+struct xbox_sound_cache;
+struct sound_tracker;
+struct predicted_data;
+struct havok_components;
+struct havok_contact_points;
+struct decal_cache;
+struct tag_resource_cache;
+struct tag_resource_lruv_reverse_mapping;
+struct dynamic_render_targets;
+struct simulation_view;
+struct simulation_distributed_view;
+
+c_restricted_region::c_restricted_region()
+{
+	s_data_arrays.push_back({ 0x90, 128, "lock_hierarchy_nodes" });
+	s_data_arrays.push_back({ 0x14, 1024, "lock_hierarchy_links" });
+	s_data_arrays.push_back({ 0x288, 4, "campaigns" });
+	s_data_arrays.push_back({ 0x46C, 64, "campaign_levels" });
+	s_data_arrays.push_back({ 0x1514, 64, "campaign_insertions" });
+	s_data_arrays.push_back({ 0x46C, 50, "multiplayer_levels" });
+	s_data_arrays.push_back({ 0x46C, 64, "firefight_levels" });
+	s_data_arrays.push_back({ 0x40, 512, "xbox_sound" });
+	s_data_arrays.push_back({ 0x18, 512, "xbox_sound_cache" });
+	s_data_arrays.push_back({ 0x48, 384, "sound_tracker" });
+	s_data_arrays.push_back({ 0x8, 200, "predicted_data" });
+	s_data_arrays.push_back({ 0xC0, 1500, "havok_components" });
+	s_data_arrays.push_back({ 0x50, 1024, "havok_contact_points" });
+	s_data_arrays.push_back({ 0x18, 2048, "decal_cache" });
+	s_data_arrays.push_back({ 0x18, 65535, "tag_resource_cache" });
+	s_data_arrays.push_back({ 0x10, 65535, "tag_resource_lruv_reverse_mapping" });
+	s_data_arrays.push_back({ 0x1C, 6, "dynamic_render_targets" });
+	s_data_arrays.push_back({ 0x118, 16, "simulation_view" });
+	s_data_arrays.push_back({ 0x120F8, 16, "simulation_distributed_view" });
+
+
+	//s_globals.push_back({ 0x1EB28, "game_state_header" });
+	//s_globals.push_back({ 0x1EFE0, "game_globals" });
+
+	s_globals.push_back({ 0x40, "main_time_globals" });
+	s_globals.push_back({ 0x14, "gamestate_timing_samples" });
+	s_globals.push_back({ 0x14, "render_timing_samples" });
+	s_globals.push_back({ 0x3C, "game_time_globals" });
+	s_globals.push_back({ 0x7C, "players_per_map_globals" });
+	s_globals.push_back({ 0x98, "players_globals" });
+	s_globals.push_back({ 0x8030, "game_engine_globals" });
+	s_globals.push_back({ 0xDCB8, "local_game_engine_globals" });
+	s_globals.push_back({ 0xE38, "game_engine_render_globals" });
+	s_globals.push_back({ 0x8, "havok_gamestate" });
+	s_globals.push_back({ 0x800, "visibility_active_portals" });
+	s_globals.push_back({ 0xFC, "campaign_metagame_globals" });
+	s_globals.push_back({ 0x84, "campaign_metagame_globals_secondary" });
+	s_globals.push_back({ 0x4, "random_math" });
+	s_globals.push_back({ 0xF88, "sound_classes" });
+	s_globals.push_back({ 0x124, "game_sound_globals" });
+	s_globals.push_back({ 0x10, "game_sound_globals_main" });
+	s_globals.push_back({ 0x200, "game_sound_scripted_impulses" });
+	s_globals.push_back({ 0x6F0, "director_globals" });
+	s_globals.push_back({ 0x1, "director_scripting" });
+	s_globals.push_back({ 0x1050, "observer_globals" });
+	s_globals.push_back({ 0xC, "observer_gamestate_globals" });
+	s_globals.push_back({ 0x1A4C, "cinematic_new_globals" });
+	s_globals.push_back({ 0x52C8, "cinematic_light_globals" });
+	s_globals.push_back({ 0x40, "cinematic_globals" });
+	s_globals.push_back({ 0x10, "cinematic_globals_non_deterministic" });
+	s_globals.push_back({ 0x930, "player_control_globals" });
+	s_globals.push_back({ 0x40, "player_control_globals_deterministic" });
+	s_globals.push_back({ 0x8, "bink_gamestate" });
+	s_globals.push_back({ 0x2400, "simulated_input" });
+	s_globals.push_back({ 0x810, "damage_globals" });
+	s_globals.push_back({ 0x774, "rumble" });
+	s_globals.push_back({ 0x201, "usability_globals" });
+	s_globals.push_back({ 0x204, "game_allegiance_globals" });
+	s_globals.push_back({ 0xA08, "player_training_globals" });
+	s_globals.push_back({ 0x20, "physics_constants" });
+	s_globals.push_back({ 0x24008, "collision_hierarchy_node_hash_table" });
+	s_globals.push_back({ 0x840, "collision_hierarchy_globals" });
+	s_globals.push_back({ 0x30, "kill_trigger_volume_state" });
+	s_globals.push_back({ 0x10, "soft_surface_globals" });
+	s_globals.push_back({ 0x10B78, "incident_globals" });
+	s_globals.push_back({ 0x80, "game_heat_globals" });
+	s_globals.push_back({ 0x20DE0, "breakable_surface_globals" });
+	s_globals.push_back({ 0x40068, "breakable_surface_redirection_table" });
+	s_globals.push_back({ 0x82C, "decal_messaging_queue" });
+	s_globals.push_back({ 0x18, "effect_counts" });
+	s_globals.push_back({ 0xB84C, "effect_messaging_queue" });
+	s_globals.push_back({ 0x1300, "deterministic_game_sound_globals" });
+	s_globals.push_back({ 0x18, "game_sound_player_effects_globals" });
+	s_globals.push_back({ 0x1148, "player_effects" });
+	s_globals.push_back({ 0x10001, "havok_contact_point_globals" });
+	s_globals.push_back({ 0x180, "scenario_interpolator_states" });
+	s_globals.push_back({ 0x1C, "game_save_globals" });
+	s_globals.push_back({ 0x8C, "impact_globals" });
+	s_globals.push_back({ 0x590, "multiplayer_sound_globals" });
+	s_globals.push_back({ 0xC, "hs_runtime_globals" });
+	s_globals.push_back({ 0xF4, "scripted_camera_globals" });
+	s_globals.push_back({ 0x6C00, "effect_lightprobes" });
+	s_globals.push_back({ 0x14, "hue_saturation_control" });
+	s_globals.push_back({ 0x204, "rasterizer_game_states" });
+	s_globals.push_back({ 0x40, "depth_of_field_globals" });
+	s_globals.push_back({ 0x1400, "interaction_ripples" });
+	s_globals.push_back({ 0x68, "render_texture_globals" });
+	s_globals.push_back({ 0x540, "render_hud_globals" });
+	s_globals.push_back({ 0x34, "scripted_exposure_globals" });
+	s_globals.push_back({ 0xCD0, "render_game_globals" });
+	s_globals.push_back({ 0x100, "weather_globals_shared" });
+	s_globals.push_back({ 0xD0, "weather_globals_render" });
+	s_globals.push_back({ 0x9C, "weather_globals_deterministic" });
+	s_globals.push_back({ 0x54C4, "rasterizer_implicit_geometry_data" });
+	s_globals.push_back({ 0xCA20, "chud_persistent_global_data" });
+	s_globals.push_back({ 0x43280, "chud_persistent_user_data" });
+	s_globals.push_back({ 0x14EA0, "first_person_weapons" });
+	s_globals.push_back({ 0xF000, "first_person_orientations" });
+	s_globals.push_back({ 0x13EEE8, "chud_draw_user_globals" });
+	s_globals.push_back({ 0xE8, "player_mapping_globals" });
+	s_globals.push_back({ 0xA0, "campaign_objectives" });
+	s_globals.push_back({ 0x150, "simulation_debug_globals" });
+	s_globals.push_back({ 0x2000, "object_render_data" });
+	s_globals.push_back({ 0x6030, "object_globals" });
+	s_globals.push_back({ 0x18, "object_render_globals" });
+	s_globals.push_back({ 0x410C, "object_messaging_queue" });
+	s_globals.push_back({ 0x2000, "object_name_list" });
+	s_globals.push_back({ 0xC, "lights_globals" });
+	s_globals.push_back({ 0x104, "object_placement_globals" });
+	s_globals.push_back({ 0x2688, "object_early_movers" });
+	s_globals.push_back({ 0x304, "object_scripting" });
+	s_globals.push_back({ 0x27C, "object_schedule_globals" });
+	s_globals.push_back({ 0x38, "airstrike" });
+	s_globals.push_back({ 0x580, "big_battle_squads" });
+	s_globals.push_back({ 0xC800, "big_battle_squad_units" });
+	s_globals.push_back({ 0x188, "recycling_volumes" });
+	s_globals.push_back({ 0x7900, "cloth_globals" });
+	s_globals.push_back({ 0x7D8, "ai_globals" });
+	s_globals.push_back({ 0xF0, "ai_player_state_globals" });
+	s_globals.push_back({ 0xFB8, "vocalization_timers" });
+	s_globals.push_back({ 0x4B0, "ai_reference_frame" });
+	s_globals.push_back({ 0x2EE00, "task_records" });
+	s_globals.push_back({ 0x258, "swarm_spawner" });
+	s_globals.push_back({ 0x2, "spawner_globals" });
+
+	s_data_arrays.push_back({ 0x100, 384, "sound_sources" });
+	s_data_arrays.push_back({ 0x558, 16, "players" });
+	s_data_arrays.push_back({ 0x9C, 96, "water_physics_cache" });
+	s_data_arrays.push_back({ 0x1C, 64, "sound_playback_controllers" });
+	s_data_arrays.push_back({ 0x1A0, 128, "looping_sounds" });
+	s_data_arrays.push_back({ 0x28, 128, "looping_sounds_restore_state" });
+	s_data_arrays.push_back({ 0x8C, 16, "sounds_effects" });
+	s_data_arrays.push_back({ 0x28, 1024, "object_looping_sounds" });
+	s_data_arrays.push_back({ 0x1C, 6144, "collision_hierarchy_node_headers" });
+	s_data_arrays.push_back({ 0x30, 7168, "collision_hierarchy_element_headers" });
+	s_data_arrays.push_back({ 0xD4, 16, "fire_team" });
+	s_data_arrays.push_back({ 0x68, 20, "lasing" });
+	s_data_arrays.push_back({ 0x468, 64, "breakable_surface_set_broken_events" });
+	s_data_arrays.push_back({ 0x60, 704, "decal_system" });
+	s_data_arrays.push_back({ 0xB0, 920, "effect" });
+	s_data_arrays.push_back({ 0x14, 1800, "effect_event" });
+	s_data_arrays.push_back({ 0x4C, 1380, "effect_location" });
+	s_data_arrays.push_back({ 0x2C, 64, "screen_effect" });
+	s_data_arrays.push_back({ 0xB8, 1, "recorded_animations" });
+	s_data_arrays.push_back({ 0x50, 16, "havok_proxies" });
+	s_data_arrays.push_back({ 0x2C, 200, "cheap_particle_emitters" });
+	s_data_arrays.push_back({ 0x10C8, 32, "impacts" });
+	s_data_arrays.push_back({ 0x88, 32, "impact_arrarys" });
+	s_data_arrays.push_back({ 0x84, 256, "megalo_objects" });
+	s_data_arrays.push_back({ 0x52C, 320, "deterministic_hs_thread" });
+	s_data_arrays.push_back({ 0x52C, 320, "non_deterministic_hs_thread" });
+	s_data_arrays.push_back({ 0x8, 4096, "hs_globals" });
+	s_data_arrays.push_back({ 0xC, 48, "object_list_header" });
+	s_data_arrays.push_back({ 0xC, 128, "list_object_reference" });
+	s_data_arrays.push_back({ 0x11C, 7, "ragdolls" });
+	s_data_arrays.push_back({ 0x54, 576, "particle_system" });
+	s_data_arrays.push_back({ 0x84, 2048, "decal" });
+	s_data_arrays.push_back({ 0x8C, 2048, "particles" });
+	s_data_arrays.push_back({ 0x34, 160, "contrail_system" });
+	s_data_arrays.push_back({ 0x60, 160, "contrail_location" });
+	s_data_arrays.push_back({ 0x4C, 160, "contrail" });
+	s_data_arrays.push_back({ 0x4C, 1, "contrail_profile" });
+	s_data_arrays.push_back({ 0x60, 576, "particle_location" });
+	s_data_arrays.push_back({ 0x2C, 160, "light_volume_system" });
+	s_data_arrays.push_back({ 0x2C, 160, "light_volume_location" });
+	s_data_arrays.push_back({ 0x34, 160, "light_volume" });
+	s_data_arrays.push_back({ 0x2C, 160, "beam_system" });
+	s_data_arrays.push_back({ 0x30, 160, "beam_location" });
+	s_data_arrays.push_back({ 0x34, 160, "beam" });
+	s_data_arrays.push_back({ 0x28, 128, "effect_geometry_sample" });
+	s_data_arrays.push_back({ 0x94, 832, "particle_emitter" });
+	s_data_arrays.push_back({ 0x14, 8, "shield_render_cache_message" });
+	s_data_arrays.push_back({ 0x268, 512, "cached_object_render_states" });
+	s_data_arrays.push_back({ 0x1C, 832, "c_particle_emitter_gpu" });
+	s_data_arrays.push_back({ 0x14, 448, "c_particle_emitter_gpu__s_row" });
+	s_data_arrays.push_back({ 0x10, 160, "c_contrail_gpu" });
+	s_data_arrays.push_back({ 0x14, 160, "c_contrail_gpu__s_row" });
+	s_data_arrays.push_back({ 0x10, 160, "c_light_volume_gpu" });
+	s_data_arrays.push_back({ 0xC, 160, "c_light_volume_gpu__s_row" });
+	s_data_arrays.push_back({ 0x10, 160, "c_beam_gpu" });
+	s_data_arrays.push_back({ 0xC, 160, "c_beam_gpu__s_row" });
+	s_data_arrays.push_back({ 0x20, 128, "chud_widgets" });
+	s_data_arrays.push_back({ 0xC, 2048, "simulation_object_glue" });
+	s_data_arrays.push_back({ 0x18, 2048, "object" });
+	s_data_arrays.push_back({ 0xC0, 600, "lights" });
+	s_data_arrays.push_back({ 0x28, 128, "object_activation_regions" });
+	s_data_arrays.push_back({ 0xC, 64, "widget" });
+	s_data_arrays.push_back({ 0x10, 1024, "device_groups" });
+	s_data_arrays.push_back({ 0x14, 128, "recycling_group" });
+	s_data_arrays.push_back({ 0x68, 12, "antenna" });
+	s_data_arrays.push_back({ 0x9D8, 8, "cloth" });
+	s_data_arrays.push_back({ 0x4CC, 24, "leaf_system" });
+	s_data_arrays.push_back({ 0xEC, 256, "squad" });
+	s_data_arrays.push_back({ 0x24, 130, "squad_group" });
+	s_data_arrays.push_back({ 0x60, 15, "vocalization_records" });
+	s_data_arrays.push_back({ 0x664, 40, "character_properties_cache" });
+	s_data_arrays.push_back({ 0xCF0, 96, "actor" });
+	s_data_arrays.push_back({ 0x1EC, 64, "command_scripts" });
+	s_data_arrays.push_back({ 0x54, 256, "stimulus" });
+	s_data_arrays.push_back({ 0x20, 1024, "stimulus_reference" });
+	s_data_arrays.push_back({ 0xAC, 16, "ai_directives" });
+	s_data_arrays.push_back({ 0x18, 64, "objectives" });
+	s_data_arrays.push_back({ 0x188, 32, "performance" });
+	s_data_arrays.push_back({ 0x3C0, 32, "performance_runtime_definition" });
+	s_data_arrays.push_back({ 0xC, 256, "ai_cue" });
+	s_data_arrays.push_back({ 0x6C4, 16, "squad_patrol" });
+	s_data_arrays.push_back({ 0x1D4, 32, "ai_sync_action_arranger" });
+	s_data_arrays.push_back({ 0x34, 32, "swarm" });
+	s_data_arrays.push_back({ 0xB0, 256, "prop" });
+	s_data_arrays.push_back({ 0x40, 1024, "prop_reference" });
+	s_data_arrays.push_back({ 0xEC, 100, "tracking" });
+	s_data_arrays.push_back({ 0x424, 32, "prop_search" });
+	s_data_arrays.push_back({ 0x2738, 2, "path_influence" });
+	s_data_arrays.push_back({ 0x10C, 20, "clump" });
+	s_data_arrays.push_back({ 0xAC, 20, "joint_state" });
+	s_data_arrays.push_back({ 0x584, 15, "dynamic_firing_points" });
+	s_data_arrays.push_back({ 0x294, 16, "formations" });
+	s_data_arrays.push_back({ 0xFC, 10, "flocks" });
+	s_data_arrays.push_back({ 0x40, 1024, "boids" });
+}
+
+void c_restricted_region::generate_structures()
+{
+	if (true)
+	{
+		printf_s("\n\n");
+
+		for (auto global : s_globals)
+		{
+			printf_s("struct %s%s\n", std::string(global.name).rfind("c_", 0) == 0 ? "" : "s_", global.name);
+			printf_s("{\n");
+			printf_s("\tchar __unknown0[0x%zX];\n", global.size);
+			printf_s("};\n");
+
+			printf_s("");
+		}
+	}
+
+	if (false)
+	{
+		printf_s("\n\n");
+
+		for (auto data_array : s_data_arrays)
+		{
+			const char *datum_prefix = std::string(data_array.name).rfind("c_", 0) == 0 ? "" : "s_";
+			const char *type_prefix = std::string(data_array.name).rfind("c_", 0) == 0 ? "" : "c_";
+			printf_s("typedef c_data_array<%s%s_datum, %zi> %s%s_data_array;\n", datum_prefix, data_array.name, data_array.count, type_prefix, data_array.name);
+
+			printf_s("");
+		}
+
+		for (auto data_array : s_data_arrays)
+		{
+			printf_s("struct %s%s_datum\n", std::string(data_array.name).rfind("c_", 0) == 0 ? "" : "s_", data_array.name);
+			printf_s("{\n");
+			printf_s("\tchar __unknown0[0x%zX];\n", data_array.size);
+			printf_s("};\n");
+
+			printf_s("");
+		}
+	}
+
+	printf_s("\n");
 }

@@ -2,6 +2,13 @@
 
 int main(int argc, LPSTR *argv)
 {
+
+	//static c_restricted_region restricted_region = c_restricted_region();
+	//restricted_region.generate_structures();
+	//printf("Sleep(-1);\n");
+	//Sleep(-1);
+
+
 #ifndef _DEBUG
 	//FreeConsole();
 #elif _DEBUG
@@ -54,18 +61,22 @@ int main(int argc, LPSTR *argv)
 	// Enable spawning AI via scripts or effects, props to Zeddikins
 	/*1.1246.0.0*/ //IPatch("HaloReach.dll", 0x1807301F7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
 	/*1.1246.0.0*/ //IPatch("HaloReach.dll", 0x18076F4F1, { 0xEB }).Apply();
-	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x180730287, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
-	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x18076F581, { 0xEB }).Apply();
+	/*1.1270.0.0*/ //IPatch("HaloReach.dll", 0x180730287, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1270.0.0*/ //IPatch("HaloReach.dll", 0x18076F581, { 0xEB }).Apply();
+	/*1.1305.0.0*/ IPatch("HaloReach.dll", 0x18072F047, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1305.0.0*/ IPatch("HaloReach.dll", 0x18076E341, { 0xEB }).Apply();
 
 	// Return input for armor option coversion function
-	IPatch("HaloReach.dll", 0x18004E800, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach armor option
+	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x18004E800, { 0x89, 0xC8, 0xC3 }).Apply(); // to reach armor option
 
 	// Enable changing crosshair location
-	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x1805DFA64, { 0xE9, 0x88, 0x00, 0x00, 0x00, 0x90 }).Apply();
+	/*1.1270.0.0*/ //IPatch("HaloReach.dll", 0x1805DFA64, { 0xE9, 0x88, 0x00, 0x00, 0x00, 0x90 }).Apply();
 
 	// Enable debug hud coordinates
-	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x1800DC9DA, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
-	/*1.1270.0.0*/ IPatch("HaloReach.dll", 0x1800DC9E7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1270.0.0*/ //IPatch("HaloReach.dll", 0x1800DC9DA, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1270.0.0*/ //IPatch("HaloReach.dll", 0x1800DC9E7, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1305.0.0*/ IPatch("HaloReach.dll", 0x1800DCA8A, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
+	/*1.1305.0.0*/ IPatch("HaloReach.dll", 0x1800DCA97, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 }).Apply();
 
 	ITagInterface::ITagInterface();
 	ITagList::ITagList();
@@ -83,8 +94,8 @@ int main(int argc, LPSTR *argv)
 
 	static c_halo_script hs = c_halo_script();
 
-	//halo_script().generate_csv();
-	//halo_script().generate_idc();
+	//hs.generate_csv();
+	//hs.generate_idc();
 
 	//printf("Sleep(-1);\n");
 	//Sleep(-1);

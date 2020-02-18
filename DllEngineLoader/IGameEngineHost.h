@@ -35,6 +35,69 @@ class IGameEngineHost
 	};
 #pragma pack(pop)
 
+	struct MCC_Callback28Structure
+	{
+		int VIDEO_SizeX;
+		int VIDEO_SizeY;
+		int VIDEO_TextureQuality;
+		int VIDEO_AF_Qual;
+		int VIDEO_SSAOQuality;
+		int unknown10_4;
+		int VIDEO_ShadowMapQual;
+		int VIDEO_LodDistQualityFactor;
+		int unknown20;
+		int WindowMode;
+		bool VIDEO_UseEdgeAA;
+		bool VIDEO_Wait_VSync;
+		bool VIDEO_FPS_Lock;
+		char unknown2B;
+		char unknown2C[168];
+		float unknownD4_0;
+		float unknownD4_4;
+		float unknownD4_8;
+		float unknownD4_C;
+		float unknownD4_10;
+		float unknownD4_14;
+		float unknownD4_18;
+		float unknownD4_1C;
+		float unknownD4_20;
+		float unknownD4_24;
+		float unknownD4_28;
+		float unknownD4_2C;
+		float unknownD4_30;
+		float unknownD4_34;
+		float unknownD4_38;
+		float unknownD4_3C;
+		float unknownD4_40;
+		float unknownD4_44;
+		float unknownD4_48;
+		float unknownD4_4C;
+		float unknownD4_50;
+		float unknownD4_54;
+		float unknownD4_58;
+		float unknownD4_5C;
+		float unknownD4_60;
+		float unknownD4_64;
+		float unknownD4_68;
+		float unknownD4_6C;
+		float unknownD4_70;
+		float unknownD4_74;
+		float unknownD4_78;
+		float unknownD4_7C;
+		float unknownD4_80;
+		float unknownD4_84;
+		int unknownD4_88;
+		int unknownD4_8C;
+		int unknownD4_90;
+		int unknownD4_94;
+		int unknownD4_98;
+		int unknownD4_9C;
+		int unknownD4_A0;
+		int unknownD4_A4;
+		int unknownD4_A8;
+	};
+
+
 	struct s_player_configuration
 	{
 		INT32   option0;
@@ -133,7 +196,7 @@ public:
 	/* 25 */ virtual void         MembershipUpdate(char *, UINT32);
 	/* 26 */ virtual bool         Member26();
 	/* 27 */ virtual bool         Member27();
-	/* 28 */ virtual bool         UpdateGraphics(char *);
+	/* 28 */ virtual bool         UpdateGraphics(MCC_Callback28Structure *);
 	/* 29 */ virtual INT64        UpdatePlayerConfiguration(LPWSTR, s_player_configuration &);
 	/* 30 */ virtual bool         UpdateInput(INT64, InputBuffer *);
 	/* 31 */ virtual void         Member31(UINT64, float *);
@@ -392,25 +455,24 @@ bool IGameEngineHost::Member27()
 	return false;
 }
 
-bool IGameEngineHost::UpdateGraphics(char *buffer)
+bool IGameEngineHost::UpdateGraphics(MCC_Callback28Structure *video_settings)
 {
-	printf("IGameEngineHost::UpdateGraphics(0x%08llX);\n", (UINT64)buffer);
+	printf("IGameEngineHost::UpdateGraphics(0x%08llX);\n", (UINT64)&video_settings);
 
-	INT32  &width     = *(INT32  *)&buffer[000];
-	INT32  &height    = *(INT32  *)&buffer[004];
-	UINT16 &fps_limit = *(UINT16 *)&buffer[041];
-	float  &settings  = *(float  *)&buffer[208];
+	video_settings->VIDEO_SizeX					  = 2 * 1920;
+	video_settings->VIDEO_SizeY					  = 2 * 1080;
 
-	width     = 3840;
-	height    = 2160;
-	fps_limit = false;
+	video_settings->VIDEO_Wait_VSync			  = false;
+	video_settings->VIDEO_FPS_Lock				  = false;
 
-	for (size_t i = 0; i < 35; i++)
-	{
-		(&settings)[i] = 10.f;
-	}
+	video_settings->VIDEO_TextureQuality		  = 2;
+	video_settings->VIDEO_AF_Qual				  = 2;
+	video_settings->VIDEO_SSAOQuality			  = 2;
+	video_settings->VIDEO_ShadowMapQual			  = 2;
+	video_settings->VIDEO_LodDistQualityFactor	  = 2;
+	video_settings->VIDEO_UseEdgeAA				  = true;
 
-	return fps_limit;
+	return video_settings->VIDEO_FPS_Lock;
 }
 
 INT64 IGameEngineHost::UpdatePlayerConfiguration(LPWSTR UserID, s_player_configuration &rPlayerConfiguration)

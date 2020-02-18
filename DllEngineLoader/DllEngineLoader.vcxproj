@@ -54,6 +54,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -168,6 +169,7 @@
     <ClCompile Include="DllEngineLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="c_memory.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IConsoleAccess.h" />
     <ClInclude Include="IDataAccess.h" />
@@ -189,5 +191,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

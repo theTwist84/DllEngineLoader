@@ -128,6 +128,7 @@ bool g_running = false;
 #include "ICommand.h"
 
 #include "IModuleInterface.h"
+#include "c_memory.h"
 
 #include "IFileAccess.h"
 

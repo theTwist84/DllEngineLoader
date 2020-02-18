@@ -92,6 +92,12 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 {
 	IGameInterface *pGameInterface = s_pGameInterface;
 
+	if (ICommand({ "ThreadLocalStorage", "tls" }).Match(pInputCommand))
+	{
+
+		return true;
+	}
+
 	if (ICommand({ "ClearScreen", "cls" }).Match(pInputCommand))
 	{
 		std::system("CLS");
@@ -155,12 +161,33 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		return print_scenario_scripts();
 	}
 
+	if (ICommand({ "PrintScenarioScriptStringByIndex" }).Match(pInputCommand))
+	{
+		if (pInputArgument[0])
+		{
+			int index = std::atoi(pInputArgument);
+			const char *str = ITagInterface::GetString(index);
+
+			if (!str[0])
+			{
+				printf("No string value could be found for index %i.\n", index);
+				return false;
+			}
+
+			printf("%s\n", str);
+			return true;
+		}
+
+		return false;
+	}
+
 	enum class Command : int
 	{
 		LaunchTitle,
 		EngineState,
 		EditTag,
 		PrintScenarioScripts,
+		PrintScriptStringByIndex,
 
 		kCount
 	};
@@ -169,7 +196,8 @@ bool IConsoleAccess::Commands(LPCSTR pInputCommand, LPCSTR pInputArgument)
 		"LaunchTitle",
 		"EngineState",
 		"EditTag",
-		"PrintScenarioScripts"
+		"PrintScenarioScripts",
+		"PrintScenarioScriptStringByIndex"
 	};
 	size_t commandCount = static_cast<size_t>(Command::kCount);
 
